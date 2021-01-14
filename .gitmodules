@@ -7,3 +7,6 @@
 [submodule "Frostic/vendor/Imgui"]
 	path = Frostic/vendor/Imgui
 	url = https://github.com/TheCherno/imgui
+[submodule "Frostic/vendor/glm"]
+	path = Frostic/vendor/glm
+	url = https://github.com/g-truc/glm

@@ -1,9 +1,9 @@
 #include "frpch.h"
 #include "Application.h"
-#include "Input.h"
-
 
 #include <glad/glad.h>
+
+#include "Input.h"
 
 namespace Frostic {
 
