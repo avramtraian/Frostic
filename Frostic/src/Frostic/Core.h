@@ -1,11 +1,26 @@
 #pragma once
 
 #ifdef FR_PLATFORM_WINDOWS
-	#ifdef FROSTIC_BUILD_DLL
-		#define FROSTIC_API __declspec(dllexport)
+#if 0
+	#ifdef FR_BUILD_DLL
+		#define FROSTIC_API  __declspec(dllexport)
 	#else
-		#define FROSTIC_API __declspec(dllimport)
+		#define FROSTIC_API  __declspec(dllimport)
 	#endif
+#endif
+	#define FROSTIC_API  
 #else
 	#error Frostic only supports Windows!
 #endif
+
+#ifdef FR_ENABLE_ASSERTS
+	#define FR_CORE_ASSERT(x, ...) { if(!(x)) { FR_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+	#define FR_ASSERT(x, ...) { if(!(x)) { FR_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+#else 
+	#define FR_CORE_ASSERT(x, ...)
+	#define FR_ASSERT(x, ...)
+#endif
+
+#define BIT(x) (1 << x)
+
+#define FR_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)

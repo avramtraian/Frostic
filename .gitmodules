@@ -1,0 +1,9 @@
+[submodule "Frostic/vendor/spdlog"]
+	path = Frostic/vendor/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "Frostic/vendor/GLFW"]
+	path = Frostic/vendor/GLFW
+	url = https://github.com/TheCherno/glfw
+[submodule "Frostic/vendor/Imgui"]
+	path = Frostic/vendor/Imgui
+	url = https://github.com/TheCherno/imgui
