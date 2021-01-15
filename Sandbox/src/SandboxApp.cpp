@@ -20,7 +20,6 @@ public:
 		ImGui::Begin("Test");
 		ImGui::Text("Hello World!");
 		ImGui::End();
-
 	}
 
 	void OnEvent(Frostic::Event& event) override
