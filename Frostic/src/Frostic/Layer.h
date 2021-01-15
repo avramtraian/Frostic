@@ -14,6 +14,7 @@ namespace Frostic {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate() {}
+		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 
 		inline std::string GetName() const { return m_DebugName; }

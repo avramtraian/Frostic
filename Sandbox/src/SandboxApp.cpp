@@ -1,5 +1,7 @@
 #include <Frostic.h>
 
+#include "Imgui/imgui.h"
+
 class ExampleLayer : public Frostic::Layer
 {
 public:
@@ -11,6 +13,14 @@ public:
 	void OnUpdate() override
 	{
 		
+	}
+
+	void OnImGuiRender()
+	{
+		ImGui::Begin("Test");
+		ImGui::Text("Hello World!");
+		ImGui::End();
+
 	}
 
 	void OnEvent(Frostic::Event& event) override
@@ -26,7 +36,6 @@ public:
 	Sandbox()
 	{
 		PushLayer(new ExampleLayer());
-		PushOverlay(new Frostic::ImGuiLayer());
 	}
 	~Sandbox()
 	{

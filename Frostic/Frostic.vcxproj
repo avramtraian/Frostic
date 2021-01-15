@@ -156,7 +156,6 @@
     <ClInclude Include="src\Frostic\Log.h" />
     <ClInclude Include="src\Frostic\MouseButtonCodes.h" />
     <ClInclude Include="src\Frostic\Window.h" />
-    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\frpch.h" />
@@ -576,11 +575,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Frostic\Application.cpp" />
+    <ClCompile Include="src\Frostic\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Frostic\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Frostic\Layer.cpp" />
     <ClCompile Include="src\Frostic\LayerStack.cpp" />
     <ClCompile Include="src\Frostic\Log.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\frpch.cpp">

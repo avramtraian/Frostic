@@ -7,6 +7,8 @@
 #include "Frostic/Events/Event.h"
 #include "Frostic/Events/ApplicationEvent.h"
 
+#include "Frostic/ImGui/ImGuiLayer.h"
+
 namespace Frostic {
 
 	class FROSTIC_API Application
@@ -29,6 +31,7 @@ namespace Frostic {
 		bool OnWindowClose(WindowCloseEvent& e);
 
 		std::unique_ptr<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 	private:

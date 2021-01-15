@@ -104,6 +104,7 @@ project "Sandbox"
 	includedirs
 	{
 		"Frostic/vendor/spdlog/include",
+		"Frostic/vendor",
 		"%{IncludeDir.glm}",
 		"Frostic/src"
 	}
