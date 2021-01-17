@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Frostic/Core.h"
+#include "Frostic/Core/Timestep.h"
 #include "Frostic/Events/Event.h"
 
 namespace Frostic {
@@ -13,7 +14,7 @@ namespace Frostic {
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(Timestep ts) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 

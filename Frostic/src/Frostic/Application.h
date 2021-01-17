@@ -7,12 +7,9 @@
 #include "Frostic/Events/Event.h"
 #include "Frostic/Events/ApplicationEvent.h"
 
-#include "Frostic/ImGui/ImGuiLayer.h"
+#include "Frostic/Core/Timestep.h"
 
-#include "Frostic/Renderer/Shader.h"
-#include "Frostic/Renderer/Buffer.h"
-#include "Frostic/Renderer/VertexArray.h"
-#include "Frostic/Renderer/OrthographicCamera.h"
+#include "Frostic/ImGui/ImGuiLayer.h"
 
 namespace Frostic {
 
@@ -34,19 +31,12 @@ namespace Frostic {
 		inline static Application& Get() { return *s_Instance; }
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
-
+	private:
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
-
-		std::shared_ptr<Shader> m_Shader;
-		std::shared_ptr<VertexArray> m_VertexArray;
-
-		std::shared_ptr<Shader> m_SquareShader;
-		std::shared_ptr<VertexArray> m_SquareVA;
-
-		OrthographicCamera m_Camera;
+		float m_LastFrameTime = 0.0f;
 	private:
 		static Application* s_Instance;
 	};

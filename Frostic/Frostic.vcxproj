@@ -143,6 +143,7 @@
     <ClInclude Include="src\Frostic.h" />
     <ClInclude Include="src\Frostic\Application.h" />
     <ClInclude Include="src\Frostic\Core.h" />
+    <ClInclude Include="src\Frostic\Core\Timestep.h" />
     <ClInclude Include="src\Frostic\EntryPoint.h" />
     <ClInclude Include="src\Frostic\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Frostic\Events\Event.h" />
