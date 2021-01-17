@@ -43,6 +43,11 @@ project "Frostic"
 		"%{prj.name}/vendor/glm/glm/**.inl"
 	}
 
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS"
+	}
+
 	includedirs
 	{
 		"%{prj.name}/src",
@@ -74,15 +79,18 @@ project "Frostic"
 	filter "configurations:Debug"
 		defines "FR_DEBUG"
 		defines "FR_ENABLE_ASSERTS"
+		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "FR_RELEASE"
 		defines "FR_ENABLE_ASSERTS"
+		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Dist"
 		defines "FR_DIST"
+		runtime "Release"
 		optimize "on"
 
 project "Sandbox"
@@ -124,12 +132,15 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "FR_DEBUG"
+		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
 		defines "FR_RELEASE"
+		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Dist"
 		defines "FR_DIST"
+		runtime "Release"
 		optimize "on"

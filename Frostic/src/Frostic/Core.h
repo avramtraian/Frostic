@@ -1,14 +1,15 @@
 #pragma once
 
 #ifdef FR_PLATFORM_WINDOWS
-#if 0
-	#ifdef FR_BUILD_DLL
-		#define FROSTIC_API  __declspec(dllexport)
-	#else
-		#define FROSTIC_API  __declspec(dllimport)
+	#ifdef FR_DYNAMIC_LINK
+		#ifdef FR_BUILD_DLL
+			#define FROSTIC_API  __declspec(dllexport)
+		#else
+			#define FROSTIC_API  __declspec(dllimport)
+		#endif
+	#else 
+		#define FROSTIC_API  
 	#endif
-#endif
-	#define FROSTIC_API  
 #else
 	#error Frostic only supports Windows!
 #endif

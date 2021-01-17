@@ -9,6 +9,10 @@
 
 #include "Frostic/ImGui/ImGuiLayer.h"
 
+#include "Frostic/Renderer/Shader.h"
+#include "Frostic/Renderer/Buffer.h"
+#include "Frostic/Renderer/VertexArray.h"
+
 namespace Frostic {
 
 	class FROSTIC_API Application
@@ -34,6 +38,12 @@ namespace Frostic {
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
+
+		std::shared_ptr<Shader> m_Shader;
+		std::shared_ptr<VertexArray> m_VertexArray;
+
+		std::shared_ptr<Shader> m_SquareShader;
+		std::shared_ptr<VertexArray> m_SquareVA;
 	private:
 		static Application* s_Instance;
 	};

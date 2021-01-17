@@ -4,6 +4,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Frostic/Renderer/GraphicsContext.h"
+
 struct GLFWwindow;
 
 namespace Frostic {
@@ -30,6 +32,7 @@ namespace Frostic {
 		virtual void Shutdown();
 	private:
 		GLFWwindow* m_Window;
+		GraphicsContext* m_Context;
 		
 		struct WindowData
 		{
