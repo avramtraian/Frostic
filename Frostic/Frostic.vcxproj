@@ -155,12 +155,13 @@
     <ClInclude Include="src\Frostic\LayerStack.h" />
     <ClInclude Include="src\Frostic\Log.h" />
     <ClInclude Include="src\Frostic\MouseButtonCodes.h" />
+    <ClInclude Include="src\Frostic\Renderer\Buffer.h" />
     <ClInclude Include="src\Frostic\Renderer\GraphicsContext.h" />
+    <ClInclude Include="src\Frostic\Renderer\OrthographicCamera.h" />
     <ClInclude Include="src\Frostic\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Frostic\Renderer\Renderer.h" />
     <ClInclude Include="src\Frostic\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Frostic\Renderer\Shader.h" />
-    <ClInclude Include="src\Frostic\Renderer\Buffer.h" />
     <ClInclude Include="src\Frostic\Renderer\VertexArray.h" />
     <ClInclude Include="src\Frostic\Window.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
@@ -593,6 +594,7 @@
     <ClCompile Include="src\Frostic\LayerStack.cpp" />
     <ClCompile Include="src\Frostic\Log.cpp" />
     <ClCompile Include="src\Frostic\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Frostic\Renderer\OrthographicCamera.cpp" />
     <ClCompile Include="src\Frostic\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Frostic\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Frostic\Renderer\RendererCommand.cpp" />

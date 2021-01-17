@@ -12,6 +12,7 @@
 #include "Frostic/Renderer/Shader.h"
 #include "Frostic/Renderer/Buffer.h"
 #include "Frostic/Renderer/VertexArray.h"
+#include "Frostic/Renderer/OrthographicCamera.h"
 
 namespace Frostic {
 
@@ -44,6 +45,8 @@ namespace Frostic {
 
 		std::shared_ptr<Shader> m_SquareShader;
 		std::shared_ptr<VertexArray> m_SquareVA;
+
+		OrthographicCamera m_Camera;
 	private:
 		static Application* s_Instance;
 	};

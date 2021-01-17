@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Frostic/Core.h"
+#include "Frostic/KeyCodes.h"
+#include "Frostic/MouseButtonCodes.h"
 
 namespace Frostic {
 
