@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #ifdef FR_PLATFORM_WINDOWS
 	#ifdef FR_DYNAMIC_LINK
 		#ifdef FR_BUILD_DLL
@@ -25,3 +27,13 @@
 #define BIT(x) (1 << x)
 
 #define FR_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+
+namespace Frostic {
+
+	template<typename T>
+	using Scope = std::unique_ptr<T>;
+
+	template<typename T>
+	using Ref = std::shared_ptr<T>;
+
+}
