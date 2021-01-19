@@ -20,6 +20,7 @@
 
 #include "Frostic/Renderer/Buffer.h"
 #include "Frostic/Renderer/Shader.h"
+#include "Frostic/Renderer/Texture.h"
 #include "Frostic/Renderer/VertexArray.h"
 
 #include "Frostic/Renderer/OrthographicCamera.h"

@@ -7,6 +7,9 @@
     <Filter Include="src\Frostic">
       <UniqueIdentifier>{D6FC6B2B-42B2-E420-CBA6-DEF7375BDB24}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Frostic\Core">
+      <UniqueIdentifier>{EE96F2D0-DA8F-1123-03C2-F6A7EF19F12E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Frostic\Events">
       <UniqueIdentifier>{FA1B16DD-E6FF-D632-4F60-D1853B63C1B4}</UniqueIdentifier>
     </Filter>
@@ -46,6 +49,9 @@
     <Filter Include="vendor\glm\glm\gtx">
       <UniqueIdentifier>{B3A6A76B-9F8A-68C1-08EB-6214F4ED5243}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\stb_image">
+      <UniqueIdentifier>{0DA0BA59-F998-D9AB-22CB-BE300E23B9B7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Frostic.h">
@@ -56,6 +62,9 @@
     </ClInclude>
     <ClInclude Include="src\Frostic\Core.h">
       <Filter>src\Frostic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Core\Timestep.h">
+      <Filter>src\Frostic\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\EntryPoint.h">
       <Filter>src\Frostic</Filter>
@@ -114,6 +123,9 @@
     <ClInclude Include="src\Frostic\Renderer\Shader.h">
       <Filter>src\Frostic\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Frostic\Renderer\Texture.h">
+      <Filter>src\Frostic\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Frostic\Renderer\VertexArray.h">
       <Filter>src\Frostic\Renderer</Filter>
     </ClInclude>
@@ -130,6 +142,9 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
@@ -1383,7 +1398,9 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Frostic\Core\Timestep.h" />
+    <ClInclude Include="vendor\stb_image\stb_image.h">
+      <Filter>vendor\stb_image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Frostic\Application.cpp">
@@ -1422,6 +1439,9 @@
     <ClCompile Include="src\Frostic\Renderer\Shader.cpp">
       <Filter>src\Frostic\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Frostic\Renderer\Texture.cpp">
+      <Filter>src\Frostic\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Frostic\Renderer\VertexArray.cpp">
       <Filter>src\Frostic\Renderer</Filter>
     </ClCompile>
@@ -1437,6 +1457,9 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
@@ -1448,6 +1471,9 @@
     </ClCompile>
     <ClCompile Include="src\frpch.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\stb_image\stb_image.cpp">
+      <Filter>vendor\stb_image</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

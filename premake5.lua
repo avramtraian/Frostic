@@ -17,6 +17,7 @@ IncludeDir["GLFW"] = "Frostic/vendor/GLFW/include"
 IncludeDir["Glad"] = "Frostic/vendor/Glad/include"
 IncludeDir["ImGui"] = "Frostic/vendor/Imgui"
 IncludeDir["glm"] = "Frostic/vendor/glm"
+IncludeDir["stb_image"] = "Frostic/vendor/stb_image"
 
 include "Frostic/vendor/GLFW"
 include "Frostic/vendor/Glad"
@@ -39,6 +40,8 @@ project "Frostic"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/stb_image/**.h",
+		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl"
 	}
@@ -55,7 +58,8 @@ project "Frostic"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb_image}"
 	}
 
 	links
