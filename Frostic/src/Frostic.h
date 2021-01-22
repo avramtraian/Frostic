@@ -2,15 +2,15 @@
 
 // For use by Frostic applications
 
-#include "Frostic/Application.h"
-#include "Frostic/Layer.h"
-#include "Frostic/Log.h"
+#include "Frostic/Core/Application.h"
+#include "Frostic/Core/Layer.h"
+#include "Frostic/Core/Log.h"
 
 #include "Frostic/Core/Timestep.h"
 
-#include "Frostic/Input.h"
-#include "Frostic/KeyCodes.h"
-#include "Frostic/MouseButtonCodes.h"
+#include "Frostic/Core/Input.h"
+#include "Frostic/Core/KeyCodes.h"
+#include "Frostic/Core/MouseButtonCodes.h"
 
 #include "Frostic/ImGui/ImGuiLayer.h"
 
@@ -24,8 +24,5 @@
 #include "Frostic/Renderer/VertexArray.h"
 
 #include "Frostic/Renderer/OrthographicCamera.h"
-// -------------------------------
-
-// ---EntryPoint------------------
-#include "Frostic/EntryPoint.h"
+#include "Frostic/Renderer/OrthographicCameraController.h"
 // -------------------------------

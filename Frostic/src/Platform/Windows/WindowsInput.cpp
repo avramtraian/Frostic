@@ -1,7 +1,7 @@
 #include "frpch.h"
 #include "WindowsInput.h"
 
-#include "Frostic/Application.h"
+#include "Frostic/Core/Application.h"
 
 #include <GLFW/glfw3.h>
 

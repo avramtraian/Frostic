@@ -1,4 +1,5 @@
 #include <Frostic.h>
+#include <Frostic/Core/EntryPoint.h>
 
 #include "Imgui/imgui.h"
 
@@ -7,13 +8,15 @@
 
 #include "Platform/OpenGL/OpenGLShader.h"
 
+#include "Sandbox2D.h"
+
 class ExampleLayer : public Frostic::Layer
 {
 public:
 	ExampleLayer()
-		: Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f), m_CameraRotation(0.0f)
+		: Layer("Example"), m_CameraController(1600.0f / 900.0f, true)
 	{
-		m_VertexArray.reset(Frostic::VertexArray::Create());
+		m_VertexArray = Frostic::VertexArray::Create();
 
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
@@ -36,7 +39,7 @@ public:
 		indexBuffer.reset(Frostic::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
-		m_SquareVA.reset(Frostic::VertexArray::Create());
+		m_SquareVA = Frostic::VertexArray::Create();
 
 		float squareVertices[4 * 5] = {
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -92,41 +95,26 @@ public:
 			}
 		)";
 
-		m_TextureShader.reset(Frostic::Shader::Create("assets/shaders/Texture.glsl"));
-		m_FlatColorShader.reset(Frostic::Shader::Create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
+		auto textureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
+		m_FlatColorShader = Frostic::Shader::Create("FlatColor", flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
 
 		m_Texture = Frostic::Texture2D::Create("assets/textures/Checkerboard.png");
 		m_ChernoLogoTexture = Frostic::Texture2D::Create("assets/textures/ChernoLogo.png");
 
-		std::dynamic_pointer_cast<Frostic::OpenGLShader>(m_TextureShader)->Bind();
-		std::dynamic_pointer_cast<Frostic::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+		std::dynamic_pointer_cast<Frostic::OpenGLShader>(textureShader)->Bind();
+		std::dynamic_pointer_cast<Frostic::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
 	}
 
 	void OnUpdate(Frostic::Timestep ts) override
 	{
-		if(Frostic::Input::IsKeyPressed(FR_KEY_UP))
-			m_CameraPosition.y += m_CameraMoveSpeed * ts;
-		else if(Frostic::Input::IsKeyPressed(FR_KEY_DOWN))
-			m_CameraPosition.y -= m_CameraMoveSpeed * ts;
+		// Updating
+		m_CameraController.OnUpdate(ts);
 
-		if(Frostic::Input::IsKeyPressed(FR_KEY_RIGHT))
-			m_CameraPosition.x += m_CameraMoveSpeed * ts;
-		else if(Frostic::Input::IsKeyPressed(FR_KEY_LEFT))
-			m_CameraPosition.x -= m_CameraMoveSpeed * ts;
-
-		if (Frostic::Input::IsKeyPressed(FR_KEY_Q))
-			m_CameraRotation += m_CameraRotationSpeed * ts;
-		else if (Frostic::Input::IsKeyPressed(FR_KEY_E))
-			m_CameraRotation -= m_CameraRotationSpeed * ts;
-
-
+		// Rendering
 		Frostic::RenderCommand::SetClearColor({ 0.075f, 0.075f, 0.075f, 1 });
 		Frostic::RenderCommand::Clear();
 
-		m_Camera.SetPostion(m_CameraPosition);
-		m_Camera.SetRotation(m_CameraRotation);
-
-		Frostic::Renderer::BeginScene(m_Camera);
+		Frostic::Renderer::BeginScene(m_CameraController.GetCamera());
 
 		std::dynamic_pointer_cast<Frostic::OpenGLShader>(m_FlatColorShader)->Bind();
 		std::dynamic_pointer_cast<Frostic::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat3("u_Color", m_SquareColor);
@@ -143,10 +131,12 @@ public:
 			}
 		}
 
+		auto textureShader = m_ShaderLibrary.Get("Texture");
+
 		m_Texture->Bind();
-		Frostic::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Frostic::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 		m_ChernoLogoTexture->Bind();
-		Frostic::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Frostic::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		// Triangle
 		//Frostic::Renderer::Submit(m_RedShader, m_VertexArray);
@@ -161,12 +151,14 @@ public:
 		ImGui::End();
 	}
 
-	void OnEvent(Frostic::Event& event) override
+	void OnEvent(Frostic::Event& e) override
 	{
-		
+		m_CameraController.OnEvent(e);
 	}
 private:
-	Frostic::Ref<Frostic::Shader> m_FlatColorShader, m_TextureShader;
+	Frostic::ShaderLibrary m_ShaderLibrary;
+
+	Frostic::Ref<Frostic::Shader> m_FlatColorShader;
 
 	Frostic::Ref<Frostic::VertexArray> m_VertexArray;
 	Frostic::Ref<Frostic::VertexArray> m_SquareVA;
@@ -175,12 +167,7 @@ private:
 
 	Frostic::Ref<Frostic::Texture2D> m_Texture, m_ChernoLogoTexture;
 
-	Frostic::OrthographicCamera m_Camera;
-	glm::vec3 m_CameraPosition;
-	float m_CameraMoveSpeed = 4.0f;
-
-	float m_CameraRotation;
-	float m_CameraRotationSpeed = 30.0f;
+	Frostic::OrthographicCameraController m_CameraController;
 };
 
 class Sandbox : public Frostic::Application
@@ -188,7 +175,8 @@ class Sandbox : public Frostic::Application
 public:
 	Sandbox()
 	{
-		PushLayer(new ExampleLayer());
+		//PushLayer(new ExampleLayer());
+		PushLayer(new Sandbox2D());
 	}
 	~Sandbox()
 	{

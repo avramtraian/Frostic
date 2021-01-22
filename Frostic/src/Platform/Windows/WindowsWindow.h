@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Frostic/Window.h"
+#include "Frostic/Core/Window.h"
 
 #include <GLFW/glfw3.h>
 

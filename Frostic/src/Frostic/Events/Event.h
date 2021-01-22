@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include "Frostic/Core.h"
+#include "Frostic/Core/Core.h"
 
 namespace Frostic {
 

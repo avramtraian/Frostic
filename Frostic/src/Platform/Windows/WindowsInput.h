@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Frostic/Input.h"
+#include "Frostic/Core/Input.h"
 
 namespace Frostic {
 

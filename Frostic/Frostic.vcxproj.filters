@@ -57,17 +57,38 @@
     <ClInclude Include="src\Frostic.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Frostic\Application.h">
-      <Filter>src\Frostic</Filter>
+    <ClInclude Include="src\Frostic\Core\Application.h">
+      <Filter>src\Frostic\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Frostic\Core.h">
-      <Filter>src\Frostic</Filter>
+    <ClInclude Include="src\Frostic\Core\Core.h">
+      <Filter>src\Frostic\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Core\EntryPoint.h">
+      <Filter>src\Frostic\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Core\Input.h">
+      <Filter>src\Frostic\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Core\KeyCodes.h">
+      <Filter>src\Frostic\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Core\Layer.h">
+      <Filter>src\Frostic\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Core\LayerStack.h">
+      <Filter>src\Frostic\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Core\Log.h">
+      <Filter>src\Frostic\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Core\MouseButtonCodes.h">
+      <Filter>src\Frostic\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Core\Timestep.h">
       <Filter>src\Frostic\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Frostic\EntryPoint.h">
-      <Filter>src\Frostic</Filter>
+    <ClInclude Include="src\Frostic\Core\Window.h">
+      <Filter>src\Frostic\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Events\ApplicationEvent.h">
       <Filter>src\Frostic\Events</Filter>
@@ -84,24 +105,6 @@
     <ClInclude Include="src\Frostic\ImGui\ImGuiLayer.h">
       <Filter>src\Frostic\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Frostic\Input.h">
-      <Filter>src\Frostic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Frostic\KeyCodes.h">
-      <Filter>src\Frostic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Frostic\Layer.h">
-      <Filter>src\Frostic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Frostic\LayerStack.h">
-      <Filter>src\Frostic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Frostic\Log.h">
-      <Filter>src\Frostic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Frostic\MouseButtonCodes.h">
-      <Filter>src\Frostic</Filter>
-    </ClInclude>
     <ClInclude Include="src\Frostic\Renderer\Buffer.h">
       <Filter>src\Frostic\Renderer</Filter>
     </ClInclude>
@@ -109,6 +112,9 @@
       <Filter>src\Frostic\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Renderer\OrthographicCamera.h">
+      <Filter>src\Frostic\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Renderer\OrthographicCameraController.h">
       <Filter>src\Frostic\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Renderer\RenderCommand.h">
@@ -128,9 +134,6 @@
     </ClInclude>
     <ClInclude Include="src\Frostic\Renderer\VertexArray.h">
       <Filter>src\Frostic\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Frostic\Window.h">
-      <Filter>src\Frostic</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h">
       <Filter>src\Platform\OpenGL</Filter>
@@ -1403,8 +1406,17 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Frostic\Application.cpp">
-      <Filter>src\Frostic</Filter>
+    <ClCompile Include="src\Frostic\Core\Application.cpp">
+      <Filter>src\Frostic\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frostic\Core\Layer.cpp">
+      <Filter>src\Frostic\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frostic\Core\LayerStack.cpp">
+      <Filter>src\Frostic\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frostic\Core\Log.cpp">
+      <Filter>src\Frostic\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Frostic\ImGui\ImGuiBuild.cpp">
       <Filter>src\Frostic\ImGui</Filter>
@@ -1412,19 +1424,13 @@
     <ClCompile Include="src\Frostic\ImGui\ImGuiLayer.cpp">
       <Filter>src\Frostic\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Frostic\Layer.cpp">
-      <Filter>src\Frostic</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Frostic\LayerStack.cpp">
-      <Filter>src\Frostic</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Frostic\Log.cpp">
-      <Filter>src\Frostic</Filter>
-    </ClCompile>
     <ClCompile Include="src\Frostic\Renderer\Buffer.cpp">
       <Filter>src\Frostic\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Frostic\Renderer\OrthographicCamera.cpp">
+      <Filter>src\Frostic\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frostic\Renderer\OrthographicCameraController.cpp">
       <Filter>src\Frostic\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Frostic\Renderer\Renderer.cpp">

@@ -9,10 +9,11 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <array>
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Frostic/Log.h"
+#include "Frostic/Core/Log.h"
 
 #ifdef FR_PLATFORM_WINDOWS
 	#include <Windows.h>

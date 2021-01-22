@@ -2,7 +2,7 @@
 
 #include "frpch.h"
 
-#include "Frostic/Core.h"
+#include "Frostic/Core/Core.h"
 #include "Frostic/Events/Event.h"
 
 namespace Frostic {
