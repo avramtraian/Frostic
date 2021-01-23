@@ -25,7 +25,7 @@ public:
 		};
 
 		Frostic::Ref<Frostic::VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(Frostic::VertexBuffer::Create(vertices, sizeof(vertices)));
+		vertexBuffer = Frostic::VertexBuffer::Create(vertices, sizeof(vertices));
 		Frostic::BufferLayout layout = {
 			{ Frostic::ShaderDataType::Float3, "a_Position" },
 			{ Frostic::ShaderDataType::Float4, "a_Color" }
@@ -36,7 +36,7 @@ public:
 
 		uint32_t indices[3] = { 0, 1, 2 };
 		Frostic::Ref<Frostic::IndexBuffer> indexBuffer;
-		indexBuffer.reset(Frostic::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		indexBuffer = Frostic::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
 		m_SquareVA = Frostic::VertexArray::Create();
@@ -49,7 +49,7 @@ public:
 		};
 
 		Frostic::Ref<Frostic::VertexBuffer> squareVB;
-		squareVB.reset(Frostic::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+		squareVB = Frostic::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
 		Frostic::BufferLayout squareLayout = {
 			{ Frostic::ShaderDataType::Float3, "a_Position" },
 			{ Frostic::ShaderDataType::Float2, "a_TexCoords" }
@@ -60,7 +60,7 @@ public:
 
 		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 		Frostic::Ref<Frostic::IndexBuffer> squareIB;
-		squareIB.reset(Frostic::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+		squareIB = Frostic::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
 		std::string flatColorShaderVertexSrc = R"(

@@ -16,6 +16,7 @@
 
 // ---Renderer--------------------
 #include "Frostic/Renderer/Renderer.h"
+#include "Frostic/Renderer/Renderer2D.h"
 #include "Frostic/Renderer/RenderCommand.h"
 
 #include "Frostic/Renderer/Buffer.h"

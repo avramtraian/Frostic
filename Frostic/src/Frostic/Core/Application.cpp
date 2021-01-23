@@ -13,6 +13,8 @@ namespace Frostic {
 
 	Application::Application()
 	{
+		FR_PROFILE_FUNCTION();
+
 		FR_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
@@ -27,16 +29,23 @@ namespace Frostic {
 
 	Application::~Application()
 	{
+		FR_PROFILE_FUNCTION();
+
+		Renderer::Shutdown();
 	}
 
 	void Application::PushLayer(Layer* layer)
 	{
+		FR_PROFILE_FUNCTION();
+
 		m_LayerStack.PushLayer(layer);
 		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay)
 	{
+		FR_PROFILE_FUNCTION();
+
 		m_LayerStack.PushOverlay(overlay);
 		overlay->OnAttach();
 	}
@@ -44,6 +53,8 @@ namespace Frostic {
 
 	void Application::OnEvent(Event& e)
 	{
+		FR_PROFILE_FUNCTION();
+
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(FR_BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(FR_BIND_EVENT_FN(Application::OnWindowResize));
@@ -58,21 +69,33 @@ namespace Frostic {
 
 	void Application::Run()
 	{
+		FR_PROFILE_FUNCTION();
+
 		while (m_Running)
 		{
+			FR_PROFILE_SCOPE("RunLoop");
+
 			float time = (float)glfwGetTime();
 			Timestep timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
 			if (!m_Minimized)
 			{
-				for (Layer* layer : m_LayerStack)
-					layer->OnUpdate(timestep);
+				{
+					FR_PROFILE_SCOPE("Layers Update");
+
+					for (Layer* layer : m_LayerStack)
+						layer->OnUpdate(timestep);
+				}
 			}
 
 			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerStack)
-				layer->OnImGuiRender();
+			{
+				FR_PROFILE_SCOPE("ImGuiLayer Update");
+
+				for (Layer* layer : m_LayerStack)
+					layer->OnImGuiRender();
+			}
 			m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();

@@ -15,10 +15,7 @@ public:
 	virtual void OnEvent(Frostic::Event& e) override;
 private:
 	Frostic::OrthographicCameraController m_CameraController;
-	
-	// TODO: Remove!
-	Frostic::Ref<Frostic::VertexArray> m_SquareVA;
-	Frostic::Ref<Frostic::Shader> m_FlatColorShader;
 
-	glm::vec4 m_SquareColor = { 0.2, 0.3f, 0.8f, 0.8f };
+	glm::vec4 m_Color = { 0.2f, 0.3f, 0.8f, 1.0f };
+	Frostic::Ref<Frostic::Texture2D> m_Texture;
 };

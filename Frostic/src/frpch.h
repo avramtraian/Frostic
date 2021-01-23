@@ -15,6 +15,8 @@
 
 #include "Frostic/Core/Log.h"
 
+#include "Frostic/Debug/Instrumentor.h"
+
 #ifdef FR_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif

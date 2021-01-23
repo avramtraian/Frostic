@@ -9,6 +9,8 @@ namespace Frostic {
 	public:
 		inline static void Init()
 		{
+			FR_PROFILE_FUNCTION();
+
 			s_RendererAPI->Init();
 		}
 

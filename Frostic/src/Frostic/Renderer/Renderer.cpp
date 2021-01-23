@@ -1,6 +1,8 @@
 #include "frpch.h"
 #include "Renderer.h"
 
+#include "Renderer2D.h"
+
 #include "OrthographicCamera.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 
@@ -10,7 +12,16 @@ namespace Frostic {
 
 	void Renderer::Init()
 	{
+		FR_PROFILE_FUNCTION();
+
 		RenderCommand::Init();
+		Renderer2D::Init();
+	}
+
+	void Renderer::Shutdown()
+	{
+		FR_PROFILE_FUNCTION();
+
 	}
 
 	void Renderer::OnWindowResize(uint32_t width, uint32_t height)
