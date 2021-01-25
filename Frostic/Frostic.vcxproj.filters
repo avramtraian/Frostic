@@ -10,6 +10,9 @@
     <Filter Include="src\Frostic\Core">
       <UniqueIdentifier>{EE96F2D0-DA8F-1123-03C2-F6A7EF19F12E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Frostic\Debug">
+      <UniqueIdentifier>{CCCF51EF-38E6-4F85-815D-DBA6EDB2200D}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Frostic\Events">
       <UniqueIdentifier>{FA1B16DD-E6FF-D632-4F60-D1853B63C1B4}</UniqueIdentifier>
     </Filter>
@@ -90,6 +93,9 @@
     <ClInclude Include="src\Frostic\Core\Window.h">
       <Filter>src\Frostic\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Frostic\Debug\Instrumentor.h">
+      <Filter>src\Frostic\Debug</Filter>
+    </ClInclude>
     <ClInclude Include="src\Frostic\Events\ApplicationEvent.h">
       <Filter>src\Frostic\Events</Filter>
     </ClInclude>
@@ -121,6 +127,9 @@
       <Filter>src\Frostic\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Renderer\Renderer.h">
+      <Filter>src\Frostic\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Renderer\Renderer2D.h">
       <Filter>src\Frostic\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Renderer\RendererAPI.h">
@@ -1404,8 +1413,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Frostic\Renderer\Renderer2D.h" />
-    <ClInclude Include="src\Frostic\Debug\Instrumentor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Frostic\Core\Application.cpp">
@@ -1436,6 +1443,9 @@
       <Filter>src\Frostic\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Frostic\Renderer\Renderer.cpp">
+      <Filter>src\Frostic\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frostic\Renderer\Renderer2D.cpp">
       <Filter>src\Frostic\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Frostic\Renderer\RendererAPI.cpp">
@@ -1483,6 +1493,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Frostic\Renderer\Renderer2D.cpp" />
   </ItemGroup>
 </Project>

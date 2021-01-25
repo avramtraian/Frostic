@@ -196,6 +196,25 @@ namespace Frostic {
 		UploadUniformInt(name, value);
 	}
 
+	void OpenGLShader::SetIntArray(const std::string& name, int* values, uint32_t count)
+	{
+		UploadUniformIntArray(name, values, count);
+	}
+
+	void OpenGLShader::SetFloat(const std::string& name, const float value)
+	{
+		FR_PROFILE_FUNCTION();
+
+		UploadUniformFloat(name, value);
+	}
+
+	void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& value)
+	{
+		FR_PROFILE_FUNCTION();
+
+		UploadUniformFloat2(name, value);
+	}
+
 	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
 	{
 		FR_PROFILE_FUNCTION();
@@ -239,6 +258,12 @@ namespace Frostic {
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniform4i(location, values.x, values.y, values.z, values.w);
+	}
+
+	void OpenGLShader::UploadUniformIntArray(const std::string& name, int* values, uint32_t count)
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform1iv(location, count, values);
 	}
 
 	void OpenGLShader::UploadUniformFloat(const std::string& name, const float value)

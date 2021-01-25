@@ -123,7 +123,7 @@ namespace Frostic {
 	};
 }
 
-#define FR_PROFILE 1
+#define FR_PROFILE 0
 #if FR_PROFILE
 	#define FR_PROFILE_BEGIN_SESSION(name, filepath) ::Frostic::Instrumentor::Get().BeginSession(name, filepath)
 	#define FR_PROFILE_END_SESSION() ::Frostic::Instrumentor::Get().EndSession()

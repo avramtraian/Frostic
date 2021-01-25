@@ -14,6 +14,7 @@ public:
 	virtual void OnImGuiRender() override;
 	virtual void OnEvent(Frostic::Event& e) override;
 private:
+	uint32_t m_FPS = 0;
 	Frostic::OrthographicCameraController m_CameraController;
 
 	glm::vec4 m_Color = { 0.2f, 0.3f, 0.8f, 1.0f };
