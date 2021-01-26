@@ -139,6 +139,7 @@ namespace Frostic {
 
 		RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
 		s_Data.Stats.DrawCalls++;
+		s_Data.Stats.Textures = s_Data.TextureSlotIndex;
 	}
 
 	void Renderer2D::StartBatch()
@@ -190,7 +191,7 @@ namespace Frostic {
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
 		{
-			if (*s_Data.TextureSlots[i] == *texture)
+			if (*s_Data.TextureSlots[i].get() == *texture.get())
 			{
 				textureIndex = (float)i;
 				break;
@@ -212,7 +213,50 @@ namespace Frostic {
 			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
 			s_Data.QuadVertexBufferPtr->Color = tintColor;
 			s_Data.QuadVertexBufferPtr->TexCoords = textureCoords[i];
-			s_Data.QuadVertexBufferPtr->TextureIndex = 1;
+			s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
+			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr++;
+		}
+
+		s_Data.QuadIndexCount += 6;
+		s_Data.Stats.QuadCount++;
+	}
+
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<SubTexture2D>& subTexture, float tilingFactor, const glm::vec4& tintColor)
+	{
+		constexpr size_t quadVertexCount = 4;
+		const glm::vec2* textureCoords = subTexture->GetTexCoords();
+		const Ref<Texture2D> texture = subTexture->GetTexture();
+
+		if (s_Data.QuadIndexCount >= s_Data.MaxIndices)
+			NextBatch();
+
+		float textureIndex = 0.0f;
+		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
+		{
+			if (*s_Data.TextureSlots[i].get() == *texture.get())
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+
+		if (textureIndex == 0.0f)
+		{
+			if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
+				NextBatch();
+
+			textureIndex = (float)s_Data.TextureSlotIndex;
+			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
+			s_Data.TextureSlotIndex++;
+		}
+
+		for (size_t i = 0; i < quadVertexCount; i++)
+		{
+			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
+			s_Data.QuadVertexBufferPtr->Color = tintColor;
+			s_Data.QuadVertexBufferPtr->TexCoords = textureCoords[i];
+			s_Data.QuadVertexBufferPtr->TextureIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
 			s_Data.QuadVertexBufferPtr++;
 		}
@@ -247,6 +291,19 @@ namespace Frostic {
 		DrawQuad(transform, texture, tilingFactor, tintColor);
 	}
 
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, float tilingFactor, const glm::vec4& tintColor)
+	{
+		DrawQuad({ position.x, position.y, 0.0f }, size, subTexture, tilingFactor, tintColor);
+	}
+
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, float tilingFactor, const glm::vec4& tintColor)
+	{
+		FR_PROFILE_FUNCTION();
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		DrawQuad(transform, subTexture, tilingFactor, tintColor);
+	}
+
 	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const float rotation, const glm::vec2& size, const glm::vec4& color)
 	{
 		DrawRotatedQuad({ position.x, position.y, 0.0f }, rotation, size, color);
@@ -273,6 +330,21 @@ namespace Frostic {
 			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
 			glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 		DrawQuad(transform, texture, tilingFactor, tintColor);
+	}
+
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const float rotation, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, float tilingFactor, const glm::vec4& tintColor)
+	{
+		DrawRotatedQuad({ position.x, position.y, 0.0f }, rotation, size, subTexture, tilingFactor, tintColor);
+	}
+
+	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const float rotation, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, float tilingFactor, const glm::vec4& tintColor)
+	{
+		FR_PROFILE_FUNCTION();
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
+			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f }) *
+			glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		DrawQuad(transform, subTexture, tilingFactor, tintColor);
 	}
 
 	void Renderer2D::ResetStats()

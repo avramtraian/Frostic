@@ -167,6 +167,7 @@
     <ClInclude Include="src\Frostic\Renderer\Renderer2D.h" />
     <ClInclude Include="src\Frostic\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Frostic\Renderer\Shader.h" />
+    <ClInclude Include="src\Frostic\Renderer\SubTexture2D.h" />
     <ClInclude Include="src\Frostic\Renderer\Texture.h" />
     <ClInclude Include="src\Frostic\Renderer\VertexArray.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
@@ -608,6 +609,7 @@
     <ClCompile Include="src\Frostic\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Frostic\Renderer\RendererCommand.cpp" />
     <ClCompile Include="src\Frostic\Renderer\Shader.cpp" />
+    <ClCompile Include="src\Frostic\Renderer\SubTexture2D.cpp" />
     <ClCompile Include="src\Frostic\Renderer\Texture.cpp" />
     <ClCompile Include="src\Frostic\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
@@ -637,4 +639,4 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project>
+</Project> 

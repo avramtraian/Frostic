@@ -138,6 +138,9 @@
     <ClInclude Include="src\Frostic\Renderer\Shader.h">
       <Filter>src\Frostic\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Frostic\Renderer\SubTexture2D.h">
+      <Filter>src\Frostic\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Frostic\Renderer\Texture.h">
       <Filter>src\Frostic\Renderer</Filter>
     </ClInclude>
@@ -1455,6 +1458,9 @@
       <Filter>src\Frostic\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Frostic\Renderer\Shader.cpp">
+      <Filter>src\Frostic\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frostic\Renderer\SubTexture2D.cpp">
       <Filter>src\Frostic\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Frostic\Renderer\Texture.cpp">
