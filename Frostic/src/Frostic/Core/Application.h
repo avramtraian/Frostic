@@ -16,7 +16,7 @@ namespace Frostic {
 	class FROSTIC_API Application
 	{
 	public:
-		Application();
+		Application(const std::string& name = "Frostic Application");
 		virtual ~Application();
 
 		void Run();
@@ -27,6 +27,8 @@ namespace Frostic {
 		void PushOverlay(Layer* overlay);
 
 		inline Window& GetWindow() { return *m_Window; }
+
+		void Close();
 
 		inline static Application& Get() { return *s_Instance; }
 	private:

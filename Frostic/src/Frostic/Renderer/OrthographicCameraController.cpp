@@ -47,6 +47,12 @@ namespace Frostic {
 		dispatcher.Dispatch<WindowResizeEvent>(FR_BIND_EVENT_FN(OrthographicCameraController::OnWindowResizeEvent));
 	}
 
+	void OrthographicCameraController::OnResize(float aspectRatio)
+	{
+		m_AspectRatio = aspectRatio;
+		CalculateView();
+	}
+
 	void OrthographicCameraController::CalculateView()
 	{
 		m_Bounds = { -m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel };
@@ -67,8 +73,7 @@ namespace Frostic {
 	{
 		FR_PROFILE_FUNCTION();
 
-		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-		CalculateView();
+		OnResize((float)e.GetWidth() / (float)e.GetHeight());
 		return false;
 	}
 
