@@ -5,7 +5,7 @@
 
 namespace Frostic {
 
-
+	static const uint32_t s_MaxFramebufferSize = 8192;
 
 	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec)
 		: m_Specification(spec)
@@ -22,6 +22,12 @@ namespace Frostic {
 
 	void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height)
 	{
+		if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize)
+		{
+			FR_CORE_WARN("Attemted to resize a framebuffer to: {0}, {1}", width, height);
+			return;
+		}
+
 		m_Specification.Width = width;
 		m_Specification.Height = height;
 

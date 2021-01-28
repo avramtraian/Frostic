@@ -21,6 +21,9 @@ namespace Frostic {
 
 		Ref<Framebuffer> m_Framebuffer;
 
+		Ref<Scene> m_ActiveScene;
+		Entity m_SquareEntity;
+
 		Ref<Texture2D> m_CheckerboardTexture;
 
 		bool m_ViewportFocused = false, m_ViewportHovered = false;

@@ -21,6 +21,12 @@ namespace Frostic {
 		fbSpec.Width = 1600;
 		fbSpec.Height = 900;
 		m_Framebuffer = Framebuffer::Create(fbSpec);
+
+		m_ActiveScene = CreateRef<Scene>();
+		auto square = m_ActiveScene->CreateEntity("Green Square");
+		square.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+
+		m_SquareEntity = square;
 	}
 
 	void EditorLayer::OnDetach()
@@ -41,26 +47,18 @@ namespace Frostic {
 
 		// Rendering
 		Renderer2D::ResetStats();
-		{
-			FR_PROFILE_SCOPE("Renderer preparation");
-			m_Framebuffer->Bind();
-			RenderCommand::SetClearColor({ 0.075f, 0.075f, 0.075f, 1 });
-			RenderCommand::Clear();
-		}
-		{
-			FR_PROFILE_SCOPE("Renderer Draw");
-			Renderer2D::BeginScene(m_CameraController.GetCamera());
-			Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, m_CheckerboardTexture, 10.0f);
-			for (float x = -4.0f; x < 4.0f; x++)
-			{
-				for (float y = -4.0f; y < 4.0f; y++)
-				{
-					Renderer2D::DrawQuad({ x, y }, { 0.9f, 0.9f }, { 0.2f, 0.3f, 0.8f, 0.3f });
-				}
-			}
-			Renderer2D::EndScene();
-			m_Framebuffer->Unbind();
-		}
+		m_Framebuffer->Bind();
+		RenderCommand::SetClearColor({ 0.075f, 0.075f, 0.075f, 1 });
+		RenderCommand::Clear();
+
+		Renderer2D::BeginScene(m_CameraController.GetCamera());
+
+		// Update scene
+		m_ActiveScene->OnUpdate(ts);
+
+		Renderer2D::EndScene();
+
+		m_Framebuffer->Unbind();
 	}
 
 	void EditorLayer::OnImGuiRender()
@@ -141,7 +139,16 @@ namespace Frostic {
 				ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 				ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 				ImGui::Text("Textures: %d", stats.Textures - 1);
-				ImGui::ColorEdit4("Square Color", glm::value_ptr(m_Color));
+
+				if (m_SquareEntity)
+				{
+					ImGui::Separator();
+					ImGui::Text("%s", m_SquareEntity.GetComponent<TagComponent>().Tag.c_str());
+
+					auto& color = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
+					ImGui::ColorEdit4("Square Color", glm::value_ptr(color));
+					ImGui::Separator();
+				}
 			ImGui::End();
 
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
@@ -151,7 +158,7 @@ namespace Frostic {
 				Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
 
 				ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-				if (m_ViewportSize.x != viewportPanelSize.x || m_ViewportSize.y != viewportPanelSize.y)
+				if ((m_ViewportSize.x != viewportPanelSize.x || m_ViewportSize.y != viewportPanelSize.y) && viewportPanelSize.x > 0 && viewportPanelSize.y > 0)
 				{
 					m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 					m_Framebuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);

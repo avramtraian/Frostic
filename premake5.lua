@@ -18,6 +18,7 @@ IncludeDir["Glad"] = "Frostic/vendor/Glad/include"
 IncludeDir["ImGui"] = "Frostic/vendor/Imgui"
 IncludeDir["glm"] = "Frostic/vendor/glm"
 IncludeDir["stb_image"] = "Frostic/vendor/stb_image"
+IncludeDir["entt"] = "Frostic/vendor/entt/include"
 
 group "Dependencies"
 	include "Frostic/vendor/GLFW"
@@ -45,7 +46,8 @@ project "Frostic"
 		"%{prj.name}/vendor/stb_image/**.h",
 		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl"
+		"%{prj.name}/vendor/glm/glm/**.inl",
+		"%{prj.name}/vendor/entt/**.hpp"
 	}
 
 	defines
@@ -61,7 +63,8 @@ project "Frostic"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}"
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.entt}"
 	}
 
 	links
@@ -172,6 +175,7 @@ project "Frosted"
 		"Frostic/vendor/spdlog/include",
 		"Frostic/vendor",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}",
 		"Frostic/src"
 	}
 	
