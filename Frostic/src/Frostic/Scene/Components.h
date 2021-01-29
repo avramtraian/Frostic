@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "Frostic/Renderer/Camera.h"
+
 namespace Frostic {
 	
 	struct TagComponent
@@ -35,6 +37,17 @@ namespace Frostic {
 		SpriteRendererComponent(const SpriteRendererComponent& other) = default;
 		SpriteRendererComponent(const glm::vec4& color)
 			: Color(color) {}
+	};
+
+	struct CameraComponent
+	{
+		Frostic::Camera Camera;
+		bool Primary = true; // TODO: Move to Scene
+
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent& other) = default;
+		CameraComponent(const glm::mat4& projection)
+			: Camera(projection) {}
 	};
 
 }

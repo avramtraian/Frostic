@@ -1,6 +1,7 @@
 #pragma once
 
 #include "OrthographicCamera.h"
+#include "Camera.h"
 #include "Texture.h"
 #include "SubTexture2D.h"
 
@@ -13,6 +14,7 @@ namespace Frostic {
 		static void Shutdown();
 
 		static void BeginScene(const OrthographicCamera& camera);
+		static void BeginScene(const Camera& camera, const glm::mat4& transform); // TODO: Remove!
 		static void EndScene();
 		static void Flush();
 

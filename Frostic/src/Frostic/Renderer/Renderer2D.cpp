@@ -119,6 +119,18 @@ namespace Frostic {
 		StartBatch();
 	}
 
+	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
+	{
+		FR_PROFILE_FUNCTION();
+
+		glm::mat4 viewProjection = camera.GetProjection() * glm::inverse(transform);
+
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->SetMat4("u_ViewProjection", viewProjection);
+
+		StartBatch();
+	}
+
 	void Renderer2D::EndScene()
 	{
 		FR_PROFILE_FUNCTION();

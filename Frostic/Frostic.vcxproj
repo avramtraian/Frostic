@@ -159,6 +159,7 @@
     <ClInclude Include="src\Frostic\Events\MouseEvent.h" />
     <ClInclude Include="src\Frostic\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Frostic\Renderer\Buffer.h" />
+    <ClInclude Include="src\Frostic\Renderer\Camera.h" />
     <ClInclude Include="src\Frostic\Renderer\Framebuffer.h" />
     <ClInclude Include="src\Frostic\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Frostic\Renderer\OrthographicCamera.h" />

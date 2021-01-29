@@ -1436,6 +1436,7 @@
     </ClInclude>
     <ClInclude Include="src\Frostic\Scene\Components.h" />
     <ClInclude Include="src\Frostic\Scene\Entity.h" />
+    <ClInclude Include="src\Frostic\Renderer\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Frostic\Core\Application.cpp">
