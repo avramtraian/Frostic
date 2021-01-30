@@ -1437,6 +1437,8 @@
     <ClInclude Include="src\Frostic\Scene\Components.h" />
     <ClInclude Include="src\Frostic\Scene\Entity.h" />
     <ClInclude Include="src\Frostic\Renderer\Camera.h" />
+    <ClInclude Include="src\Frostic\Scene\SceneCamera.h" />
+    <ClInclude Include="src\Frostic\Scene\ScriptableEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Frostic\Core\Application.cpp">
@@ -1530,5 +1532,6 @@
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
     <ClCompile Include="src\Frostic\Scene\Entity.cpp" />
+    <ClCompile Include="src\Frostic\Scene\SceneCamera.cpp" />
   </ItemGroup>
 </Project>

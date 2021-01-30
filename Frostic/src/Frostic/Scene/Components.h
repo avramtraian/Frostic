@@ -2,7 +2,9 @@
 
 #include <glm/glm.hpp>
 
-#include "Frostic/Renderer/Camera.h"
+#include "SceneCamera.h"
+#include "ScriptableEntity.h"
+#include "Frostic/Core/Timestep.h"
 
 namespace Frostic {
 	
@@ -41,13 +43,27 @@ namespace Frostic {
 
 	struct CameraComponent
 	{
-		Frostic::Camera Camera;
+		Frostic::SceneCamera Camera;
 		bool Primary = true; // TODO: Move to Scene
+		bool FixedAspectRatio = false;
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent& other) = default;
-		CameraComponent(const glm::mat4& projection)
-			: Camera(projection) {}
+	};
+
+	struct NativeScriptComponent
+	{
+		ScriptableEntity* Instance = nullptr;
+
+		ScriptableEntity*(*InstantiateScript)();
+		void (*DestroyScript)(NativeScriptComponent*);
+		
+		template<typename T>
+		void Bind()
+		{
+			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
+		}
 	};
 
 }

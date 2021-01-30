@@ -23,12 +23,47 @@ namespace Frostic {
 		m_Framebuffer = Framebuffer::Create(fbSpec);
 
 		m_ActiveScene = CreateRef<Scene>();
-		auto square = m_ActiveScene->CreateEntity("Green Square");
-		square.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
-		m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
-		m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
 
-		m_SquareEntity = square;
+		m_SquareEntity = m_ActiveScene->CreateEntity("Green Square");
+		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+
+		m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
+		m_CameraEntity.AddComponent<CameraComponent>();
+
+		m_SecondCamera = m_ActiveScene->CreateEntity("Camera B");
+		m_SecondCamera.AddComponent<CameraComponent>();
+		m_SecondCamera.GetComponent<CameraComponent>().Primary = false;
+
+		class CameraController : public ScriptableEntity
+		{
+		public:
+			void OnCreate()
+			{
+				
+			}
+
+			void OnDestroy()
+			{
+
+			}
+
+			void OnUpdate(Timestep ts)
+			{
+				auto& transform = GetComponent<TransformComponent>().Transform;
+				float speed = 5.0f;
+
+				if (Input::IsKeyPressed(FR_KEY_W))
+					transform[3][1] += speed * ts;
+				if (Input::IsKeyPressed(FR_KEY_S))
+					transform[3][1] -= speed * ts;
+				if (Input::IsKeyPressed(FR_KEY_D))
+					transform[3][0] += speed * ts;
+				if (Input::IsKeyPressed(FR_KEY_A))
+					transform[3][0] -= speed * ts;
+			}
+		};
+
+		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 	}
 
 	void EditorLayer::OnDetach()
@@ -40,6 +75,14 @@ namespace Frostic {
 	void EditorLayer::OnUpdate(Timestep ts)
 	{
 		FR_PROFILE_FUNCTION();
+		FramebufferSpecification spec = m_Framebuffer->GetSpecification();
+		if (m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && (spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
+		{
+			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_CameraController.OnResize(m_ViewportSize.x / m_ViewportSize.y);
+
+			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		}
 
 		m_FPS = (uint32_t)(1.0f / ts);
 
@@ -147,6 +190,22 @@ namespace Frostic {
 					ImGui::ColorEdit4("Square Color", glm::value_ptr(color));
 					ImGui::Separator();
 				}
+
+				ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]));
+
+				if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
+				{
+					m_CameraEntity.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
+					m_SecondCamera.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
+				}
+
+				{
+					auto& camera = m_SecondCamera.GetComponent<CameraComponent>().Camera;
+					float orthoSize = camera.GetOrthographiSize();
+					if (ImGui::DragFloat("Camera A Ortho Size", &orthoSize))
+						camera.SetOrthographiSize(orthoSize);
+				}
+
 			ImGui::End();
 
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
@@ -159,7 +218,7 @@ namespace Frostic {
 				if ((m_ViewportSize.x != viewportPanelSize.x || m_ViewportSize.y != viewportPanelSize.y) && viewportPanelSize.x > 0 && viewportPanelSize.y > 0)
 				{
 					m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-					m_Framebuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
+					// m_Framebuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
 
 					m_CameraController.OnResize(viewportPanelSize.x / viewportPanelSize.y);
 				}
