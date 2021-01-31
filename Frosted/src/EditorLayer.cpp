@@ -49,21 +49,23 @@ namespace Frostic {
 
 			void OnUpdate(Timestep ts)
 			{
-				auto& transform = GetComponent<TransformComponent>().Transform;
+				auto& tc = GetComponent<TransformComponent>();
 				float speed = 5.0f;
 
 				if (Input::IsKeyPressed(FR_KEY_W))
-					transform[3][1] += speed * ts;
+					tc.Translation.y += speed * ts;
 				if (Input::IsKeyPressed(FR_KEY_S))
-					transform[3][1] -= speed * ts;
+					tc.Translation.y -= speed * ts;
 				if (Input::IsKeyPressed(FR_KEY_D))
-					transform[3][0] += speed * ts;
+					tc.Translation.x += speed * ts;
 				if (Input::IsKeyPressed(FR_KEY_A))
-					transform[3][0] -= speed * ts;
+					tc.Translation.x -= speed * ts;
 			}
 		};
 
 		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+
+		m_HierarchyPanel.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OnDetach()
@@ -151,11 +153,16 @@ namespace Frostic {
 
 		// DockSpace
 		ImGuiIO& io = ImGui::GetIO();
+		ImGuiStyle& style = ImGui::GetStyle();
+		float minWinSizeX = style.WindowMinSize.x;
+		style.WindowMinSize.x = 400.0f;
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
+
+		style.WindowMinSize.x = minWinSizeX;
 
 		if (ImGui::BeginMenuBar())
 		{
@@ -171,62 +178,41 @@ namespace Frostic {
 			ImGui::EndMenuBar();
 		}
 
-			ImGui::Begin("Settings");
-				auto stats = Renderer2D::GetStats();
-				ImGui::Text("FPS: %d", m_FPS);
-				ImGui::Text("Renderer2D Stats:");
-				ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-				ImGui::Text("Quads: %d", stats.QuadCount);
-				ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-				ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-				ImGui::Text("Textures: %d", stats.Textures - 1);
 
-				if (m_SquareEntity)
-				{
-					ImGui::Separator();
-					ImGui::Text("%s", m_SquareEntity.GetComponent<TagComponent>().Tag.c_str());
+		m_HierarchyPanel.OnImGuiRender();
 
-					auto& color = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
-					ImGui::ColorEdit4("Square Color", glm::value_ptr(color));
-					ImGui::Separator();
-				}
 
-				ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]));
+		ImGui::Begin("Stats");
+		auto stats = Renderer2D::GetStats();
+		ImGui::Text("FPS: %d", m_FPS);
+		ImGui::Text("Renderer2D Stats:");
+		ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+		ImGui::Text("Quads: %d", stats.QuadCount);
+		ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+		ImGui::Text("Textures: %d", stats.Textures - 1);
 
-				if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
-				{
-					m_CameraEntity.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
-					m_SecondCamera.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
-				}
+		ImGui::End();
+		
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+		ImGui::Begin("Viewport");
+		m_ViewportFocused = ImGui::IsWindowFocused();
+		m_ViewportHovered = ImGui::IsWindowHovered();
+		Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
 
-				{
-					auto& camera = m_SecondCamera.GetComponent<CameraComponent>().Camera;
-					float orthoSize = camera.GetOrthographiSize();
-					if (ImGui::DragFloat("Camera A Ortho Size", &orthoSize))
-						camera.SetOrthographiSize(orthoSize);
-				}
+		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+		if ((m_ViewportSize.x != viewportPanelSize.x || m_ViewportSize.y != viewportPanelSize.y) && viewportPanelSize.x > 0 && viewportPanelSize.y > 0)
+		{
+			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+			// m_Framebuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
 
-			ImGui::End();
+			m_CameraController.OnResize(viewportPanelSize.x / viewportPanelSize.y);
+		}
 
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
-			ImGui::Begin("Viewport");
-				m_ViewportFocused = ImGui::IsWindowFocused();
-				m_ViewportHovered = ImGui::IsWindowHovered();
-				Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
-
-				ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-				if ((m_ViewportSize.x != viewportPanelSize.x || m_ViewportSize.y != viewportPanelSize.y) && viewportPanelSize.x > 0 && viewportPanelSize.y > 0)
-				{
-					m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-					// m_Framebuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-
-					m_CameraController.OnResize(viewportPanelSize.x / viewportPanelSize.y);
-				}
-
-				uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-				ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-			ImGui::End();
-			ImGui::PopStyleVar();
+		uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		ImGui::End();
+		ImGui::PopStyleVar();
 
 		ImGui::End();
 	}
