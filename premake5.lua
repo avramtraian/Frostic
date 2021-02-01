@@ -20,11 +20,13 @@ IncludeDir["glm"] = "Frostic/vendor/glm"
 IncludeDir["stb_image"] = "Frostic/vendor/stb_image"
 IncludeDir["entt"] = "Frostic/vendor/entt/include"
 IncludeDir["ImGuizmo"] = "Frostic/vendor/ImGuizmo"
+IncludeDir["yaml_cpp"] = "Frostic/vendor/yaml-cpp/include"
 
 group "Dependencies"
 	include "Frostic/vendor/GLFW"
 	include "Frostic/vendor/Glad"
 	include "Frostic/vendor/Imgui"
+	include "Frostic/vendor/yaml-cpp"
 group ""
 
 project "Frostic"
@@ -68,7 +70,8 @@ project "Frostic"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.ImGuizmo}"
+		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.yaml_cpp}"
 	}
 
 	links
@@ -76,6 +79,7 @@ project "Frostic"
 		"GLFW",
 		"Glad",
 		"ImGui",
+		"yaml-cpp",
 		"opengl32.lib"
 	}
 

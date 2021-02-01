@@ -18,20 +18,22 @@ namespace Frostic {
 		virtual void OnImGuiRender() override;
 
 		virtual void OnEvent(Event& e) override;
+	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
+
+		void NewScene();
+		void OpenScene();
+		void SaveScene();
+		void SaveSceneAs();
 	private:
 		uint32_t m_FPS = 0;
 		OrthographicCameraController m_CameraController;
 
 		Ref<Framebuffer> m_Framebuffer;
-
+		Ref<Scene> m_ActiveScene;
 		EditorCamera m_EditorCamera;
 
-		Ref<Scene> m_ActiveScene;
-		Entity m_SquareEntity;
-		Entity m_CameraEntity;
-
-		Ref<Texture2D> m_CheckerboardTexture;
+		std::string saveFilepath = std::string();
 
 		bool m_ViewportFocused = false, m_ViewportHovered = false;
 		glm::vec2 m_ViewportSize = {0.0f, 0.0f};

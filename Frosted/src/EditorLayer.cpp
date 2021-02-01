@@ -2,6 +2,9 @@
 #include "Imgui/imgui.h"
 #include "ImGuizmo/ImGuizmo.h"
 
+#include "Frostic/Scene/SceneSerializer.h"
+#include "Frostic/Utils/PlatformUtils.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -16,8 +19,6 @@ namespace Frostic {
 	{
 		FR_PROFILE_FUNCTION();
 
-		m_CheckerboardTexture = Texture2D::Create("assets/textures/Checkerboard.png");
-
 		FramebufferSpecification fbSpec;
 		fbSpec.Width = 1600;
 		fbSpec.Height = 900;
@@ -25,15 +26,19 @@ namespace Frostic {
 
 		m_ActiveScene = CreateRef<Scene>();
 
-		m_SquareEntity = m_ActiveScene->CreateEntity("Green Square");
-		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
-
-		m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
-		m_CameraEntity.AddComponent<CameraComponent>();
+		// m_SquareEntity = m_ActiveScene->CreateEntity("Green Square");
+		// m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
+		// 
+		// m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
+		// m_CameraEntity.AddComponent<CameraComponent>();
 
 		m_HierarchyPanel.SetContext(m_ActiveScene);
 
 		m_EditorCamera = EditorCamera{ 30.0f, 1.778f, 0.1f, 1000.0f };
+
+		SceneSerializer serializer(m_ActiveScene);
+		// serializer.Serialize("assets/scenes/Example.frostic");
+		// serializer.Deserialize("assets/scenes/Example.frostic");
 	}
 
 	void EditorLayer::OnDetach()
@@ -140,6 +145,23 @@ namespace Frostic {
 			{
 				// Disabling fullscreen would allow the window to be moved to the front of other windows,
 				// which we can't undo at the moment without finer window depth/z control.
+				
+				if (ImGui::MenuItem("New", "Ctrl+N"))
+				{
+					NewScene();
+				}
+				if (ImGui::MenuItem("Open...", "Ctrl+O"))
+				{
+					OpenScene();
+				}
+				if (ImGui::MenuItem("Save...", "Ctrl+S"))
+				{
+					SaveScene();
+				}
+				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+				{
+					SaveSceneAs();
+				}
 
 				if (ImGui::MenuItem("Exit")) Application::Get().Close();
 				ImGui::EndMenu();
@@ -201,7 +223,15 @@ namespace Frostic {
 			auto& tc = selectedEntity.GetComponent<TransformComponent>();
 			glm::mat4 transform = tc.GetTransform();
 
-			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::MODE::LOCAL, glm::value_ptr(transform));
+			// Snapping
+			bool snap = Input::IsKeyPressed(Key::LeftControl);
+			float snapValue = 0.5f;
+			if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
+				snapValue = 45.0f;
+
+			float snapValues[3] = { snapValue, snapValue, snapValue };
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::MODE::LOCAL, glm::value_ptr(transform), nullptr, snap ? snapValues : nullptr);
 
 			if (ImGuizmo::IsUsing())
 			{
@@ -238,6 +268,30 @@ namespace Frostic {
 		bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
 		switch (e.GetKeyCode())
 		{
+			case Key::N:
+			{
+				if (control)
+					NewScene();
+				break;
+			}
+
+			case Key::O:
+			{
+				if (control)
+					OpenScene();
+				break;
+			}
+
+			case Key::S:
+			{
+				if (control && shift)
+					SaveSceneAs();
+				else if (control)
+					SaveScene();
+				break;
+			}
+			
+
 			// Gizmos
 			case Key::Q:
 				m_GizmoType = -1;
@@ -254,6 +308,58 @@ namespace Frostic {
 		}
 
 		return false;
+	}
+
+	void EditorLayer::NewScene()
+	{
+		m_ActiveScene = CreateRef<Scene>();
+		m_EditorCamera = EditorCamera{ 30.0f, 1.778f, 0.1f, 1000.0f };
+		m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
+		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		m_HierarchyPanel.SetContext(m_ActiveScene);
+		saveFilepath = std::string();
+	}
+
+	void EditorLayer::OpenScene()
+	{
+		std::string filepath = FileDialogs::OpenFile("Frostic Scene (*.frostic)\0*.frostic\0");
+		if (!filepath.empty())
+		{
+			m_ActiveScene = CreateRef<Scene>();
+			m_EditorCamera = EditorCamera{ 30.0f, 1.778f, 0.1f, 1000.0f };
+			m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
+			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_HierarchyPanel.SetContext(m_ActiveScene);
+
+			SceneSerializer serializer(m_ActiveScene);
+			serializer.Deserialize(filepath, m_EditorCamera);
+
+			saveFilepath = filepath;
+		}
+	}
+
+	void EditorLayer::SaveScene()
+	{
+		if (!saveFilepath.empty())
+		{
+			SceneSerializer serializer(m_ActiveScene);
+			serializer.Serialize(saveFilepath, m_EditorCamera);
+		}
+		else
+		{
+			SaveSceneAs();
+		}
+	}
+
+	void EditorLayer::SaveSceneAs()
+	{
+		std::string filepath = FileDialogs::SaveFile("Frostic Scene (*.frostic)\0*.frostic\0");
+		if (!filepath.empty())
+		{
+			SceneSerializer serializer(m_ActiveScene);
+			serializer.Serialize(filepath, m_EditorCamera);
+			saveFilepath = filepath;
+		}
 	}
 
 }

@@ -79,6 +79,21 @@ namespace Frostic {
 
 		glm::mat4 GetViewProjection() const { return m_Projection * m_ViewMatrix; }
 		glm::mat4 GetViewMatrix() const { return m_ViewMatrix; }
+
+		glm::vec3 GetTranslation() const { return m_Translation; }
+		void SetTranslation(const glm::vec3& translation) { m_Translation = translation; }
+
+		glm::vec3 GetRotation() const { return m_Rotation; }
+		void SetRotation(const glm::vec3& rotation) { m_Rotation = rotation; }
+
+		float GetFOV() const { return m_FOV; }
+		void SetFOV(float fov) { m_FOV = fov; }
+
+		float GetNearClip() const { return m_NearClip; }
+		void SetNearClip(float nearClip) { m_NearClip = nearClip; }
+
+		float GetFarClip() const { return m_FarClip; }
+		void SetFarClip(float farClip) { m_FarClip = farClip; }
 	private:
 		void RefreshProjection();
 		void RefreshView();

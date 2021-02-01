@@ -13,3 +13,6 @@
 [submodule "Frostic/vendor/ImGuizmo"]
 	path = Frostic/vendor/ImGuizmo
 	url = https://github.com/avramtraian/ImGuizmo
+[submodule "Frostic/vendor/yaml-cpp"]
+	path = Frostic/vendor/yaml-cpp
+	url = https://github.com/avramtraian/yaml-cpp
