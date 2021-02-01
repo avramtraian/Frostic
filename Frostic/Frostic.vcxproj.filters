@@ -19,6 +19,9 @@
     <Filter Include="src\Frostic\ImGui">
       <UniqueIdentifier>{803AB0EF-EC50-AE85-35C8-39A7A11D7F0D}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Frostic\Math">
+      <UniqueIdentifier>{6FD7F7D0-5BD0-1623-8402-FCA7705AF62E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Frostic\Renderer">
       <UniqueIdentifier>{3C110872-28A0-913B-D1BE-A536BD2CA2E1}</UniqueIdentifier>
     </Filter>
@@ -122,6 +125,9 @@
     </ClInclude>
     <ClInclude Include="src\Frostic\ImGui\ImGuiLayer.h">
       <Filter>src\Frostic\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Math\Math.h">
+      <Filter>src\Frostic\Math</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Renderer\Buffer.h">
       <Filter>src\Frostic\Renderer</Filter>
@@ -1458,7 +1464,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Frostic\Math\Math.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Frostic\Core\Application.cpp">
@@ -1478,6 +1483,9 @@
     </ClCompile>
     <ClCompile Include="src\Frostic\ImGui\ImGuiLayer.cpp">
       <Filter>src\Frostic\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frostic\Math\Math.cpp">
+      <Filter>src\Frostic\Math</Filter>
     </ClCompile>
     <ClCompile Include="src\Frostic\Renderer\Buffer.cpp">
       <Filter>src\Frostic\Renderer</Filter>
@@ -1563,6 +1571,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Frostic\Math\Math.cpp" />
   </ItemGroup>
 </Project>
