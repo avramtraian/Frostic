@@ -19,6 +19,8 @@
 #include "Frostic/Scene/ScriptableEntity.h"
 #include "Frostic/Scene/Components.h"
 
+#include "Frostic/Renderer/EditorCamera.h"
+
 // ---Renderer--------------------
 #include "Frostic/Renderer/Renderer.h"
 #include "Frostic/Renderer/Renderer2D.h"

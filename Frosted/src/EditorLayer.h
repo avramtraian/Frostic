@@ -23,10 +23,11 @@ namespace Frostic {
 
 		Ref<Framebuffer> m_Framebuffer;
 
+		EditorCamera m_EditorCamera;
+
 		Ref<Scene> m_ActiveScene;
 		Entity m_SquareEntity;
-		Entity m_CameraEntity, m_SecondCamera;
-		bool m_PrimaryCamera = false;
+		Entity m_CameraEntity;
 
 		Ref<Texture2D> m_CheckerboardTexture;
 

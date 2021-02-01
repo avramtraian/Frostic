@@ -27,45 +27,12 @@ namespace Frostic {
 		m_SquareEntity = m_ActiveScene->CreateEntity("Green Square");
 		m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 
-		m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
+		m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
 		m_CameraEntity.AddComponent<CameraComponent>();
 
-		m_SecondCamera = m_ActiveScene->CreateEntity("Camera B");
-		m_SecondCamera.AddComponent<CameraComponent>();
-		m_SecondCamera.GetComponent<CameraComponent>().Primary = false;
-
-		class CameraController : public ScriptableEntity
-		{
-		public:
-			void OnCreate()
-			{
-				
-			}
-
-			void OnDestroy()
-			{
-
-			}
-
-			void OnUpdate(Timestep ts)
-			{
-				auto& tc = GetComponent<TransformComponent>();
-				float speed = 5.0f;
-
-				if (Input::IsKeyPressed(FR_KEY_W))
-					tc.Translation.y += speed * ts;
-				if (Input::IsKeyPressed(FR_KEY_S))
-					tc.Translation.y -= speed * ts;
-				if (Input::IsKeyPressed(FR_KEY_D))
-					tc.Translation.x += speed * ts;
-				if (Input::IsKeyPressed(FR_KEY_A))
-					tc.Translation.x -= speed * ts;
-			}
-		};
-
-		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-
 		m_HierarchyPanel.SetContext(m_ActiveScene);
+
+		m_EditorCamera = EditorCamera{ 30.0f, 1.778f, 0.1f, 1000.0f };
 	}
 
 	void EditorLayer::OnDetach()
@@ -82,7 +49,7 @@ namespace Frostic {
 		{
 			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 			m_CameraController.OnResize(m_ViewportSize.x / m_ViewportSize.y);
-
+			m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		}
 
@@ -92,6 +59,8 @@ namespace Frostic {
 		if(m_ViewportFocused)
 			m_CameraController.OnUpdate(ts);
 
+		m_EditorCamera.OnUpdate(ts);
+
 		// Rendering
 		Renderer2D::ResetStats();
 		m_Framebuffer->Bind();
@@ -99,7 +68,7 @@ namespace Frostic {
 		RenderCommand::Clear();
 		
 		// Update scene
-		m_ActiveScene->OnUpdate(ts);
+		m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
 
 		m_Framebuffer->Unbind();
 	}
@@ -220,6 +189,7 @@ namespace Frostic {
 	void EditorLayer::OnEvent(Event& e)
 	{
 		m_CameraController.OnEvent(e);
+		m_EditorCamera.OnEvent(e);
 	}
 
 }

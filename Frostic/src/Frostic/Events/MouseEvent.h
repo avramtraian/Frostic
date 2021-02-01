@@ -2,6 +2,8 @@
 
 #include "Event.h"
 
+#include <sstream>
+
 namespace Frostic {
 
 	class FROSTIC_API MouseMovedEvent : public Event
