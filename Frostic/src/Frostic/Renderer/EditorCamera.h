@@ -7,8 +7,7 @@
 
 #include <glm/glm.hpp>
 
-namespace Frostic {
-
+#if 0
 	class EditorCamera : public Camera
 	{
 	public:
@@ -61,7 +60,42 @@ namespace Frostic {
 		float m_Distance = 10.0f;
 		float m_Pitch = 0.0f, m_Yaw = 0.0f;
 
-		float m_ViewportWidth = 1600.0f, m_ViewportHeight = 900.0f;
-	};
+		float m_ViewportWidth = 1600.0f, m_ViewportHeight = 900.0f;};
+#endif
 
+namespace Frostic {
+
+	class EditorCamera : public Camera
+	{
+	public:
+		EditorCamera() = default;
+		EditorCamera(float fov, float aspectRatio, float nearClip, float farClip);
+
+		void OnUpdate(Timestep ts);
+		void OnEvent(Event& e);
+		bool OnMouseScrolled(MouseScrolledEvent& e);
+
+		void SetViewportSize(float width, float height) { m_ViewportWidth = width; m_ViewportHeight = height; RefreshProjection(); }
+
+		glm::mat4 GetViewProjection() const { return m_Projection * m_ViewMatrix; }
+		glm::mat4 GetViewMatrix() const { return m_ViewMatrix; }
+	private:
+		void RefreshProjection();
+		void RefreshView();
+
+		glm::vec3 GetForwardDirection() const;
+		glm::vec3 GetRightDirection() const;
+	private:
+		float m_ViewportWidth, m_ViewportHeight;
+
+		glm::mat4 m_ViewMatrix;
+		glm::vec3 m_Translation{ 0.0f, 0.0f, 0.0f };
+		glm::vec3 m_Rotation{ 0.0f, 0.0f, 0.0f }; // In degrees
+
+		float m_FOV;
+		float m_AspectRatio;
+		float m_NearClip, m_FarClip;
+
+		glm::vec2 InitialMousePosition = { 0.0f, 0.0f };
+	};
 }

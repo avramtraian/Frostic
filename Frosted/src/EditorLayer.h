@@ -16,7 +16,9 @@ namespace Frostic {
 
 		virtual void OnUpdate(Timestep ts) override;
 		virtual void OnImGuiRender() override;
+
 		virtual void OnEvent(Event& e) override;
+		bool OnKeyPressed(KeyPressedEvent& e);
 	private:
 		uint32_t m_FPS = 0;
 		OrthographicCameraController m_CameraController;
@@ -34,7 +36,7 @@ namespace Frostic {
 		bool m_ViewportFocused = false, m_ViewportHovered = false;
 		glm::vec2 m_ViewportSize = {0.0f, 0.0f};
 
-		glm::vec4 m_Color = { 0.2f, 0.3f, 0.8f, 1.0f };
+		int m_GizmoType = -1;
 
 		// Panels
 		SceneHierarchyPanel m_HierarchyPanel;

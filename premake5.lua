@@ -19,6 +19,7 @@ IncludeDir["ImGui"] = "Frostic/vendor/Imgui"
 IncludeDir["glm"] = "Frostic/vendor/glm"
 IncludeDir["stb_image"] = "Frostic/vendor/stb_image"
 IncludeDir["entt"] = "Frostic/vendor/entt/include"
+IncludeDir["ImGuizmo"] = "Frostic/vendor/ImGuizmo"
 
 group "Dependencies"
 	include "Frostic/vendor/GLFW"
@@ -47,6 +48,8 @@ project "Frostic"
 		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
+		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
+		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp",
 		"%{prj.name}/vendor/entt/**.hpp"
 	}
 
@@ -64,7 +67,8 @@ project "Frostic"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb_image}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links
@@ -101,6 +105,9 @@ project "Frostic"
 		defines "FR_DIST"
 		runtime "Release"
 		optimize "on"
+
+	filter "files:Frostic/vendor/ImGuizmo/**.cpp"
+		flags { "NoPCH" }
 
 project "Sandbox"
 	location "Sandbox"
@@ -176,6 +183,7 @@ project "Frosted"
 		"Frostic/vendor",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
+		"%{IncludeDir.ImGuizmo}",
 		"Frostic/src"
 	}
 	

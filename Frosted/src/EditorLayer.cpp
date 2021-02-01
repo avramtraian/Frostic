@@ -1,5 +1,6 @@
 #include "EditorLayer.h"
 #include "Imgui/imgui.h"
+#include "ImGuizmo/ImGuizmo.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -167,7 +168,7 @@ namespace Frostic {
 		ImGui::Begin("Viewport");
 		m_ViewportFocused = ImGui::IsWindowFocused();
 		m_ViewportHovered = ImGui::IsWindowHovered();
-		Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+		Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused && !m_ViewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		if ((m_ViewportSize.x != viewportPanelSize.x || m_ViewportSize.y != viewportPanelSize.y) && viewportPanelSize.x > 0 && viewportPanelSize.y > 0)
@@ -180,6 +181,39 @@ namespace Frostic {
 
 		uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
 		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+
+		// Gizmos
+		Entity selectedEntity = m_HierarchyPanel.GetSelectedEntity();
+		if (selectedEntity && m_GizmoType != -1)
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+			float windowWidth = (float)ImGui::GetWindowWidth();
+			float windowHeight = (float)ImGui::GetWindowHeight();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+			// Camera
+			glm::mat4 cameraView = m_EditorCamera.GetViewMatrix();
+			const glm::mat4& cameraProjection = m_EditorCamera.GetProjection();
+
+			// Entity transform
+			auto& tc = selectedEntity.GetComponent<TransformComponent>();
+			glm::mat4 transform = tc.GetTransform();
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::MODE::LOCAL, glm::value_ptr(transform));
+
+			if (ImGuizmo::IsUsing())
+			{
+				glm::vec3 translation, rotation, scale;
+				Math::DecomposeTransform(transform, translation, rotation, scale);
+				tc.Translation = translation;
+				glm::vec3 deltaRotation = rotation - tc.Rotation;
+				tc.Rotation += deltaRotation;
+				tc.Scale = scale;
+			}
+		}
+
 		ImGui::End();
 		ImGui::PopStyleVar();
 
@@ -188,8 +222,38 @@ namespace Frostic {
 
 	void EditorLayer::OnEvent(Event& e)
 	{
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<KeyPressedEvent>(FR_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+
 		m_CameraController.OnEvent(e);
 		m_EditorCamera.OnEvent(e);
+	}
+
+	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
+	{
+		if (e.GetRepeatCount() > 0)
+			return false;
+
+		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+		bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
+		switch (e.GetKeyCode())
+		{
+			// Gizmos
+			case Key::Q:
+				m_GizmoType = -1;
+				break;
+			case Key::W:
+				m_GizmoType = 0;
+				break;
+			case Key::E:
+				m_GizmoType = 1;
+				break;
+			case Key::R:
+				m_GizmoType = 2;
+				break;
+		}
+
+		return false;
 	}
 
 }

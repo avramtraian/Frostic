@@ -2,6 +2,7 @@
 #include "ImGuiLayer.h"
 
 #include <imgui.h>
+#include <ImGuizmo.h>
 
 //#define IMGUI_IMPL_API
 #include "examples/imgui_impl_glfw.h"
@@ -79,6 +80,8 @@ namespace Frostic {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+
+		ImGuizmo::BeginFrame();
 	}
 
 	void ImGuiLayer::End()

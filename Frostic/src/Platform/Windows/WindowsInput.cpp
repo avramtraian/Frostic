@@ -43,4 +43,16 @@ namespace Frostic {
 		return y;
 	}
 
+	void Input::SetHiddenCursor(bool lock)
+	{
+		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+		if (lock)
+		{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
+		else
+		{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+	}
 }

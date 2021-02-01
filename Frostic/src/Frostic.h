@@ -7,6 +7,7 @@
 #include "Frostic/Core/Log.h"
 
 #include "Frostic/Core/Timestep.h"
+#include "Frostic/Math/Math.h"
 
 #include "Frostic/Core/Input.h"
 #include "Frostic/Core/KeyCodes.h"
