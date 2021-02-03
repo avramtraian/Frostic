@@ -200,7 +200,11 @@ namespace Frostic {
 
 		YAML::Node data = YAML::Load(strStream.str());
 		if (!data["Scene"])
+		{
+			FR_CORE_ERROR("Unable to find keyword 'Scene'");
+			FR_CORE_ERROR("File may be corrupted!");
 			return false;
+		}
 
 		std::string sceneName = data["Scene"].as<std::string>();
 		FR_CORE_TRACE("Deserializing scene '{0}'", sceneName);

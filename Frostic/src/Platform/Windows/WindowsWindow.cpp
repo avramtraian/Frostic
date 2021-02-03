@@ -35,6 +35,18 @@ namespace Frostic {
 		Shutdown();
 	}
 
+	void WindowsWindow::SetProperties(WindowProps& props)
+	{
+		m_Data.Title = props.Title;
+		m_Data.Width = props.Width;
+		m_Data.Height = props.Height;
+
+		if (m_Window)
+		{
+			glfwSetWindowTitle(m_Window, m_Data.Title.c_str());
+		}
+	}
+
 	void WindowsWindow::Init(const WindowProps& props)
 	{
 		FR_PROFILE_FUNCTION();

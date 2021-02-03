@@ -19,6 +19,14 @@ namespace Frostic {
 		m_SelectionContext = {};
 	}
 
+	void SceneHierarchyPanel::SetSelectionContextFromID(const uint32_t id)
+	{
+		if (id != -1)
+			m_SelectionContext = { (entt::entity)id, m_Context.get() };
+		else
+			m_SelectionContext = {};
+	}
+
 	void SceneHierarchyPanel::OnImGuiRender()
 	{
 		ImGui::Begin("Scene Hierarchy");

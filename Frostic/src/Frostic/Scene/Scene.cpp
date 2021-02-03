@@ -76,7 +76,7 @@ namespace Frostic {
 			for (auto entity : group)
 			{
 				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-				Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+				Renderer2D::DrawQuad((uint32_t)entity, transform.GetTransform(), sprite.Color);
 			}
 
 			Renderer2D::EndScene();
@@ -91,7 +91,7 @@ namespace Frostic {
 		for (auto entity : group)
 		{
 			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-			Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+			Renderer2D::DrawQuad((uint32_t)entity, transform.GetTransform(), sprite.Color);
 		}
 
 		Renderer2D::EndScene();

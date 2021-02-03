@@ -20,25 +20,14 @@ namespace Frostic {
 		FR_PROFILE_FUNCTION();
 
 		FramebufferSpecification fbSpec;
+		fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		fbSpec.Width = 1600;
 		fbSpec.Height = 900;
 		m_Framebuffer = Framebuffer::Create(fbSpec);
 
 		m_ActiveScene = CreateRef<Scene>();
-
-		// m_SquareEntity = m_ActiveScene->CreateEntity("Green Square");
-		// m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
-		// 
-		// m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
-		// m_CameraEntity.AddComponent<CameraComponent>();
-
 		m_HierarchyPanel.SetContext(m_ActiveScene);
-
 		m_EditorCamera = EditorCamera{ 30.0f, 1.778f, 0.1f, 1000.0f };
-
-		SceneSerializer serializer(m_ActiveScene);
-		// serializer.Serialize("assets/scenes/Example.frostic");
-		// serializer.Deserialize("assets/scenes/Example.frostic");
 	}
 
 	void EditorLayer::OnDetach()
@@ -72,10 +61,11 @@ namespace Frostic {
 		m_Framebuffer->Bind();
 		RenderCommand::SetClearColor({ 0.075f, 0.075f, 0.075f, 1 });
 		RenderCommand::Clear();
+		m_Framebuffer->ClearBuffer(1);
 		
 		// Update scene
 		m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
-
+		
 		m_Framebuffer->Unbind();
 	}
 
@@ -188,22 +178,26 @@ namespace Frostic {
 		
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("Viewport");
+		auto viewportOffset = ImGui::GetCursorPos();
+
 		m_ViewportFocused = ImGui::IsWindowFocused();
 		m_ViewportHovered = ImGui::IsWindowHovered();
 		Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused && !m_ViewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		if ((m_ViewportSize.x != viewportPanelSize.x || m_ViewportSize.y != viewportPanelSize.y) && viewportPanelSize.x > 0 && viewportPanelSize.y > 0)
-		{
-			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-			// m_Framebuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-
-			m_CameraController.OnResize(viewportPanelSize.x / viewportPanelSize.y);
-		}
+		m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
 		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
+		auto windowSize = ImGui::GetWindowSize();
+		ImVec2 minBound = ImGui::GetWindowPos();
+		minBound.x += viewportOffset.x;
+		minBound.y += viewportOffset.y;
+
+		ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
+		m_ViewportBounds[0] = { minBound.x, minBound.y };
+		m_ViewportBounds[1] = { maxBound.x, maxBound.y };
 
 		// Gizmos
 		Entity selectedEntity = m_HierarchyPanel.GetSelectedEntity();
@@ -254,6 +248,7 @@ namespace Frostic {
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<KeyPressedEvent>(FR_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(FR_BIND_EVENT_FN(EditorLayer::OnMousePressed));
 
 		m_CameraController.OnEvent(e);
 		m_EditorCamera.OnEvent(e);
@@ -307,6 +302,29 @@ namespace Frostic {
 				break;
 		}
 
+		return false;
+	}
+
+	bool EditorLayer::OnMousePressed(MouseButtonPressedEvent& e)
+	{
+		if (e.GetMouseButton() == 0 && !ImGuizmo::IsOver())
+		{ 
+			auto [mx, my] = ImGui::GetMousePos();
+			mx -= m_ViewportBounds[0].x;
+			my -= m_ViewportBounds[0].y;
+			glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+			my = m_ViewportSize.y - my;
+			int mouseX = (int)mx;
+			int mouseY = (int)my;
+
+			if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)m_ViewportSize.x && mouseY < (int)m_ViewportSize.y)
+			{
+				m_Framebuffer->Bind();
+				int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+				m_HierarchyPanel.SetSelectionContextFromID((uint32_t)pixelData);
+				m_Framebuffer->Unbind();
+			}
+		}
 		return false;
 	}
 
