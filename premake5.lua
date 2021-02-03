@@ -1,6 +1,6 @@
 workspace "Frostic"
 	architecture "x64"
-	startproject "Sandbox"
+	startproject "Frosted"
 
 	configurations
 	{
@@ -18,11 +18,15 @@ IncludeDir["Glad"] = "Frostic/vendor/Glad/include"
 IncludeDir["ImGui"] = "Frostic/vendor/Imgui"
 IncludeDir["glm"] = "Frostic/vendor/glm"
 IncludeDir["stb_image"] = "Frostic/vendor/stb_image"
+IncludeDir["entt"] = "Frostic/vendor/entt/include"
+IncludeDir["ImGuizmo"] = "Frostic/vendor/ImGuizmo"
+IncludeDir["yaml_cpp"] = "Frostic/vendor/yaml-cpp/include"
 
 group "Dependencies"
 	include "Frostic/vendor/GLFW"
 	include "Frostic/vendor/Glad"
 	include "Frostic/vendor/Imgui"
+	include "Frostic/vendor/yaml-cpp"
 group ""
 
 project "Frostic"
@@ -45,7 +49,10 @@ project "Frostic"
 		"%{prj.name}/vendor/stb_image/**.h",
 		"%{prj.name}/vendor/stb_image/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl"
+		"%{prj.name}/vendor/glm/glm/**.inl",
+		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
+		"%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp",
+		"%{prj.name}/vendor/entt/**.hpp"
 	}
 
 	defines
@@ -61,7 +68,10 @@ project "Frostic"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}"
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.yaml_cpp}"
 	}
 
 	links
@@ -69,6 +79,7 @@ project "Frostic"
 		"GLFW",
 		"Glad",
 		"ImGui",
+		"yaml-cpp",
 		"opengl32.lib"
 	}
 
@@ -98,6 +109,9 @@ project "Frostic"
 		defines "FR_DIST"
 		runtime "Release"
 		optimize "on"
+
+	filter "files:Frostic/vendor/ImGuizmo/**.cpp"
+		flags { "NoPCH" }
 
 project "Sandbox"
 	location "Sandbox"
@@ -146,6 +160,60 @@ project "Sandbox"
 		runtime "Release"
 		optimize "on"
 
+	filter "configurations:Dist"
+		defines "FR_DIST"
+		runtime "Release"
+		optimize "on"
+
+project "Frosted"
+	location "Frosted"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+	
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+	
+	includedirs
+	{
+		"Frostic/vendor/spdlog/include",
+		"Frostic/vendor",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.ImGuizmo}",
+		"Frostic/src"
+	}
+	
+	links
+	{
+		"Frostic"
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+
+		defines
+		{
+			"FR_PLATFORM_WINDOWS"
+		}
+
+	filter "configurations:Debug"
+		defines "FR_DEBUG"
+		runtime "Debug"
+		symbols "on"
+	
+	filter "configurations:Release"
+		defines "FR_RELEASE"
+		runtime "Release"
+		optimize "on"
+	
 	filter "configurations:Dist"
 		defines "FR_DIST"
 		runtime "Release"

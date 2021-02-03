@@ -16,9 +16,9 @@ namespace Frostic {
 		FR_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
-	Window* Window::Create(const WindowProps& props)
+	Scope<Window> Window::Create(const WindowProps& props)
 	{
-		return new WindowsWindow(props);
+		return CreateScope<WindowsWindow>(props);
 	}
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
@@ -33,6 +33,18 @@ namespace Frostic {
 		FR_PROFILE_FUNCTION();
 
 		Shutdown();
+	}
+
+	void WindowsWindow::SetProperties(WindowProps& props)
+	{
+		m_Data.Title = props.Title;
+		m_Data.Width = props.Width;
+		m_Data.Height = props.Height;
+
+		if (m_Window)
+		{
+			glfwSetWindowTitle(m_Window, m_Data.Title.c_str());
+		}
 	}
 
 	void WindowsWindow::Init(const WindowProps& props)

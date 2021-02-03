@@ -17,9 +17,7 @@ private:
 	uint32_t m_FPS = 0;
 	Frostic::OrthographicCameraController m_CameraController;
 
-	glm::vec4 m_Color = { 0.2f, 0.3f, 0.8f, 1.0f };
 	Frostic::Ref<Frostic::Texture2D> m_CheckerboardTexture;
-	Frostic::Ref<Frostic::Texture2D> m_ChernoTexture;
-	Frostic::Ref<Frostic::Texture2D> m_SpriteSheet;
-	Frostic::Ref<Frostic::SubTexture2D> m_TextureStairs, m_TextureBarrel;
+
+	glm::vec4 m_Color = { 0.2f, 0.3f, 0.8f, 1.0f };
 };

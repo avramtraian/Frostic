@@ -14,13 +14,6 @@ void Sandbox2D::OnAttach()
 	FR_PROFILE_FUNCTION();
 
 	m_CheckerboardTexture = Frostic::Texture2D::Create("assets/textures/Checkerboard.png");
-	m_ChernoTexture = Frostic::Texture2D::Create("assets/textures/ChernoLogo.png");
-	m_SpriteSheet = Frostic::Texture2D::Create("assets/game/textures/RPGpack_sheet_2X.png");
-
-	m_TextureBarrel = Frostic::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 8, 2 }, { 128, 128 });
-	m_TextureStairs = Frostic::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 7, 6 }, { 128, 128 });
-	
-	m_CameraController.SetZoomLevel(5.0f);
 }
 
 void Sandbox2D::OnDetach()
@@ -48,8 +41,7 @@ void Sandbox2D::OnUpdate(Frostic::Timestep ts)
 	{
 		FR_PROFILE_SCOPE("Renderer Draw");
 		Frostic::Renderer2D::BeginScene(m_CameraController.GetCamera());
-		Frostic::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 2.0f, 2.0f }, m_TextureStairs);
-		Frostic::Renderer2D::DrawQuad({ 3.0f, 0.0f }, { 2.0f, 2.0f }, m_TextureBarrel);
+		Frostic::Renderer2D::DrawQuad({ 1.0f, -1.0f }, { 1.0f, 1.0f }, m_CheckerboardTexture);
 		Frostic::Renderer2D::EndScene();
 	}
 }
@@ -70,6 +62,7 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::Text("Textures: %d", stats.Textures - 1);
 
 	ImGui::ColorEdit4("Square Color", glm::value_ptr(m_Color));
+
 	ImGui::End();
 }
 

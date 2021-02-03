@@ -27,6 +27,8 @@ namespace Frostic {
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
+
+		void SetProperties(WindowProps& props) override;
 	private:
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();

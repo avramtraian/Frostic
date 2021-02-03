@@ -67,13 +67,43 @@ namespace Frostic {
 		const auto& layout = vertexBuffer->GetLayout();
 		for (const auto& element : layout)
 		{
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index, element.GetComponentCount(),
-				ShaderDataTypeToOpenGLBaseType(element.Type),
-				element.Normalized ? GL_TRUE : GL_FALSE,
-				vertexBuffer->GetLayout().GetStride(),
-				(const void*)element.Offset);
-			index++;
+			switch (element.Type)
+			{
+			case Frostic::ShaderDataType::Float:
+			case Frostic::ShaderDataType::Float2:
+			case Frostic::ShaderDataType::Float3:
+			case Frostic::ShaderDataType::Float4:
+			case Frostic::ShaderDataType::Bool:
+				glEnableVertexAttribArray(index);
+				glVertexAttribPointer(index, element.GetComponentCount(),
+					ShaderDataTypeToOpenGLBaseType(element.Type),
+					element.Normalized ? GL_TRUE : GL_FALSE,
+					vertexBuffer->GetLayout().GetStride(),
+					(const void*)element.Offset);
+				index++;
+				break;
+			case Frostic::ShaderDataType::Mat3:
+			case Frostic::ShaderDataType::Mat4:
+				glEnableVertexAttribArray(index);
+				glVertexAttribPointer(index, element.GetComponentCount(),
+					ShaderDataTypeToOpenGLBaseType(element.Type),
+					element.Normalized ? GL_TRUE : GL_FALSE,
+					vertexBuffer->GetLayout().GetStride(),
+					(const void*)element.Offset);
+				index++;
+				break;
+			case Frostic::ShaderDataType::Int:
+			case Frostic::ShaderDataType::Int2:
+			case Frostic::ShaderDataType::Int4:
+			case Frostic::ShaderDataType::Int3:
+				glEnableVertexAttribArray(index);
+				glVertexAttribIPointer(index, element.GetComponentCount(),
+					ShaderDataTypeToOpenGLBaseType(element.Type),
+					vertexBuffer->GetLayout().GetStride(),
+					(const void*)element.Offset);
+				index++;
+				break;
+			}
 		}
 
 		m_VertexBuffers.push_back(vertexBuffer);
