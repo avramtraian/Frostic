@@ -61,7 +61,7 @@ namespace Frostic {
 		m_Framebuffer->Bind();
 		RenderCommand::SetClearColor({ 0.075f, 0.075f, 0.075f, 1 });
 		RenderCommand::Clear();
-		m_Framebuffer->ClearBuffer(1);
+		m_Framebuffer->ClearAttachment(1, -1);
 		
 		// Update scene
 		m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
@@ -321,7 +321,8 @@ namespace Frostic {
 			{
 				m_Framebuffer->Bind();
 				int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-				m_HierarchyPanel.SetSelectionContextFromID((uint32_t)pixelData);
+				m_HierarchyPanel.SetSelectionContextFromID(pixelData);
+				FR_CORE_WARN("{0}", pixelData);
 				m_Framebuffer->Unbind();
 			}
 		}

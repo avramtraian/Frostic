@@ -76,6 +76,18 @@ namespace Frostic {
 			return false;
 		}
 
+		static GLenum FrosticFBTextureFormatToGL(FramebufferTextureFormat format)
+		{
+			switch (format)
+			{
+				case FramebufferTextureFormat::RGBA8:       return GL_RGBA;
+				case FramebufferTextureFormat::RED_INTEGER: return GL_RED_INTEGER;
+			}
+
+			FR_CORE_ASSERT(false, "");
+			return 0;
+		}
+
 	}
 
 	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec)
@@ -121,11 +133,13 @@ namespace Frostic {
 		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
 		return pixelData;
 	}
-
-	void OpenGLFramebuffer::ClearBuffer(uint32_t attachmentIndex)
+	
+	void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int clearValue)
 	{
-		int clearValue = -1;
-		glClearTexImage(m_ColorAttachments[attachmentIndex], 0, GL_RED_INTEGER, GL_INT, &clearValue);
+		FR_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "");
+
+		auto& specs = m_ColorAttachmentSpecifications[attachmentIndex];
+		glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::FrosticFBTextureFormatToGL(specs.TextureFormat), GL_INT, &clearValue);
 	}
 
 	void OpenGLFramebuffer::Invalidate()

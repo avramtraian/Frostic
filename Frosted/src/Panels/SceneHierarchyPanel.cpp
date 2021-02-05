@@ -19,7 +19,7 @@ namespace Frostic {
 		m_SelectionContext = {};
 	}
 
-	void SceneHierarchyPanel::SetSelectionContextFromID(const uint32_t id)
+	void SceneHierarchyPanel::SetSelectionContextFromID(int id)
 	{
 		if (id != -1)
 			m_SelectionContext = { (entt::entity)id, m_Context.get() };

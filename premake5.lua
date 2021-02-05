@@ -13,14 +13,14 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["GLFW"] = "Frostic/vendor/GLFW/include"
-IncludeDir["Glad"] = "Frostic/vendor/Glad/include"
-IncludeDir["ImGui"] = "Frostic/vendor/Imgui"
-IncludeDir["glm"] = "Frostic/vendor/glm"
-IncludeDir["stb_image"] = "Frostic/vendor/stb_image"
-IncludeDir["entt"] = "Frostic/vendor/entt/include"
-IncludeDir["ImGuizmo"] = "Frostic/vendor/ImGuizmo"
-IncludeDir["yaml_cpp"] = "Frostic/vendor/yaml-cpp/include"
+IncludeDir["GLFW"] = "%{wks.location}/Frostic/vendor/GLFW/include"
+IncludeDir["Glad"] = "%{wks.location}/Frostic/vendor/Glad/include"
+IncludeDir["ImGui"] = "%{wks.location}/Frostic/vendor/Imgui"
+IncludeDir["glm"] = "%{wks.location}/Frostic/vendor/glm"
+IncludeDir["stb_image"] = "%{wks.location}/Frostic/vendor/stb_image"
+IncludeDir["entt"] = "%{wks.location}/Frostic/vendor/entt/include"
+IncludeDir["ImGuizmo"] = "%{wks.location}/Frostic/vendor/ImGuizmo"
+IncludeDir["yaml_cpp"] = "%{wks.location}/Frostic/vendor/yaml-cpp/include"
 
 group "Dependencies"
 	include "Frostic/vendor/GLFW"
@@ -113,58 +113,6 @@ project "Frostic"
 	filter "files:Frostic/vendor/ImGuizmo/**.cpp"
 		flags { "NoPCH" }
 
-project "Sandbox"
-	location "Sandbox"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "on"
-
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
-	}
-
-	includedirs
-	{
-		"Frostic/vendor/spdlog/include",
-		"Frostic/vendor",
-		"%{IncludeDir.glm}",
-		"Frostic/src"
-	}
-
-	links
-	{
-		"Frostic"
-	}
-
-	filter "system:windows"
-		systemversion "latest"
-
-		defines
-		{
-			"FR_PLATFORM_WINDOWS"
-		}
-
-	filter "configurations:Debug"
-		defines "FR_DEBUG"
-		runtime "Debug"
-		symbols "on"
-
-	filter "configurations:Release"
-		defines "FR_RELEASE"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:Dist"
-		defines "FR_DIST"
-		runtime "Release"
-		optimize "on"
-
 project "Frosted"
 	location "Frosted"
 	kind "ConsoleApp"
@@ -214,6 +162,58 @@ project "Frosted"
 		runtime "Release"
 		optimize "on"
 	
+	filter "configurations:Dist"
+		defines "FR_DIST"
+		runtime "Release"
+		optimize "on"
+
+project "Sandbox"
+	location "Sandbox"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+
+	includedirs
+	{
+		"Frostic/vendor/spdlog/include",
+		"Frostic/vendor",
+		"%{IncludeDir.glm}",
+		"Frostic/src"
+	}
+
+	links
+	{
+		"Frostic"
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+
+		defines
+		{
+			"FR_PLATFORM_WINDOWS"
+		}
+
+	filter "configurations:Debug"
+		defines "FR_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "FR_RELEASE"
+		runtime "Release"
+		optimize "on"
+
 	filter "configurations:Dist"
 		defines "FR_DIST"
 		runtime "Release"
