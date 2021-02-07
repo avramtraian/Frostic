@@ -2,43 +2,43 @@ Scene: Untitled
 Entities:
   - Entity: 75834759345
     TagComponent:
-      Tag: Left
+      Tag: Up
     TransformComponent:
-      Translation: [-0.5, 0, -0.5]
-      Rotation: [0, 1.57079637, 0]
-      Scale: [1, 0.999911547, 0.999911785]
+      Active: true
+      Translation: [0, -0.5, -0.5]
+      Rotation: [-1.57079637, 0, 0]
+      Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Color: [0.130798429, 0.799227834, 0.0555447862, 1]
+      Active: true
+      Color: [0.398809433, 1, 0, 1]
+      TexturePath: assets/textures/ChernoLogo.png
   - Entity: 75834759345
     TagComponent:
       Tag: Right
     TransformComponent:
+      Active: true
+      Translation: [-0.5, 0, -0.5]
+      Rotation: [1.97849295e-05, -1.57079637, -1.93081796e-05]
+      Scale: [0.999999881, 1, 0.999999881]
+    SpriteRendererComponent:
+      Active: true
+      Color: [0.209492892, 0.544401526, 0.0420387313, 1]
+      TexturePath: assets/textures/ChernoLogo.pngaad
+  - Entity: 75834759345
+    TagComponent:
+      Tag: Left
+    TransformComponent:
+      Active: true
       Translation: [0, 0, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.999948978, 1, 0.999948859]
+      Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Color: [0.237327009, 0.509652495, 0.0177099295, 1]
-  - Entity: 75834759345
-    TagComponent:
-      Tag: Up
-    TransformComponent:
-      Translation: [0, -0.5, -0.5]
-      Rotation: [-1.57079637, 0, 0]
-      Scale: [0.99998337, 0.999999404, 0.999983311]
-    SpriteRendererComponent:
-      Color: [0.517856956, 1, 0, 1]
-  - Entity: 75834759345
-    TagComponent:
-      Tag: Bottom
-    TransformComponent:
-      Translation: [0, 0.5, -0.5]
-      Rotation: [1.57079637, 0, 0]
-      Scale: [1, 0.999990225, 0.999990225]
-    SpriteRendererComponent:
-      Color: [0.050009191, 0.262548268, 0, 1]
+      Active: true
+      Color: [0.162492573, 0.3204633, 0.0222715791, 1]
+      TexturePath: ""
 EditorCamera:
-  Translation: [-0.916478574, -0.893458366, 0.481486291]
-  Rotation: [26.7574158, -41.3159714, 0]
+  Translation: [-1.43452847, -1.15432012, 0.248919368]
+  Rotation: [32.8776588, -411.841675, 0]
   PerspectiveFOV: 30
   PerspectiveNearClip: 0.100000001
   PerspectiveFarClip: 1000

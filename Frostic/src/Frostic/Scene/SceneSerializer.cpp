@@ -5,6 +5,8 @@
 #include "SceneCamera.h"
 #include "Components.h"
 
+#include "Frostic/Assets/AssetLibrary.h"
+
 #include <yaml-cpp/yaml.h>
 
 namespace YAML {
@@ -104,6 +106,7 @@ namespace Frostic {
 			out << YAML::BeginMap; // TransformComponent
 
 			auto& tc = entity.GetComponent<TransformComponent>();
+			out << YAML::Key << "Active" << YAML::Value << tc.Active;
 			out << YAML::Key << "Translation" << YAML::Value << tc.Translation;
 			out << YAML::Key << "Rotation" << YAML::Value << tc.Rotation;
 			out << YAML::Key << "Scale" << YAML::Value << tc.Scale;
@@ -129,6 +132,7 @@ namespace Frostic {
 			out << YAML::Key << "OrthographicFar" << YAML::Value << (int)camera.GetOrthographicFarClip();
 			out << YAML::EndMap; // Camera
 
+			out << YAML::Key << "Active" << YAML::Value << cc.Active;
 			out << YAML::Key << "Primary" << YAML::Value << cc.Primary;
 			out << YAML::Key << "FixedAspectRatio" << YAML::Value << cc.FixedAspectRatio;
 
@@ -141,7 +145,9 @@ namespace Frostic {
 			out << YAML::BeginMap; // SpriteRendererComponent
 
 			auto& spriteRenderer = entity.GetComponent<SpriteRendererComponent>();
+			out << YAML::Key << "Active" << YAML::Value << spriteRenderer.Active;
 			out << YAML::Key << "Color" << YAML::Value << spriteRenderer.Color;
+			out << YAML::Key << "TexturePath" << YAML::Value << spriteRenderer.TexturePath;
 
 			out << YAML::EndMap; // SpriteRendererComponent
 		}
@@ -229,6 +235,7 @@ namespace Frostic {
 				if (transformComponent)
 				{
 					auto& tc = deserializedEntity.GetComponent<TransformComponent>();
+					tc.Active = transformComponent["Active"].as<bool>();
 					tc.Translation = transformComponent["Translation"].as<glm::vec3>();
 					tc.Rotation = transformComponent["Rotation"].as<glm::vec3>();
 					tc.Scale = transformComponent["Scale"].as<glm::vec3>();
@@ -250,6 +257,7 @@ namespace Frostic {
 					cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
 					cc.Camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
 
+					cc.Active = cameraComponent["Active"].as<bool>();
 					cc.Primary = cameraComponent["Primary"].as<bool>();
 					cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
 				}
@@ -258,7 +266,10 @@ namespace Frostic {
 				if (spriteComponent)
 				{
 					auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
+					src.Active = spriteComponent["Active"].as<bool>();
 					src.Color = spriteComponent["Color"].as<glm::vec4>();
+					src.TexturePath = spriteComponent["TexturePath"].as<std::string>();
+					src.Texture = AssetLibrary::GetOrLoad<TextureAsset>(src.TexturePath)->GetTexture();
 				}
 			}
 		}

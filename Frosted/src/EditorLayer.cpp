@@ -28,6 +28,11 @@ namespace Frostic {
 		m_ActiveScene = CreateRef<Scene>();
 		m_HierarchyPanel.SetContext(m_ActiveScene);
 		m_EditorCamera = EditorCamera{ 30.0f, 1.778f, 0.1f, 1000.0f };
+		
+		m_HierarchyPanel.SetContext(m_ActiveScene);
+
+		SceneSerializer serializer(m_ActiveScene);
+		serializer.Deserialize("assets/scenes/GreenCube.frostic", m_EditorCamera);
 	}
 
 	void EditorLayer::OnDetach()

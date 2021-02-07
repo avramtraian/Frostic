@@ -5,6 +5,8 @@
 #include "Frostic/Scene/Scene.h"
 #include "Frostic/Scene/Entity.h"
 
+#include "Frostic/Assets/AssetLibrary.h"
+
 namespace Frostic {
 
 	class SceneHierarchyPanel

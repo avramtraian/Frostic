@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Frostic/Scene/Components.h"
+#include "Frostic/Assets/AssetLibrary.h"
 
 namespace Frostic {
 	
@@ -59,6 +60,9 @@ namespace Frostic {
 		}
 
 		ImGui::End();
+
+		bool show = true;
+		ImGui::ShowDemoWindow(&show);
 	}
 
 	void SceneHierarchyPanel::DrawEntityNode(Entity entity)
@@ -179,6 +183,13 @@ namespace Frostic {
 			bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags, name.c_str());
 			ImGui::PopStyleVar();
 
+			ImGui::SameLine(contentRegionAvailable.x - lineHeight * 1.5f);
+			bool active = entity.GetComponent<T>().Active;
+			if (ImGui::Checkbox("##Active", &active))
+			{
+				entity.GetComponent<T>().Active = active;
+			}
+			
 			ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
 			if (ImGui::Button("+", ImVec2{ lineHeight, lineHeight }))
 			{
@@ -317,6 +328,24 @@ namespace Frostic {
 		DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
 		{
 			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+			char buffer[256];
+			memset(buffer, 0, sizeof(buffer));
+			strcpy_s(buffer, sizeof(buffer), component.TexturePath.c_str());
+
+			ImGui::Columns(2);
+			
+			ImGui::SetColumnWidth(0, 100.0f);
+			ImGui::SetColumnWidth(1, ImGui::GetWindowSize().x - 100.0f);
+			ImGui::Text("Texture Path");
+			ImGui::NextColumn();
+			ImGui::PushItemWidth(ImGui::CalcItemWidth());
+			if (ImGui::InputText("##TexturePath", buffer, sizeof(buffer)))
+			{
+				component.TexturePath = std::string(buffer);
+				component.Texture = AssetLibrary::GetOrLoad<TextureAsset>(std::string(buffer))->GetTexture();
+			}
+			ImGui::PopItemWidth();
+			ImGui::Columns(1);
 		});
 
 	}

@@ -141,6 +141,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Frostic.h" />
+    <ClInclude Include="src\Frostic\Assets\AssetCore.h" />
+    <ClInclude Include="src\Frostic\Assets\AssetLibrary.h" />
+    <ClInclude Include="src\Frostic\Assets\TextureAsset.h" />
     <ClInclude Include="src\Frostic\Core\Application.h" />
     <ClInclude Include="src\Frostic\Core\Core.h" />
     <ClInclude Include="src\Frostic\Core\EntryPoint.h" />
@@ -608,6 +611,8 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Frostic\Assets\AssetLibrary.cpp" />
+    <ClCompile Include="src\Frostic\Assets\TextureAsset.cpp" />
     <ClCompile Include="src\Frostic\Core\Application.cpp" />
     <ClCompile Include="src\Frostic\Core\Layer.cpp" />
     <ClCompile Include="src\Frostic\Core\LayerStack.cpp" />

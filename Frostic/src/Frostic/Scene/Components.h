@@ -7,12 +7,14 @@
 
 #include "SceneCamera.h"
 #include "ScriptableEntity.h"
+#include "Frostic/Renderer/Texture.h"
 #include "Frostic/Core/Timestep.h"
 
 namespace Frostic {
 	
 	struct TagComponent
 	{
+		bool Active = true;
 		std::string Tag;
 
 		TagComponent() = default;
@@ -23,6 +25,7 @@ namespace Frostic {
 
 	struct TransformComponent
 	{
+		bool Active = true;
 		glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
@@ -42,7 +45,10 @@ namespace Frostic {
 
 	struct SpriteRendererComponent
 	{
+		bool Active = true;
 		glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
+		std::string TexturePath;
+		Ref<Texture2D> Texture;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent& other) = default;
@@ -52,6 +58,7 @@ namespace Frostic {
 
 	struct CameraComponent
 	{
+		bool Active = true;
 		Frostic::SceneCamera Camera;
 		bool Primary = true; // TODO: Move to Scene
 		bool FixedAspectRatio = false;
@@ -62,6 +69,7 @@ namespace Frostic {
 
 	struct NativeScriptComponent
 	{
+		bool Active = true;
 		ScriptableEntity* Instance = nullptr;
 
 		ScriptableEntity*(*InstantiateScript)();

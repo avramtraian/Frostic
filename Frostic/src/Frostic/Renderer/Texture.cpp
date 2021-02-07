@@ -18,7 +18,7 @@ namespace Frostic {
 		return nullptr;
 	}
 
-	Ref<Frostic::Texture2D> Texture2D::Create(const std::string& path)
+	Ref<Texture2D> Texture2D::Create(const std::string& path)
 	{
 		switch (Renderer::GetAPI())
 		{
