@@ -11,33 +11,42 @@ namespace Frostic {
 	class Renderer2D
 	{
 	public:
+		struct SpriteSpecifications
+		{
+			SpriteSpecifications() = default;
+
+			uint32_t EntityID = -1;
+			glm::mat4 Transform = glm::mat4(1.0f);
+			Ref<Texture2D> Texture = nullptr;
+			Ref<SubTexture2D> SubTexture = nullptr;
+			float TilingFactor = 1.0f;
+			glm::vec4 Color = glm::vec4(1.0f);
+
+			void Reset()
+			{
+				EntityID = -1;
+				Transform = glm::mat4(1.0f);
+				Texture = nullptr;
+				SubTexture = nullptr;
+				TilingFactor = 1.0f;
+				Color = glm::vec4(1.0f);
+			}
+		};
+	public:
 		static void Init();
 		static void Shutdown();
 
 		static void BeginScene(const OrthographicCamera& camera);
 		static void BeginScene(const EditorCamera& camera);
-		static void BeginScene(const Camera& camera, const glm::mat4& transform); // TODO: Remove!
 		static void EndScene();
 		static void Flush();
 
 		// Primitives
-		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
-		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
-		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
-		
 		static void DrawQuad(uint32_t entityId, const glm::mat4& transform, const glm::vec4& color);
 		static void DrawQuad(uint32_t entityId, const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 		static void DrawQuad(uint32_t entityId, const glm::mat4& transform, const Ref<SubTexture2D>& subTexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
-		static void DrawRotatedQuad(const glm::vec2& position, const float rotation, const glm::vec2& size, const glm::vec4& color);
-		static void DrawRotatedQuad(const glm::vec3& position, const float rotation, const glm::vec2& size, const glm::vec4& color);
-		static void DrawRotatedQuad(const glm::vec2& position, const float rotation, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
-		static void DrawRotatedQuad(const glm::vec3& position, const float rotation, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
-		static void DrawRotatedQuad(const glm::vec2& position, const float rotation, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
-		static void DrawRotatedQuad(const glm::vec3& position, const float rotation, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+		static void DrawSprite(SpriteSpecifications& specs);
 
 		struct Statistics
 		{

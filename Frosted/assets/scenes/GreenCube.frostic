@@ -23,7 +23,7 @@ Entities:
     SpriteRendererComponent:
       Active: true
       Color: [0.209492892, 0.544401526, 0.0420387313, 1]
-      TexturePath: assets/textures/ChernoLogo.pngaad
+      TexturePath: ""
   - Entity: 75834759345
     TagComponent:
       Tag: Left
@@ -37,6 +37,7 @@ Entities:
       Color: [0.162492573, 0.3204633, 0.0222715791, 1]
       TexturePath: ""
 EditorCamera:
+  ProjectionType: 1
   Translation: [-1.43452847, -1.15432012, 0.248919368]
   Rotation: [32.8776588, -411.841675, 0]
   PerspectiveFOV: 30

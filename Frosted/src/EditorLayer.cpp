@@ -178,6 +178,24 @@ namespace Frostic {
 		ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 		ImGui::Text("Textures: %d", stats.Textures - 1);
+		ImGui::End();
+
+		ImGui::Begin("Assets");
+
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
+		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+
+		bool opened = ImGui::TreeNodeEx((void*)890845903, flags, "Textures");
+		if (opened)
+		{
+			AssetLibrary::Each<TextureAsset>([](auto& textureAsset)
+				{
+					std::string path = "'" + textureAsset->GetTexture()->GetPath() + "'";
+					ImGui::Text(path.c_str());
+				});
+
+			ImGui::TreePop();
+		}
 
 		ImGui::End();
 		
@@ -208,7 +226,7 @@ namespace Frostic {
 		Entity selectedEntity = m_HierarchyPanel.GetSelectedEntity();
 		if (selectedEntity && m_GizmoType != -1)
 		{
-			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetOrthographic(m_EditorCamera.GetProjectionType() == EditorCamera::ProjectionType::Orthographic);
 			ImGuizmo::SetDrawlist();
 			float windowWidth = (float)ImGui::GetWindowWidth();
 			float windowHeight = (float)ImGui::GetWindowHeight();
@@ -327,7 +345,6 @@ namespace Frostic {
 				m_Framebuffer->Bind();
 				int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
 				m_HierarchyPanel.SetSelectionContextFromID(pixelData);
-				FR_CORE_WARN("{0}", pixelData);
 				m_Framebuffer->Unbind();
 			}
 		}

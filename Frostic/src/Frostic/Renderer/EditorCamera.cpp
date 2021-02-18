@@ -145,7 +145,7 @@
 namespace Frostic {
 
 	EditorCamera::EditorCamera(float fov, float aspectRatio, float nearClip, float farClip)
-		: m_FOV(fov), m_AspectRatio(aspectRatio), m_NearClip(nearClip), m_FarClip(farClip)
+		: m_PerspectiveFOV(fov), m_AspectRatio(aspectRatio), m_PerspectiveNearClip(nearClip), m_PerspectiveFarClip(farClip)
 	{
 		RefreshView();
 	}
@@ -156,42 +156,58 @@ namespace Frostic {
 		glm::vec2 delta = InitialMousePosition - mousePos;
 		InitialMousePosition = mousePos;
 
-		if (Input::IsMouseButtonPressed(Mouse::ButtonRight))
+		if (m_Type == ProjectionType::Perspective)
 		{
-			// Rotation
-			m_Rotation.x -= delta.y * 25.0f * ts;
-			m_Rotation.x = std::max(m_Rotation.x, -90.0f); // Minimum is -90
-			m_Rotation.x = std::min(m_Rotation.x, 90.0f);  // Maximum is  90
-			m_Rotation.y -= delta.x * 25.0f * ts;
-			m_Rotation.z = 0.0f;
+			if (Input::IsMouseButtonPressed(Mouse::ButtonRight))
+			{
+				// Rotation
+				m_Rotation.x -= delta.y * 25.0f * ts;
+				m_Rotation.x = std::max(m_Rotation.x, -90.0f); // Minimum is -90
+				m_Rotation.x = std::min(m_Rotation.x, 90.0f);  // Maximum is  90
+				m_Rotation.y -= delta.x * 25.0f * ts;
+				m_Rotation.z = 0.0f;
 
-			// Translation
-			if (Input::IsKeyPressed(Key::W))
-				m_Translation += GetForwardDirection() * 0.03f;
-			else if (Input::IsKeyPressed(Key::S))
-				m_Translation -= GetForwardDirection() * 0.03f;
-			if (Input::IsKeyPressed(Key::A))
-				m_Translation += GetRightDirection() * 0.03f;
-			else if (Input::IsKeyPressed(Key::D))
-				m_Translation -= GetRightDirection() * 0.03f;
+				// Translation
+				if (Input::IsKeyPressed(Key::W))
+					m_Translation += GetForwardDirection() * 0.03f;
+				else if (Input::IsKeyPressed(Key::S))
+					m_Translation -= GetForwardDirection() * 0.03f;
+				if (Input::IsKeyPressed(Key::A))
+					m_Translation += GetRightDirection() * 0.03f;
+				else if (Input::IsKeyPressed(Key::D))
+					m_Translation -= GetRightDirection() * 0.03f;
 
-			Input::SetHiddenCursor(true);
-		}
-		else if (Input::IsMouseButtonPressed(Mouse::ButtonMiddle))
-		{
-			m_Translation -= GetRightDirection() * delta.x * ts.GetSeconds() * 0.5f;
-			m_Translation.y += delta.y * ts * 0.5f;
+				Input::SetHiddenCursor(true);
 
-			Input::SetHiddenCursor(true);
+				RefreshView();
+			}
+			else if (Input::IsMouseButtonPressed(Mouse::ButtonMiddle))
+			{
+				m_Translation -= GetRightDirection() * delta.x * ts.GetSeconds() * 0.5f;
+				m_Translation.y += delta.y * ts * 0.5f;
+
+				Input::SetHiddenCursor(true);
+
+				RefreshView();
+			}
+			else
+			{
+				Input::SetHiddenCursor(false);
+
+				RefreshView();
+			}
 		}
 		else
 		{
-			Input::SetHiddenCursor(false);
-		}
+			if (Input::IsMouseButtonPressed(Mouse::ButtonRight) || Input::IsMouseButtonPressed(Mouse::ButtonMiddle))
+			{
+				// Translation
+				m_Translation.y -= delta.y * 2.0f * m_OrthographicSize / 10.0f * ts;
+				m_Translation.x += delta.x * 2.0f * m_OrthographicSize / 10.0f * ts;
 
-		RefreshView();
-		// FR_CORE_WARN("x: {0}, y: {1}, z: {2}", m_Translation.x, m_Translation.y, m_Translation.z);
-		// FR_CORE_WARN("rx: {0}, ry: {1}, rz: {2}", m_Rotation.x, m_Rotation.y, m_Rotation.z);
+				RefreshView();
+			}
+		}
 	}
 
 	void EditorCamera::OnEvent(Event& e)
@@ -202,9 +218,17 @@ namespace Frostic {
 
 	bool EditorCamera::OnMouseScrolled(MouseScrolledEvent& e)
 	{
-
-		m_Translation += GetForwardDirection() * e.GetYOffset() * 0.1f;
-		RefreshView();
+		if (m_Type == ProjectionType::Perspective)
+		{
+			m_Translation += GetForwardDirection() * e.GetYOffset() * 0.01f;
+			RefreshView();
+		}
+		else
+		{
+			m_OrthographicSize -= e.GetYOffset();
+			m_OrthographicSize = std::max(m_OrthographicSize, 1.0f); // Set the minimum othographicSize to 1.0f
+			RefreshProjection();
+		}
 
 		return false;
 	}
@@ -212,12 +236,27 @@ namespace Frostic {
 	void EditorCamera::RefreshProjection()
 	{
 		m_AspectRatio = m_ViewportWidth / m_ViewportHeight;
-		m_Projection = glm::perspective(m_FOV, m_AspectRatio, m_NearClip, m_FarClip);
+		if (m_Type == ProjectionType::Perspective)
+		{
+			m_Projection = glm::perspective(m_PerspectiveFOV, m_AspectRatio, m_PerspectiveNearClip, m_PerspectiveFarClip);
+		}
+		else
+		{
+			float orthoLeft = -m_OrthographicSize * m_AspectRatio * 0.5f;
+			float orthoRight = m_OrthographicSize * m_AspectRatio * 0.5f;
+			float orthoBottom = -m_OrthographicSize * 0.5f;
+			float orthoTop = m_OrthographicSize * 0.5f;
+
+			m_Projection = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, m_OrthographicNearClip, m_OrthographicFarClip);
+		}
 	}
 
 	void EditorCamera::RefreshView()
 	{
-		m_ViewMatrix = glm::translate(glm::mat4(1.0f), m_Translation) * glm::toMat4(glm::quat(glm::radians(m_Rotation)));
+		if (m_Type == ProjectionType::Perspective)
+			m_ViewMatrix = glm::translate(glm::mat4(1.0f), m_Translation) * glm::toMat4(glm::quat(glm::radians(m_Rotation)));
+		else
+			m_ViewMatrix = glm::translate(glm::mat4(1.0f), m_Translation) * glm::rotate(glm::mat4(1.0f), m_Rotation.z, { 0.0f, 0.0f, 1.0f });
 		m_ViewMatrix = glm::inverse(m_ViewMatrix);
 	}
 

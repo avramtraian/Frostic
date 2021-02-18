@@ -3,6 +3,8 @@
 #include "Frostic/Core/Timestep.h"
 #include "Frostic/Renderer/EditorCamera.h"
 
+#include "Frostic/Renderer/Renderer2D.h"
+
 #include <entt.hpp>
 
 namespace Frostic {
@@ -26,6 +28,8 @@ namespace Frostic {
 	private:
 		entt::registry m_Registry;
 		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
+
+		Renderer2D::SpriteSpecifications Specs;
 
 		friend class Entity;
 		friend class SceneHierarchyPanel;

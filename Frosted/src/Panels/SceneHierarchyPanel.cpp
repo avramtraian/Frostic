@@ -7,6 +7,8 @@
 #include "Frostic/Scene/Components.h"
 #include "Frostic/Assets/AssetLibrary.h"
 
+#include "Frostic/Utils/PlatformUtils.h"
+
 namespace Frostic {
 	
 	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context)
@@ -167,6 +169,44 @@ namespace Frostic {
 		ImGui::PopID();
 	}
 
+	static bool DrawFloatControl(const std::string& label, float* value, float columnWidth = 100.0f)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+
+		bool used = ImGui::DragFloat("##Value", value);
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+
+		return used;
+	}
+
+	static bool DrawCheckbox(const std::string& label, bool* value, float columnWidth = 100.0f)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+
+		bool used = ImGui::Checkbox("##Value", value);
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+
+		return used;
+	}
+
 	template<typename T, typename UIFunction>
 	static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction)
 	{
@@ -269,12 +309,18 @@ namespace Frostic {
 		{
 			auto& camera = component.Camera;
 
-			ImGui::Checkbox("Primary", &component.Primary);
+			DrawCheckbox("Primary", &component.Primary);
 
 			const char* projectionTypeString[] = { "Perspective", "Orthographic" };
 			const char* currentProjectionTypeString = projectionTypeString[(int)camera.GetProjectionType()];
 
-			if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
+			ImGui::Columns(2);
+			ImGui::SetColumnWidth(0, 100.0f);
+
+			ImGui::Text("Projection");
+			ImGui::NextColumn();
+
+			if (ImGui::BeginCombo("##Projection", currentProjectionTypeString))
 			{
 				for (int i = 0; i < 2; i++)
 				{
@@ -292,46 +338,53 @@ namespace Frostic {
 				ImGui::EndCombo();
 			}
 
+			ImGui::Columns(1);
+
 			if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
 			{
 				float perspectiveVerticalFov = glm::degrees(camera.GetPerspectiveVerticalFOV());
-				if (ImGui::DragFloat("Vertical FOV", &perspectiveVerticalFov))
+				if (DrawFloatControl("Vertical FOV", &perspectiveVerticalFov))
 					camera.SetPerspectiveVerticalFOV(glm::radians(perspectiveVerticalFov));
 
 				float perspectiveNear = camera.GetPerspectiveNearClip();
-				if (ImGui::DragFloat("Near Clip", &perspectiveNear))
+				if (DrawFloatControl("Near Clip", &perspectiveNear))
 					camera.SetPerspectiveNearClip(perspectiveNear);
 
 				float perspectiveFar = camera.GetPerspectiveFarClip();
-				if (ImGui::DragFloat("Far Clip", &perspectiveFar))
+				if (DrawFloatControl("Far Clip", &perspectiveFar))
 					camera.SetPerspectiveFarClip(perspectiveFar);
 			}
 
 			if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
 			{
 				float orthoSize = camera.GetOrthographicSize();
-				if (ImGui::DragFloat("Size", &orthoSize))
+				if (DrawFloatControl("Size", &orthoSize))
 					camera.SetOrthographicSize(orthoSize);
 
 				float orthoNear = camera.GetOrthographicNearClip();
-				if (ImGui::DragFloat("Near Clip", &orthoNear))
+				if (DrawFloatControl("Near Clip", &orthoNear))
 					camera.SetOrthographicNearClip(orthoNear);
 
 				float orthoFar = camera.GetOrthographicFarClip();
-				if (ImGui::DragFloat("Far Clip", &orthoFar))
+				if (DrawFloatControl("Far Clip", &orthoFar))
 					camera.SetOrthographicFarClip(orthoFar);
 
-				ImGui::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
+				DrawCheckbox("Fixed Aspect Ratio", &component.FixedAspectRatio, 150.0f);
 			}
 		});
 
 		DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
 		{
+			ImGui::Columns(2);
+			ImGui::SetColumnWidth(0, 100.0f);
+			ImGui::Text("Color");
+			ImGui::NextColumn();
 			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
 			char buffer[256];
 			memset(buffer, 0, sizeof(buffer));
 			strcpy_s(buffer, sizeof(buffer), component.TexturePath.c_str());
 
+			ImGui::Columns(1);
 			ImGui::Columns(2);
 			
 			ImGui::SetColumnWidth(0, 100.0f);
@@ -339,10 +392,32 @@ namespace Frostic {
 			ImGui::Text("Texture Path");
 			ImGui::NextColumn();
 			ImGui::PushItemWidth(ImGui::CalcItemWidth());
+			if (!AssetLibrary::Exists<TextureAsset>(std::string(buffer)))
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+			else
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4{ 1.0f, 1.0f, 1.0f, 1.0f });
+
 			if (ImGui::InputText("##TexturePath", buffer, sizeof(buffer)))
 			{
 				component.TexturePath = std::string(buffer);
 				component.Texture = AssetLibrary::GetOrLoad<TextureAsset>(std::string(buffer))->GetTexture();
+				if (!component.Texture->IsValid())
+				{
+					AssetLibrary::Remove<TextureAsset>(component.TexturePath);
+					component.Texture = nullptr;
+				}
+			}
+			ImGui::PopStyleColor();
+			ImGui::SameLine();
+			if (ImGui::Button("..."))
+			{
+				component.TexturePath = FileDialogs::OpenFile("Frostic Texture(*.*)\0 * .*\0");
+				component.Texture = AssetLibrary::GetOrLoad<TextureAsset>(component.TexturePath)->GetTexture();
+				if (!component.Texture->IsValid())
+				{
+					AssetLibrary::Remove<TextureAsset>(component.TexturePath);
+					component.Texture = nullptr;
+				}
 			}
 			ImGui::PopItemWidth();
 			ImGui::Columns(1);

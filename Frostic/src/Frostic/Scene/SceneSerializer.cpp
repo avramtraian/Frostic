@@ -124,12 +124,12 @@ namespace Frostic {
 			out << YAML::Key << "Camera";
 			out << YAML::BeginMap; // Camera
 			out << YAML::Key << "ProjectionType" << YAML::Value << (int)camera.GetProjectionType();
-			out << YAML::Key << "PerspectiveFOV" << YAML::Value << (int)camera.GetPerspectiveVerticalFOV();
-			out << YAML::Key << "PerspectiveNear" << YAML::Value << (int)camera.GetPerspectiveNearClip();
-			out << YAML::Key << "PerspectiveFar" << YAML::Value << (int)camera.GetPerspectiveFarClip();
-			out << YAML::Key << "OrthographicSize" << YAML::Value << (int)camera.GetOrthographicSize();
-			out << YAML::Key << "OrthographicNear" << YAML::Value << (int)camera.GetOrthographicNearClip();
-			out << YAML::Key << "OrthographicFar" << YAML::Value << (int)camera.GetOrthographicFarClip();
+			out << YAML::Key << "PerspectiveFOV" << YAML::Value << camera.GetPerspectiveVerticalFOV();
+			out << YAML::Key << "PerspectiveNear" << YAML::Value << camera.GetPerspectiveNearClip();
+			out << YAML::Key << "PerspectiveFar" << YAML::Value << camera.GetPerspectiveFarClip();
+			out << YAML::Key << "OrthographicSize" << YAML::Value << camera.GetOrthographicSize();
+			out << YAML::Key << "OrthographicNear" << YAML::Value << camera.GetOrthographicNearClip();
+			out << YAML::Key << "OrthographicFar" << YAML::Value << camera.GetOrthographicFarClip();
 			out << YAML::EndMap; // Camera
 
 			out << YAML::Key << "Active" << YAML::Value << cc.Active;
@@ -159,11 +159,12 @@ namespace Frostic {
 	{
 		out << YAML::Key << "EditorCamera" << YAML::BeginMap; // EditorCamera
 
+		out << YAML::Key << "ProjectionType" << (int)camera.GetProjectionType();
 		out << YAML::Key << "Translation" << camera.GetTranslation();
 		out << YAML::Key << "Rotation" << camera.GetRotation();
-		out << YAML::Key << "PerspectiveFOV" << camera.GetFOV();
+		out << YAML::Key << "PerspectiveFOV" << camera.GetPerspectiveFOV();
 		out << YAML::Key << "PerspectiveNearClip" << camera.GetNearClip();
-		out << YAML::Key << "PerspectiveFarClip" << camera.GetFarClip();
+		out << YAML::Key << "PerspectiveFarClip" << camera.GetPerspectiveFarClip();
 
 		out << YAML::EndMap; // EditorCamera
 	}
@@ -270,6 +271,8 @@ namespace Frostic {
 					src.Color = spriteComponent["Color"].as<glm::vec4>();
 					src.TexturePath = spriteComponent["TexturePath"].as<std::string>();
 					src.Texture = AssetLibrary::GetOrLoad<TextureAsset>(src.TexturePath)->GetTexture();
+					if (AssetLibrary::RemoveIfInvalid<TextureAsset>(src.TexturePath))
+						src.Texture = nullptr;
 				}
 			}
 		}
@@ -278,11 +281,12 @@ namespace Frostic {
 		if (editorCamera)
 		{
 			FR_CORE_TRACE("Deserializing Editor Camera");
+			camera.SetProjectionType((EditorCamera::ProjectionType)editorCamera["ProjectionType"].as<int>());
 			camera.SetTranslation(editorCamera["Translation"].as<glm::vec3>());
 			camera.SetRotation(editorCamera["Rotation"].as<glm::vec3>());
-			camera.SetFOV(editorCamera["PerspectiveFOV"].as<float>());
+			camera.SetPerspectiveFOV(editorCamera["PerspectiveFOV"].as<float>());
 			camera.SetNearClip(editorCamera["PerspectiveNearClip"].as<float>());
-			camera.SetFarClip(editorCamera["PerspectiveFarClip"].as<float>());
+			camera.SetPerspectiveFarClip(editorCamera["PerspectiveFarClip"].as<float>());
 		}
 
 		FR_CORE_TRACE("Deserializing complete!");

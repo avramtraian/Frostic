@@ -68,6 +68,8 @@ namespace Frostic {
 	class EditorCamera : public Camera
 	{
 	public:
+		enum class ProjectionType { Perspective = 0, Orthographic = 1 };
+
 		EditorCamera() = default;
 		EditorCamera(float fov, float aspectRatio, float nearClip, float farClip);
 
@@ -76,6 +78,9 @@ namespace Frostic {
 		bool OnMouseScrolled(MouseScrolledEvent& e);
 
 		void SetViewportSize(float width, float height) { m_ViewportWidth = width; m_ViewportHeight = height; RefreshProjection(); }
+
+		ProjectionType GetProjectionType() const { return m_Type; }
+		void SetProjectionType(ProjectionType type) { m_Type = type; }
 
 		glm::mat4 GetViewProjection() const { return m_Projection * m_ViewMatrix; }
 		glm::mat4 GetViewMatrix() const { return m_ViewMatrix; }
@@ -86,14 +91,14 @@ namespace Frostic {
 		glm::vec3 GetRotation() const { return m_Rotation; }
 		void SetRotation(const glm::vec3& rotation) { m_Rotation = rotation; }
 
-		float GetFOV() const { return m_FOV; }
-		void SetFOV(float fov) { m_FOV = fov; }
+		float GetPerspectiveFOV() const { return m_PerspectiveFOV; }
+		void SetPerspectiveFOV(float fov) { m_PerspectiveFOV = fov; }
 
-		float GetNearClip() const { return m_NearClip; }
-		void SetNearClip(float nearClip) { m_NearClip = nearClip; }
+		float GetNearClip() const { return m_PerspectiveNearClip; }
+		void SetNearClip(float nearClip) { m_PerspectiveNearClip = nearClip; }
 
-		float GetFarClip() const { return m_FarClip; }
-		void SetFarClip(float farClip) { m_FarClip = farClip; }
+		float GetPerspectiveFarClip() const { return m_PerspectiveFarClip; }
+		void SetPerspectiveFarClip(float farClip) { m_PerspectiveFarClip = farClip; }
 	private:
 		void RefreshProjection();
 		void RefreshView();
@@ -101,15 +106,20 @@ namespace Frostic {
 		glm::vec3 GetForwardDirection() const;
 		glm::vec3 GetRightDirection() const;
 	private:
+		ProjectionType m_Type = ProjectionType::Orthographic;
+
 		float m_ViewportWidth, m_ViewportHeight;
 
 		glm::mat4 m_ViewMatrix;
 		glm::vec3 m_Translation{ 0.0f, 0.0f, 0.0f };
 		glm::vec3 m_Rotation{ 0.0f, 0.0f, 0.0f }; // In degrees
 
-		float m_FOV;
+		float m_PerspectiveFOV;
 		float m_AspectRatio;
-		float m_NearClip, m_FarClip;
+		float m_PerspectiveNearClip, m_PerspectiveFarClip;
+
+		float m_OrthographicSize = 10.0f;
+		float m_OrthographicNearClip = -1.0f, m_OrthographicFarClip = 1.0f;
 
 		glm::vec2 InitialMousePosition = { 0.0f, 0.0f };
 	};

@@ -70,13 +70,13 @@ namespace Frostic {
 
 		if (mainCamera)
 		{
-			Renderer2D::BeginScene(mainCamera->GetProjection(), cameraTransform);
+			// Renderer2D::BeginScene(mainCamera->GetProjection(), cameraTransform);
 
 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 			for (auto entity : group)
 			{
 				Entity ent = { entity, this };
-				if (ent.GetComponent<TransformComponent>().Active || ent.GetComponent<SpriteRendererComponent>().Active)
+				if (ent.GetComponent<TransformComponent>().Active && ent.GetComponent<SpriteRendererComponent>().Active)
 				{
 					auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 					Renderer2D::DrawQuad((uint32_t)entity, transform.GetTransform(), sprite.Color);
@@ -98,10 +98,12 @@ namespace Frostic {
 			if (ent.GetComponent<TransformComponent>().Active && ent.GetComponent<SpriteRendererComponent>().Active)
 			{
 				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-				if(sprite.Texture && sprite.Texture->IsValid())
-					Renderer2D::DrawQuad((uint32_t)entity, transform.GetTransform(), sprite.Texture, 1.0f, sprite.Color);
-				else
-					Renderer2D::DrawQuad((uint32_t)entity, transform.GetTransform(), sprite.Color);
+				Specs.EntityID = (uint32_t)entity;
+				Specs.Transform = transform.GetTransform();
+				Specs.Texture = sprite.Texture;
+				Specs.Color = sprite.Color;
+
+				Renderer2D::DrawSprite(Specs);
 			}
 		}
 
