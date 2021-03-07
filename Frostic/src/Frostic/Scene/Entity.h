@@ -35,6 +35,15 @@ namespace Frostic {
 			FR_CORE_ASSERT(HasComponent<T>(), "Entity doesn't have component!");
 			return m_Scene->m_Registry.get<T>(m_EntityHandle);
 		}
+		
+		template<typename T>
+		T& AddOrGetComponent()
+		{
+			if (HasComponent<T>())
+				return GetComponent<T>();
+			else
+				return AddComponent<T>();
+		}
 
 		template<typename T> 
 		bool HasComponent()

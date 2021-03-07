@@ -3,6 +3,7 @@
 #include "ImGuizmo/ImGuizmo.h"
 
 #include "Frostic/Scene/SceneSerializer.h"
+#include "Frostic/Scene/SceneManager.h"
 #include "Frostic/Utils/PlatformUtils.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -13,6 +14,7 @@ namespace Frostic {
 	EditorLayer::EditorLayer()
 		: Layer("Sandbox2D"), m_CameraController(1600.0f / 900.0f)
 	{
+		SceneManagerEditor::Initialize(FR_BIND_EVENT_FN(EditorLayer::OnRuntimeStart), FR_BIND_EVENT_FN(EditorLayer::OnRuntimeStop));
 	}
 
 	void EditorLayer::OnAttach()
@@ -27,12 +29,11 @@ namespace Frostic {
 
 		m_ActiveScene = CreateRef<Scene>();
 		m_HierarchyPanel.SetContext(m_ActiveScene);
+		m_ToolsPanel.SetContext(m_ActiveScene);
 		m_EditorCamera = EditorCamera{ 30.0f, 1.778f, 0.1f, 1000.0f };
-		
-		m_HierarchyPanel.SetContext(m_ActiveScene);
 
 		SceneSerializer serializer(m_ActiveScene);
-		serializer.Deserialize("assets/scenes/GreenCube.frostic", m_EditorCamera);
+		serializer.Deserialize("assets/scenes/2DTest.frostic", m_EditorCamera);
 	}
 
 	void EditorLayer::OnDetach()
@@ -69,7 +70,10 @@ namespace Frostic {
 		m_Framebuffer->ClearAttachment(1, -1);
 		
 		// Update scene
-		m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
+		if (!SceneManagerEditor::IsRuntime())
+			m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
+		else
+			m_ActiveScene->OnUpdateRuntime(ts);
 		
 		m_Framebuffer->Unbind();
 	}
@@ -167,7 +171,7 @@ namespace Frostic {
 
 
 		m_HierarchyPanel.OnImGuiRender();
-
+		m_ToolsPanel.OnImGuiRender();
 
 		ImGui::Begin("Stats");
 		auto stats = Renderer2D::GetStats();
@@ -351,55 +355,82 @@ namespace Frostic {
 		return false;
 	}
 
-	void EditorLayer::NewScene()
+	void EditorLayer::OnRuntimeStart(Ref<Scene>& scene)
 	{
-		m_ActiveScene = CreateRef<Scene>();
-		m_EditorCamera = EditorCamera{ 30.0f, 1.778f, 0.1f, 1000.0f };
-		m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
-		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		m_ActiveScene = scene;
 		m_HierarchyPanel.SetContext(m_ActiveScene);
-		saveFilepath = std::string();
 	}
 
-	void EditorLayer::OpenScene()
+	void EditorLayer::OnRuntimeStop(Ref<Scene>& scene)
 	{
-		std::string filepath = FileDialogs::OpenFile("Frostic Scene (*.frostic)\0*.frostic\0");
-		if (!filepath.empty())
+		m_ActiveScene = scene;
+		m_HierarchyPanel.SetContext(m_ActiveScene);
+		m_ToolsPanel.SetContext(m_ActiveScene);
+	}
+
+	void EditorLayer::NewScene()
+	{
+		if (!SceneManagerEditor::IsRuntime())
 		{
 			m_ActiveScene = CreateRef<Scene>();
 			m_EditorCamera = EditorCamera{ 30.0f, 1.778f, 0.1f, 1000.0f };
 			m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
 			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 			m_HierarchyPanel.SetContext(m_ActiveScene);
+			m_ToolsPanel.SetContext(m_ActiveScene);
+			saveFilepath = std::string();
+		}
+	}
 
-			SceneSerializer serializer(m_ActiveScene);
-			serializer.Deserialize(filepath, m_EditorCamera);
+	void EditorLayer::OpenScene()
+	{
+		if (!SceneManagerEditor::IsRuntime())
+		{
+			std::string filepath = FileDialogs::OpenFile("Frostic Scene (*.frostic)\0*.frostic\0");
+			if (!filepath.empty())
+			{
+				m_ActiveScene = CreateRef<Scene>();
+				m_EditorCamera = EditorCamera{ 30.0f, 1.778f, 0.1f, 1000.0f };
+				m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
+				m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+				m_HierarchyPanel.SetContext(m_ActiveScene);
+				m_ToolsPanel.SetContext(m_ActiveScene);
 
-			saveFilepath = filepath;
+				SceneSerializer serializer(m_ActiveScene);
+				serializer.Deserialize(filepath, m_EditorCamera);
+
+				saveFilepath = filepath;
+			}
 		}
 	}
 
 	void EditorLayer::SaveScene()
 	{
-		if (!saveFilepath.empty())
+		if (!SceneManagerEditor::IsRuntime())
 		{
-			SceneSerializer serializer(m_ActiveScene);
-			serializer.Serialize(saveFilepath, m_EditorCamera);
-		}
-		else
-		{
-			SaveSceneAs();
+			if (!saveFilepath.empty())
+			{
+				SceneSerializer serializer(m_ActiveScene);
+				serializer.Serialize(saveFilepath, m_EditorCamera);
+			}
+			else
+			{
+				SaveSceneAs();
+			}
 		}
 	}
 
 	void EditorLayer::SaveSceneAs()
 	{
-		std::string filepath = FileDialogs::SaveFile("Frostic Scene (*.frostic)\0*.frostic\0");
-		if (!filepath.empty())
+		if (!SceneManagerEditor::IsRuntime())
 		{
-			SceneSerializer serializer(m_ActiveScene);
-			serializer.Serialize(filepath, m_EditorCamera);
-			saveFilepath = filepath;
+			std::string filepath = FileDialogs::SaveFile("Frostic Scene (*.frostic)\0*.frostic\0");
+			if (!filepath.empty())
+			{
+				SceneSerializer serializer(m_ActiveScene);
+				serializer.Serialize(filepath, m_EditorCamera);
+				saveFilepath = filepath;
+			}
 		}
 	}
 

@@ -14,10 +14,13 @@ namespace Frostic {
 	{
 	public:
 		Scene();
+		Scene(const Scene& other);
 		~Scene();
 
 		Entity CreateEntity(const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
+
+		Ref<Scene> CopyScene();
 
 		void OnUpdateRuntime(Timestep ts);
 		void OnUpdateEditor(Timestep ts, EditorCamera& camera);
@@ -33,6 +36,9 @@ namespace Frostic {
 
 		friend class Entity;
 		friend class SceneHierarchyPanel;
+		friend class ToolsPanel;
 		friend class SceneSerializer;
+		friend class SceneManagerEditor;
+		friend class SceneManagerRuntime;
 	};
 }

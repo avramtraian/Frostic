@@ -2,6 +2,7 @@
 #include <Frostic.h>
 
 #include "Panels/SceneHierarchyPanel.h"
+#include "Panels/ToolsPanel.h"
 
 namespace Frostic {
 
@@ -21,6 +22,9 @@ namespace Frostic {
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
 		bool OnMousePressed(MouseButtonPressedEvent& e);
+
+		void OnRuntimeStart(Ref<Scene>& scene);
+		void OnRuntimeStop(Ref<Scene>& scene);
 
 		void NewScene();
 		void OpenScene();
@@ -44,6 +48,7 @@ namespace Frostic {
 
 		// Panels
 		SceneHierarchyPanel m_HierarchyPanel;
+		ToolsPanel m_ToolsPanel;
 	};
 
 }

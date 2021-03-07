@@ -7,6 +7,9 @@
     <Filter Include="src\Frostic">
       <UniqueIdentifier>{D6FC6B2B-42B2-E420-CBA6-DEF7375BDB24}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Frostic\Assets">
+      <UniqueIdentifier>{F8B692D3-E49A-5329-4DFB-4D7C39FE3DAB}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Frostic\Core">
       <UniqueIdentifier>{EE96F2D0-DA8F-1123-03C2-F6A7EF19F12E}</UniqueIdentifier>
     </Filter>
@@ -77,6 +80,15 @@
   <ItemGroup>
     <ClInclude Include="src\Frostic.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Assets\AssetCore.h">
+      <Filter>src\Frostic\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Assets\AssetLibrary.h">
+      <Filter>src\Frostic\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Assets\TextureAsset.h">
+      <Filter>src\Frostic\Assets</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Core\Application.h">
       <Filter>src\Frostic\Core</Filter>
@@ -187,6 +199,9 @@
       <Filter>src\Frostic\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Scene\SceneCamera.h">
+      <Filter>src\Frostic\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Scene\SceneManager.h">
       <Filter>src\Frostic\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Scene\SceneSerializer.h">
@@ -1473,11 +1488,14 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Frostic\Assets\AssetLibrary.h" />
-    <ClInclude Include="src\Frostic\Assets\TextureAsset.h" />
-    <ClInclude Include="src\Frostic\Assets\AssetCore.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Frostic\Assets\AssetLibrary.cpp">
+      <Filter>src\Frostic\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frostic\Assets\TextureAsset.cpp">
+      <Filter>src\Frostic\Assets</Filter>
+    </ClCompile>
     <ClCompile Include="src\Frostic\Core\Application.cpp">
       <Filter>src\Frostic\Core</Filter>
     </ClCompile>
@@ -1547,6 +1565,9 @@
     <ClCompile Include="src\Frostic\Scene\SceneCamera.cpp">
       <Filter>src\Frostic\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Frostic\Scene\SceneManager.cpp">
+      <Filter>src\Frostic\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="src\Frostic\Scene\SceneSerializer.cpp">
       <Filter>src\Frostic\Scene</Filter>
     </ClCompile>
@@ -1589,7 +1610,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Frostic\Assets\AssetLibrary.cpp" />
-    <ClCompile Include="src\Frostic\Assets\TextureAsset.cpp" />
   </ItemGroup>
 </Project>

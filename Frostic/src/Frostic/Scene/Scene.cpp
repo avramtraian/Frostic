@@ -14,6 +14,13 @@ namespace Frostic {
 
 	}
 
+	Scene::Scene(const Scene& other)
+	{
+		m_Registry.assign(other.m_Registry.data(), other.m_Registry.data() + other.m_Registry.size(), other.m_Registry.destroyed());
+		m_ViewportWidth = other.m_ViewportWidth;
+		m_ViewportHeight = other.m_ViewportHeight;
+	}
+
 	Scene::~Scene()
 	{
 
@@ -31,6 +38,42 @@ namespace Frostic {
 	void Scene::DestroyEntity(Entity entity)
 	{
 		m_Registry.destroy(entity);
+	}
+
+	Ref<Scene> Scene::CopyScene()
+	{
+		Ref<Scene> scene = CreateRef<Scene>();
+
+		m_Registry.each([&](auto ent) {
+			Entity entity { ent, this };
+
+			Entity createdEntity = scene->CreateEntity(entity.GetComponent<TagComponent>().Tag);
+			createdEntity.GetComponent<TagComponent>().Active = entity.GetComponent<TagComponent>().Active;
+
+			createdEntity.GetComponent<TransformComponent>().Active = entity.GetComponent<TransformComponent>().Active;
+			createdEntity.GetComponent<TransformComponent>().Translation = entity.GetComponent<TransformComponent>().Translation;
+			createdEntity.GetComponent<TransformComponent>().Rotation = entity.GetComponent<TransformComponent>().Rotation;
+			createdEntity.GetComponent<TransformComponent>().Scale = entity.GetComponent<TransformComponent>().Scale;
+
+			if (entity.HasComponent<SpriteRendererComponent>())
+			{
+				createdEntity.AddOrGetComponent<SpriteRendererComponent>();
+				createdEntity.GetComponent<SpriteRendererComponent>().Active = entity.GetComponent<SpriteRendererComponent>().Active;
+				createdEntity.GetComponent<SpriteRendererComponent>().Color = entity.GetComponent<SpriteRendererComponent>().Color;
+				createdEntity.GetComponent<SpriteRendererComponent>().Texture = entity.GetComponent<SpriteRendererComponent>().Texture;
+				createdEntity.GetComponent<SpriteRendererComponent>().TexturePath = entity.GetComponent<SpriteRendererComponent>().TexturePath;
+			}
+			if (entity.HasComponent<CameraComponent>())
+			{
+				createdEntity.AddOrGetComponent<CameraComponent>();
+				createdEntity.GetComponent<CameraComponent>().Active = entity.GetComponent<CameraComponent>().Active;
+				createdEntity.GetComponent<CameraComponent>().Camera = entity.GetComponent<CameraComponent>().Camera;
+				createdEntity.GetComponent<CameraComponent>().FixedAspectRatio = entity.GetComponent<CameraComponent>().FixedAspectRatio;
+				createdEntity.GetComponent<CameraComponent>().Primary = entity.GetComponent<CameraComponent>().Primary;
+			}
+		});
+
+		return scene;
 	}
 
 	void Scene::OnUpdateRuntime(Timestep ts)
@@ -70,7 +113,7 @@ namespace Frostic {
 
 		if (mainCamera)
 		{
-			// Renderer2D::BeginScene(mainCamera->GetProjection(), cameraTransform);
+			Renderer2D::BeginScene(mainCamera->GetProjection(), glm::inverse(cameraTransform));
 
 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 			for (auto entity : group)
@@ -79,7 +122,12 @@ namespace Frostic {
 				if (ent.GetComponent<TransformComponent>().Active && ent.GetComponent<SpriteRendererComponent>().Active)
 				{
 					auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-					Renderer2D::DrawQuad((uint32_t)entity, transform.GetTransform(), sprite.Color);
+					Specs.EntityID = (uint32_t)entity;
+					Specs.Transform = transform.GetTransform();
+					Specs.Texture = sprite.Texture;
+					Specs.Color = sprite.Color;
+
+					Renderer2D::DrawSprite(Specs);
 				}
 			}
 

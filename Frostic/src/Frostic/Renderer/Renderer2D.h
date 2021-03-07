@@ -38,6 +38,7 @@ namespace Frostic {
 
 		static void BeginScene(const OrthographicCamera& camera);
 		static void BeginScene(const EditorCamera& camera);
+		static void BeginScene(const glm::mat4& projection, const glm::mat4& view);
 		static void EndScene();
 		static void Flush();
 
