@@ -16,6 +16,7 @@
 #include "Frostic/ImGui/ImGuiLayer.h"
 
 #include "Frostic/Scene/Scene.h"
+#include "Frostic/Scene/SceneManager.h"
 #include "Frostic/Scene/Entity.h"
 #include "Frostic/Scene/ScriptableEntity.h"
 #include "Frostic/Scene/Components.h"

@@ -1,7 +1,13 @@
 #include "frpch.h"
 #include "SceneManager.h"
 
+#include "SceneSerializer.h"
+
 namespace Frostic {
+
+	/////////////////////////////////////////////////////////////////
+	/////////////////////  EDITOR  //////////////////////////////////
+	/////////////////////////////////////////////////////////////////
 
 	Ref<Scene> SceneManagerEditor::m_BaseScene;
 	Ref<Scene> SceneManagerEditor::m_RuntimeScene;
@@ -33,14 +39,37 @@ namespace Frostic {
 		m_BaseScene = nullptr;
 	}
 
+	/////////////////////////////////////////////////////////////////
+	/////////////////////  RUNTIME  /////////////////////////////////
+	/////////////////////////////////////////////////////////////////
+
+	uint32_t SceneManagerRuntime::m_BuildIndex;
+
+	SceneManagerRuntime::LoadCallbackFunction SceneManagerRuntime::m_LoadCallback;
+	SceneManagerRuntime::UnloadCallbackFunction SceneManagerRuntime::m_UnloadCallback;
+
+	void SceneManagerRuntime::Initialize(const LoadCallbackFunction& load, const UnloadCallbackFunction& unload)
+	{
+		m_LoadCallback = load;
+		m_UnloadCallback = unload;
+	}
+
 	void SceneManagerRuntime::LoadScene(uint32_t buildIndex)
 	{
+		UnloadCurrentScene();
+		Ref<Scene> scene = CreateRef<Scene>();
 
+		SceneSerializer serializer(scene);
+		serializer.DeserializeRuntime(FILEPATH("assets/scenes/2DTest.frostic"));
+
+		m_BuildIndex = buildIndex;
+
+		m_LoadCallback(scene);
 	}
 
 	void SceneManagerRuntime::UnloadCurrentScene()
 	{
-
+		m_UnloadCallback(0);
 	}
 
 }

@@ -28,6 +28,8 @@
 
 #define FR_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
+#define FILEPATH(fp) std::string("C:/dev/Frostic-dev/Frosted/").append(fp)
+
 namespace Frostic {
 
 	template<typename T>

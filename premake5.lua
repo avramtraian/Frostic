@@ -188,6 +188,7 @@ project "Sandbox"
 		"Frostic/vendor/spdlog/include",
 		"Frostic/vendor",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}",
 		"Frostic/src"
 	}
 

@@ -295,9 +295,88 @@ namespace Frostic {
 
 	bool SceneSerializer::DeserializeRuntime(const std::string& filepath)
 	{
-		// Not implemented
+		/*/ Not implemented
 		FR_CORE_ASSERT(false, "Not implemented!");
-		return false;
+		return false;*/
+
+		std::ifstream stream(filepath);
+		std::stringstream strStream;
+		strStream << stream.rdbuf();
+
+		YAML::Node data = YAML::Load(strStream.str());
+		if (!data["Scene"])
+		{
+			FR_CORE_ERROR("Unable to find keyword 'Scene'");
+			FR_CORE_ERROR("File may be corrupted!");
+			return false;
+		}
+
+		std::string sceneName = data["Scene"].as<std::string>();
+		FR_CORE_TRACE("Deserializing scene '{0}'", sceneName);
+
+		auto entities = data["Entities"];
+		if (entities)
+		{
+			for (auto entity : entities)
+			{
+				uint64_t uuid = entity["Entity"].as<uint64_t>();
+
+				std::string name;
+				auto tagComponent = entity["TagComponent"];
+				if (tagComponent)
+					name = tagComponent["Tag"].as<std::string>();
+
+				FR_CORE_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
+
+				Entity deserializedEntity = m_Scene->CreateEntity(name);
+
+				auto transformComponent = entity["TransformComponent"];
+				if (transformComponent)
+				{
+					auto& tc = deserializedEntity.GetComponent<TransformComponent>();
+					tc.Active = transformComponent["Active"].as<bool>();
+					tc.Translation = transformComponent["Translation"].as<glm::vec3>();
+					tc.Rotation = transformComponent["Rotation"].as<glm::vec3>();
+					tc.Scale = transformComponent["Scale"].as<glm::vec3>();
+				}
+
+				auto cameraComponent = entity["CameraComponent"];
+				if (cameraComponent)
+				{
+					auto& cc = deserializedEntity.AddComponent<CameraComponent>();
+
+					auto& cameraProps = cameraComponent["Camera"];
+					cc.Camera.SetProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
+
+					cc.Camera.SetPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());
+					cc.Camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
+					cc.Camera.SetPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
+
+					cc.Camera.SetOrthographicSize(cameraProps["OrthographicSize"].as<float>());
+					cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
+					cc.Camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
+
+					cc.Active = cameraComponent["Active"].as<bool>();
+					cc.Primary = cameraComponent["Primary"].as<bool>();
+					cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
+				}
+
+				auto spriteComponent = entity["SpriteRendererComponent"];
+				if (spriteComponent)
+				{
+					auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
+					src.Active = spriteComponent["Active"].as<bool>();
+					src.Color = spriteComponent["Color"].as<glm::vec4>();
+					src.TexturePath = spriteComponent["TexturePath"].as<std::string>();
+					src.Texture = AssetLibrary::GetOrLoad<TextureAsset>(src.TexturePath)->GetTexture();
+					if (AssetLibrary::RemoveIfInvalid<TextureAsset>(src.TexturePath))
+						src.Texture = nullptr;
+				}
+			}
+		}
+
+		FR_CORE_TRACE("Deserializing complete!");
+		return true;
 	}
 
 }

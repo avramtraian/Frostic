@@ -15662,6 +15662,22 @@ public:
         }
     }
 
+	template<typename Func>
+	void eachreverse(Func func) const {
+		if (available == null) {
+			for (auto pos = 1; pos <= entities.size(); ++pos) {
+				func(entities[pos - 1]);
+			}
+		}
+		else {
+			for (auto pos = 1; pos <= entities.size(); ++pos) {
+				if (const auto entt = entities[pos - 1]; (to_integral(entt) & traits_type::entity_mask) == (pos - 1)) {
+					func(entt);
+				}
+			}
+		}
+	}
+
     /**
      * @brief Checks if an entity has components assigned.
      * @param entity A valid entity identifier.

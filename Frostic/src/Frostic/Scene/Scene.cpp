@@ -14,13 +14,6 @@ namespace Frostic {
 
 	}
 
-	Scene::Scene(const Scene& other)
-	{
-		m_Registry.assign(other.m_Registry.data(), other.m_Registry.data() + other.m_Registry.size(), other.m_Registry.destroyed());
-		m_ViewportWidth = other.m_ViewportWidth;
-		m_ViewportHeight = other.m_ViewportHeight;
-	}
-
 	Scene::~Scene()
 	{
 
@@ -44,7 +37,7 @@ namespace Frostic {
 	{
 		Ref<Scene> scene = CreateRef<Scene>();
 
-		m_Registry.each([&](auto ent) {
+		m_Registry.eachreverse([&](auto ent) {
 			Entity entity { ent, this };
 
 			Entity createdEntity = scene->CreateEntity(entity.GetComponent<TagComponent>().Tag);
@@ -72,6 +65,9 @@ namespace Frostic {
 				createdEntity.GetComponent<CameraComponent>().Primary = entity.GetComponent<CameraComponent>().Primary;
 			}
 		});
+
+		scene->m_ViewportWidth = m_ViewportWidth;
+		scene->m_ViewportHeight = m_ViewportHeight;
 
 		return scene;
 	}

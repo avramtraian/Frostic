@@ -30,8 +30,20 @@ namespace Frostic {
 	class SceneManagerRuntime
 	{
 	public:
-		void LoadScene(uint32_t buildIndex);
-		void UnloadCurrentScene();
+		using LoadCallbackFunction = std::function<void(Ref<Scene>&)>;
+		using UnloadCallbackFunction = std::function<void(int)>;
+
+		static void Initialize(const LoadCallbackFunction& load, const UnloadCallbackFunction& unload);
+
+		static void LoadScene(uint32_t buildIndex);
+		static void UnloadCurrentScene();
+
+		static uint32_t GetActiveSceneBuildIndex() { return m_BuildIndex; }
+	private:
+		static uint32_t m_BuildIndex;
+
+		static LoadCallbackFunction m_LoadCallback;
+		static UnloadCallbackFunction m_UnloadCallback;
 	};
 
 }

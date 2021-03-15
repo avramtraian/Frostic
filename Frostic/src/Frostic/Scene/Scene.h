@@ -14,7 +14,6 @@ namespace Frostic {
 	{
 	public:
 		Scene();
-		Scene(const Scene& other);
 		~Scene();
 
 		Entity CreateEntity(const std::string& name = std::string());
