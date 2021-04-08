@@ -8,4 +8,9 @@ namespace Frostic {
 	{
 	}
 
+	Entity::Entity(const Entity& other)
+	: m_Scene(other.m_Scene), m_EntityHandle(other.m_EntityHandle) 
+	{
+	}
+
 }

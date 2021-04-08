@@ -24,7 +24,7 @@ namespace Frostic {
 			case ShaderDataType::Bool:      return 1;
 		}
 
-		FR_CORE_ASSERT(false, "Unknown ShaderDataType!");
+		FE_CORE_ASSERT(false, "Unknown ShaderDataType!");
 		return 0;
 	}
 
@@ -60,7 +60,7 @@ namespace Frostic {
 				case Frostic::ShaderDataType::Bool:     return 1;
 			}
 
-			FR_CORE_ASSERT(false, "Unknown ShaderDataType!");
+			FE_CORE_ASSERT(false, "Unknown ShaderDataType!");
 			return 0;
 		}
 	};

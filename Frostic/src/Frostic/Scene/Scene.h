@@ -16,10 +16,12 @@ namespace Frostic {
 		Scene();
 		~Scene();
 
-		Entity CreateEntity(const std::string& name = std::string());
+		Entity CreateEntity(const std::string& name = std::string(), uint64_t uuid = 0);
 		void DestroyEntity(Entity entity);
 
+		void DestroyScripts();
 		Ref<Scene> CopyScene();
+		Entity GetEntityByUUID(uint64_t uuid);
 
 		void OnUpdateRuntime(Timestep ts);
 		void OnUpdateEditor(Timestep ts, EditorCamera& camera);
@@ -30,6 +32,7 @@ namespace Frostic {
 	private:
 		entt::registry m_Registry;
 		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
+		uint64_t m_AvailableID = 1;
 
 		Renderer2D::SpriteSpecifications Specs;
 

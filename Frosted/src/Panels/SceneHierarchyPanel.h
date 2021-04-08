@@ -21,6 +21,14 @@ namespace Frostic {
 		void OnImGuiRender();
 
 		Entity GetSelectedEntity() const { return m_SelectionContext; }
+
+		template<typename T, typename F>
+		static void ForEachWhoHas(Ref<Scene> scene, F function)
+		{
+			auto view = scene->m_Registry.view<T>();
+			for (auto entity : view)
+				function(entity);
+		}
 	private:
 		void DrawEntityNode(Entity entity);
 		void DrawComponents(Entity entity);

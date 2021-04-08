@@ -76,7 +76,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>frpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;FR_PLATFORM_WINDOWS;FR_BUILD_DLL;GLFW_INCLUDE_NONE;FR_DEBUG;FR_ENABLE_ASSERTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;FE_PLATFORM_WINDOWS;FE_BUILD_DLL;GLFW_INCLUDE_NONE;FE_DEBUG;FE_ENABLE_ASSERTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\Imgui;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\ImGuizmo;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -96,7 +96,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>frpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;FR_PLATFORM_WINDOWS;FR_BUILD_DLL;GLFW_INCLUDE_NONE;FR_RELEASE;FR_ENABLE_ASSERTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;FE_PLATFORM_WINDOWS;FE_BUILD_DLL;GLFW_INCLUDE_NONE;FE_RELEASE;FE_ENABLE_ASSERTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\Imgui;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\ImGuizmo;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -120,7 +120,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>frpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;FR_PLATFORM_WINDOWS;FR_BUILD_DLL;GLFW_INCLUDE_NONE;FR_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;FE_PLATFORM_WINDOWS;FE_BUILD_DLL;GLFW_INCLUDE_NONE;FE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\Imgui;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\ImGuizmo;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -147,6 +147,9 @@
     <ClInclude Include="src\Frostic\Core\Application.h" />
     <ClInclude Include="src\Frostic\Core\Core.h" />
     <ClInclude Include="src\Frostic\Core\EntryPoint.h" />
+    <ClInclude Include="src\Frostic\Core\FEArray.h" />
+    <ClInclude Include="src\Frostic\Core\FEString.h" />
+    <ClInclude Include="src\Frostic\Core\FEVector.h" />
     <ClInclude Include="src\Frostic\Core\Input.h" />
     <ClInclude Include="src\Frostic\Core\KeyCodes.h" />
     <ClInclude Include="src\Frostic\Core\Layer.h" />
@@ -162,6 +165,7 @@
     <ClInclude Include="src\Frostic\Events\MouseEvent.h" />
     <ClInclude Include="src\Frostic\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Frostic\Math\Math.h" />
+    <ClInclude Include="src\Frostic\Math\Random.h" />
     <ClInclude Include="src\Frostic\Renderer\Buffer.h" />
     <ClInclude Include="src\Frostic\Renderer\Camera.h" />
     <ClInclude Include="src\Frostic\Renderer\EditorCamera.h" />
@@ -179,6 +183,9 @@
     <ClInclude Include="src\Frostic\Renderer\VertexArray.h" />
     <ClInclude Include="src\Frostic\Scene\Components.h" />
     <ClInclude Include="src\Frostic\Scene\Entity.h" />
+    <ClInclude Include="src\Frostic\Scene\Internal\FPointer.h" />
+    <ClInclude Include="src\Frostic\Scene\Primitives\AActor.h" />
+    <ClInclude Include="src\Frostic\Scene\Primitives\FObject.h" />
     <ClInclude Include="src\Frostic\Scene\Scene.h" />
     <ClInclude Include="src\Frostic\Scene\SceneCamera.h" />
     <ClInclude Include="src\Frostic\Scene\SceneManager.h" />
@@ -621,6 +628,7 @@
     <ClCompile Include="src\Frostic\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Frostic\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Frostic\Math\Math.cpp" />
+    <ClCompile Include="src\Frostic\Math\Random.cpp" />
     <ClCompile Include="src\Frostic\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Frostic\Renderer\EditorCamera.cpp" />
     <ClCompile Include="src\Frostic\Renderer\Framebuffer.cpp" />
@@ -635,6 +643,8 @@
     <ClCompile Include="src\Frostic\Renderer\Texture.cpp" />
     <ClCompile Include="src\Frostic\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Frostic\Scene\Entity.cpp" />
+    <ClCompile Include="src\Frostic\Scene\Primitives\AActor.cpp" />
+    <ClCompile Include="src\Frostic\Scene\Primitives\FObject.cpp" />
     <ClCompile Include="src\Frostic\Scene\Scene.cpp" />
     <ClCompile Include="src\Frostic\Scene\SceneCamera.cpp" />
     <ClCompile Include="src\Frostic\Scene\SceneManager.cpp" />

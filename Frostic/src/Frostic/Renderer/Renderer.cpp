@@ -12,7 +12,7 @@ namespace Frostic {
 
 	void Renderer::Init()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		RenderCommand::Init();
 		Renderer2D::Init();
@@ -20,7 +20,7 @@ namespace Frostic {
 
 	void Renderer::Shutdown()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 	}
 

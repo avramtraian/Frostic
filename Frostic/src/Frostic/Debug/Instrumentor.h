@@ -123,15 +123,15 @@ namespace Frostic {
 	};
 }
 
-#define FR_PROFILE 0
-#if FR_PROFILE
-	#define FR_PROFILE_BEGIN_SESSION(name, filepath) ::Frostic::Instrumentor::Get().BeginSession(name, filepath)
-	#define FR_PROFILE_END_SESSION() ::Frostic::Instrumentor::Get().EndSession()
-	#define FR_PROFILE_SCOPE(name) ::Frostic::InstrumentationTimer timer##__LINE__(name);
-	#define FR_PROFILE_FUNCTION() FR_PROFILE_SCOPE(__FUNCSIG__)
+#define FE_PROFILE 0
+#if FE_PROFILE
+	#define FE_PROFILE_BEGIN_SESSION(name, filepath) ::Frostic::Instrumentor::Get().BeginSession(name, filepath)
+	#define FE_PROFILE_END_SESSION() ::Frostic::Instrumentor::Get().EndSession()
+	#define FE_PROFILE_SCOPE(name) ::Frostic::InstrumentationTimer timer##__LINE__(name);
+	#define FE_PROFILE_FUNCTION() FE_PROFILE_SCOPE(__FUNCSIG__)
 #else
-	#define FR_PROFILE_BEGIN_SESSION(name, filepath)  
-	#define FR_PROFILE_END_SESSION()  
-	#define FR_PROFILE_SCOPE(name)  
-	#define FR_PROFILE_FUNCTION()  
+	#define FE_PROFILE_BEGIN_SESSION(name, filepath)  
+	#define FE_PROFILE_END_SESSION()  
+	#define FE_PROFILE_SCOPE(name)  
+	#define FE_PROFILE_FUNCTION()  
 #endif

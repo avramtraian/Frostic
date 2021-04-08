@@ -40,7 +40,7 @@
 	void EditorCamera::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<MouseScrolledEvent>(FR_BIND_EVENT_FN(EditorCamera::OnMouseScrolled));
+		dispatcher.Dispatch<MouseScrolledEvent>(FE_BIND_EVENT_FN(EditorCamera::OnMouseScrolled));
 	}
 
 	glm::vec3 EditorCamera::GetUpDirection() const
@@ -213,7 +213,7 @@ namespace Frostic {
 	void EditorCamera::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<MouseScrolledEvent>(FR_BIND_EVENT_FN(EditorCamera::OnMouseScrolled));
+		dispatcher.Dispatch<MouseScrolledEvent>(FE_BIND_EVENT_FN(EditorCamera::OnMouseScrolled));
 	}
 
 	bool EditorCamera::OnMouseScrolled(MouseScrolledEvent& e)

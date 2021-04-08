@@ -3,25 +3,25 @@
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D")
 {
-	Frostic::SceneManagerRuntime::Initialize(FR_BIND_EVENT_FN(Sandbox2D::OnLoadScene), FR_BIND_EVENT_FN(Sandbox2D::OnUnloadScene));
+	Frostic::SceneManagerRuntime::Initialize(FE_BIND_EVENT_FN(Sandbox2D::OnLoadScene), FE_BIND_EVENT_FN(Sandbox2D::OnUnloadScene));
 }
 
 void Sandbox2D::OnAttach()
 {
-	FR_PROFILE_FUNCTION();
+	FE_PROFILE_FUNCTION();
 
 	Frostic::SceneManagerRuntime::LoadScene(0);
 }
 
 void Sandbox2D::OnDetach()
 {
-	FR_PROFILE_FUNCTION();
+	FE_PROFILE_FUNCTION();
 	
 }
 
 void Sandbox2D::OnUpdate(Frostic::Timestep ts)
 {
-	FR_PROFILE_FUNCTION();
+	FE_PROFILE_FUNCTION();
 
 	Frostic::RenderCommand::SetClearColor({ 0.075f, 0.075f, 0.075f, 1.0f });
 	Frostic::RenderCommand::Clear();

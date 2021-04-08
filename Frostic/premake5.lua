@@ -57,25 +57,25 @@ project "Frostic"
 
 		defines
 		{
-			"FR_PLATFORM_WINDOWS",
-			"FR_BUILD_DLL",
+			"FE_PLATFORM_WINDOWS",
+			"FE_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
 		}
 
 	filter "configurations:Debug"
-		defines "FR_DEBUG"
-		defines "FR_ENABLE_ASSERTS"
+		defines "FE_DEBUG"
+		defines "FE_ENABLE_ASSERTS"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "FR_RELEASE"
-		defines "FR_ENABLE_ASSERTS"
+		defines "FE_RELEASE"
+		defines "FE_ENABLE_ASSERTS"
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Dist"
-		defines "FR_DIST"
+		defines "FE_DIST"
 		runtime "Release"
 		optimize "on"
 

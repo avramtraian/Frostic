@@ -87,7 +87,7 @@ namespace Frostic {
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
 		out << YAML::BeginMap; // Entities
-		out << YAML::Key << "Entity" << YAML::Value << "75834759345";
+		out << YAML::Key << "Entity" << YAML::Value << entity.GetComponent<TagComponent>().UUID; // The operator overload takes care
 
 		if (entity.HasComponent<TagComponent>())
 		{
@@ -175,7 +175,7 @@ namespace Frostic {
 		out << YAML::BeginMap; // Scene
 		out << YAML::Key << "Scene" << YAML::Value << "Untitled";
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
-		m_Scene->m_Registry.each([&](auto entityID)
+		m_Scene->m_Registry.each_reverse([&](auto entityID)
 			{
 				Entity entity = { entityID, m_Scene.get() };
 				if (!entity)
@@ -196,7 +196,7 @@ namespace Frostic {
 	void SceneSerializer::SerializeRuntime(const std::string& filepath)
 	{
 		// Not implemented
-		FR_CORE_ASSERT(false, "Not implemented!");
+		FE_CORE_ASSERT(false, "Not implemented!");
 	}
 
 	bool SceneSerializer::Deserialize(const std::string& filepath, EditorCamera& camera)
@@ -208,13 +208,13 @@ namespace Frostic {
 		YAML::Node data = YAML::Load(strStream.str());
 		if (!data["Scene"])
 		{
-			FR_CORE_ERROR("Unable to find keyword 'Scene'");
-			FR_CORE_ERROR("File may be corrupted!");
+			FE_CORE_ERROR("Unable to find keyword 'Scene'");
+			FE_CORE_ERROR("File may be corrupted!");
 			return false;
 		}
 
 		std::string sceneName = data["Scene"].as<std::string>();
-		FR_CORE_TRACE("Deserializing scene '{0}'", sceneName);
+		FE_CORE_TRACE("Deserializing scene '{0}'", sceneName);
 
 		auto entities = data["Entities"];
 		if (entities)
@@ -228,9 +228,9 @@ namespace Frostic {
 				if (tagComponent)
 					name = tagComponent["Tag"].as<std::string>();
 
-				FR_CORE_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
+				FE_CORE_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
 
-				Entity deserializedEntity = m_Scene->CreateEntity(name);
+				Entity deserializedEntity = m_Scene->CreateEntity(name, uuid);
 
 				auto transformComponent = entity["TransformComponent"];
 				if (transformComponent)
@@ -280,7 +280,7 @@ namespace Frostic {
 		auto editorCamera = data["EditorCamera"];
 		if (editorCamera)
 		{
-			FR_CORE_TRACE("Deserializing Editor Camera");
+			FE_CORE_TRACE("Deserializing Editor Camera");
 			camera.SetProjectionType((EditorCamera::ProjectionType)editorCamera["ProjectionType"].as<int>());
 			camera.SetTranslation(editorCamera["Translation"].as<glm::vec3>());
 			camera.SetRotation(editorCamera["Rotation"].as<glm::vec3>());
@@ -289,14 +289,14 @@ namespace Frostic {
 			camera.SetPerspectiveFarClip(editorCamera["PerspectiveFarClip"].as<float>());
 		}
 
-		FR_CORE_TRACE("Deserializing complete!");
+		FE_CORE_TRACE("Deserializing complete!");
 		return true;
 	}
 
 	bool SceneSerializer::DeserializeRuntime(const std::string& filepath)
 	{
 		/*/ Not implemented
-		FR_CORE_ASSERT(false, "Not implemented!");
+		FE_CORE_ASSERT(false, "Not implemented!");
 		return false;*/
 
 		std::ifstream stream(filepath);
@@ -306,13 +306,13 @@ namespace Frostic {
 		YAML::Node data = YAML::Load(strStream.str());
 		if (!data["Scene"])
 		{
-			FR_CORE_ERROR("Unable to find keyword 'Scene'");
-			FR_CORE_ERROR("File may be corrupted!");
+			FE_CORE_ERROR("Unable to find keyword 'Scene'");
+			FE_CORE_ERROR("File may be corrupted!");
 			return false;
 		}
 
 		std::string sceneName = data["Scene"].as<std::string>();
-		FR_CORE_TRACE("Deserializing scene '{0}'", sceneName);
+		FE_CORE_TRACE("Deserializing scene '{0}'", sceneName);
 
 		auto entities = data["Entities"];
 		if (entities)
@@ -326,7 +326,7 @@ namespace Frostic {
 				if (tagComponent)
 					name = tagComponent["Tag"].as<std::string>();
 
-				FR_CORE_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
+				FE_CORE_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
 
 				Entity deserializedEntity = m_Scene->CreateEntity(name);
 
@@ -375,7 +375,7 @@ namespace Frostic {
 			}
 		}
 
-		FR_CORE_TRACE("Deserializing complete!");
+		FE_CORE_TRACE("Deserializing complete!");
 		return true;
 	}
 

@@ -31,6 +31,12 @@
     <Filter Include="src\Frostic\Scene">
       <UniqueIdentifier>{733260F0-DF48-5E86-28C0-E9A794152F0E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Frostic\Scene\Internal">
+      <UniqueIdentifier>{FFA99628-EBB9-42F9-5473-A71740A23192}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Frostic\Scene\Primitives">
+      <UniqueIdentifier>{6E6295C3-5A1D-856F-03D5-FDB9EF6ECFFF}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Frostic\Utils">
       <UniqueIdentifier>{B6C68DF0-22DD-8B86-6B54-17A8D7A95C0E}</UniqueIdentifier>
     </Filter>
@@ -99,6 +105,12 @@
     <ClInclude Include="src\Frostic\Core\EntryPoint.h">
       <Filter>src\Frostic\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Frostic\Core\FEArray.h">
+      <Filter>src\Frostic\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Core\FEVector.h">
+      <Filter>src\Frostic\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Frostic\Core\Input.h">
       <Filter>src\Frostic\Core</Filter>
     </ClInclude>
@@ -142,6 +154,9 @@
       <Filter>src\Frostic\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Math\Math.h">
+      <Filter>src\Frostic\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Math\Random.h">
       <Filter>src\Frostic\Math</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Renderer\Buffer.h">
@@ -194,6 +209,15 @@
     </ClInclude>
     <ClInclude Include="src\Frostic\Scene\Entity.h">
       <Filter>src\Frostic\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Scene\Internal\FPointer.h">
+      <Filter>src\Frostic\Scene\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Scene\Primitives\AActor.h">
+      <Filter>src\Frostic\Scene\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Scene\Primitives\FObject.h">
+      <Filter>src\Frostic\Scene\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Scene\Scene.h">
       <Filter>src\Frostic\Scene</Filter>
@@ -1488,6 +1512,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="src\Frostic\Core\FEString.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Frostic\Assets\AssetLibrary.cpp">
@@ -1515,6 +1540,9 @@
       <Filter>src\Frostic\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\Frostic\Math\Math.cpp">
+      <Filter>src\Frostic\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frostic\Math\Random.cpp">
       <Filter>src\Frostic\Math</Filter>
     </ClCompile>
     <ClCompile Include="src\Frostic\Renderer\Buffer.cpp">
@@ -1558,6 +1586,12 @@
     </ClCompile>
     <ClCompile Include="src\Frostic\Scene\Entity.cpp">
       <Filter>src\Frostic\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frostic\Scene\Primitives\AActor.cpp">
+      <Filter>src\Frostic\Scene\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frostic\Scene\Primitives\FObject.cpp">
+      <Filter>src\Frostic\Scene\Primitives</Filter>
     </ClCompile>
     <ClCompile Include="src\Frostic\Scene\Scene.cpp">
       <Filter>src\Frostic\Scene</Filter>

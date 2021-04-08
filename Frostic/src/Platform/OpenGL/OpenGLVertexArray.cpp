@@ -22,43 +22,43 @@ namespace Frostic {
 			case Frostic::ShaderDataType::Bool:      return GL_BOOL;
 		}
 
-		FR_CORE_ASSERT(false, "Unknown ShaderDataType!");
+		FE_CORE_ASSERT(false, "Unknown ShaderDataType!");
 		return 0;
 	}
 
 	OpenGLVertexArray::OpenGLVertexArray()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		glCreateVertexArrays(1, &m_RendererID);
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		glDeleteVertexArrays(1, &m_RendererID);
 	}
 
 	void OpenGLVertexArray::Bind() const
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		glBindVertexArray(m_RendererID);
 	}
 
 	void OpenGLVertexArray::Unbind() const
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		glBindVertexArray(0);
 	}
 
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
-		FR_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
+		FE_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
 		glBindVertexArray(m_RendererID);
 		vertexBuffer->Bind();
@@ -111,7 +111,7 @@ namespace Frostic {
 
 	void OpenGLVertexArray::SetIndexBuffer(Ref<IndexBuffer>& indexBuffer)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		glBindVertexArray(m_RendererID);
 		indexBuffer->Bind();

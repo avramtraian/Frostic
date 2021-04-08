@@ -47,7 +47,7 @@ namespace Frostic {
 
 	void Renderer2D::Init()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		s_Data.QuadVertexArray = Frostic::VertexArray::Create();
 				
@@ -107,13 +107,13 @@ namespace Frostic {
 
 	void Renderer2D::Shutdown()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 		
 	}
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 		
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
@@ -123,7 +123,7 @@ namespace Frostic {
 
 	void Renderer2D::BeginScene(const EditorCamera& camera)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		glm::mat4 viewProjection = camera.GetViewProjection();
 
@@ -135,7 +135,7 @@ namespace Frostic {
 
 	void Renderer2D::BeginScene(const glm::mat4& projection, const glm::mat4& view)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		glm::mat4 viewProjection = projection * view;
 
@@ -147,7 +147,7 @@ namespace Frostic {
 
 	void Renderer2D::EndScene()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 		
 		Flush();
 	}

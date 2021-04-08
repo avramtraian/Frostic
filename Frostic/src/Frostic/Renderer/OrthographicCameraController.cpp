@@ -12,23 +12,23 @@ namespace Frostic {
 
 	void OrthographicCameraController::OnUpdate(Timestep ts)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
-		if (Input::IsKeyPressed(FR_KEY_W))
+		if (Input::IsKeyPressed(FE_KEY_W))
 			m_CameraPosition.y += m_CameraTranslationSpeed * ts;
-		else if (Input::IsKeyPressed(FR_KEY_S))
+		else if (Input::IsKeyPressed(FE_KEY_S))
 			m_CameraPosition.y -= m_CameraTranslationSpeed * ts;
 
-		if (Input::IsKeyPressed(FR_KEY_D))
+		if (Input::IsKeyPressed(FE_KEY_D))
 			m_CameraPosition.x += m_CameraTranslationSpeed * ts;
-		else if (Input::IsKeyPressed(FR_KEY_A))
+		else if (Input::IsKeyPressed(FE_KEY_A))
 			m_CameraPosition.x -= m_CameraTranslationSpeed * ts;
 
 		if (m_Rotation)
 		{
-			if (Input::IsKeyPressed(FR_KEY_Q))
+			if (Input::IsKeyPressed(FE_KEY_Q))
 				m_CameraRotation += m_CameraRotationSpeed * ts;
-			else if (Input::IsKeyPressed(FR_KEY_E))
+			else if (Input::IsKeyPressed(FE_KEY_E))
 				m_CameraRotation -= m_CameraRotationSpeed * ts;
 
 			m_Camera.SetRotation(m_CameraRotation);
@@ -40,11 +40,11 @@ namespace Frostic {
 
 	void OrthographicCameraController::OnEvent(Event& e)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<MouseScrolledEvent>(FR_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
-		dispatcher.Dispatch<WindowResizeEvent>(FR_BIND_EVENT_FN(OrthographicCameraController::OnWindowResizeEvent));
+		dispatcher.Dispatch<MouseScrolledEvent>(FE_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
+		dispatcher.Dispatch<WindowResizeEvent>(FE_BIND_EVENT_FN(OrthographicCameraController::OnWindowResizeEvent));
 	}
 
 	void OrthographicCameraController::OnResize(float aspectRatio)
@@ -61,7 +61,7 @@ namespace Frostic {
 
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		m_ZoomLevel -= e.GetYOffset() * m_ZoomLevel * 0.125f;
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
@@ -71,7 +71,7 @@ namespace Frostic {
 
 	bool OrthographicCameraController::OnWindowResizeEvent(WindowResizeEvent& e)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		OnResize((float)e.GetWidth() / (float)e.GetHeight());
 		return false;

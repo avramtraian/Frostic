@@ -84,7 +84,7 @@ namespace Frostic {
 				case FramebufferTextureFormat::RED_INTEGER: return GL_RED_INTEGER;
 			}
 
-			FR_CORE_ASSERT(false, "");
+			FE_CORE_ASSERT(false, "");
 			return 0;
 		}
 
@@ -115,7 +115,7 @@ namespace Frostic {
 	{
 		if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize)
 		{
-			FR_CORE_WARN("Attemted to resize a framebuffer to: {0}, {1}", width, height);
+			FE_CORE_WARN("Attemted to resize a framebuffer to: {0}, {1}", width, height);
 			return;
 		}
 
@@ -127,7 +127,7 @@ namespace Frostic {
 
 	int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
 	{
-		FR_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "");
+		FE_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "");
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
 		int pixelData;
 		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
@@ -136,7 +136,7 @@ namespace Frostic {
 	
 	void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int clearValue)
 	{
-		FR_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "");
+		FE_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "");
 
 		auto& specs = m_ColorAttachmentSpecifications[attachmentIndex];
 		glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::FrosticFBTextureFormatToGL(specs.TextureFormat), GL_INT, &clearValue);
@@ -194,7 +194,7 @@ namespace Frostic {
 
 		if (m_ColorAttachments.size() > 1)
 		{
-			FR_CORE_ASSERT(m_ColorAttachments.size() <= 4, "");
+			FE_CORE_ASSERT(m_ColorAttachments.size() <= 4, "");
 			GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
 			glDrawBuffers(m_ColorAttachments.size(), buffers);
 		}
@@ -203,7 +203,7 @@ namespace Frostic {
 			glDrawBuffer(GL_NONE);
 		}
 
-		FR_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
+		FE_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}

@@ -1,8 +1,12 @@
 #include "frpch.h"
 #include "Math.h"
 
+#include <cstdlib>
+#include <ctime>
+
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtc/random.hpp>
 
 namespace Frostic::Math {
 
@@ -77,6 +81,11 @@ namespace Frostic::Math {
 
 
 		return true;
+	}
+
+	uint64_t GenerateRandomNumber(uint64_t min, uint64_t max)
+	{
+		return glm::linearRand<uint64_t>(min, max);
 	}
 
 }

@@ -1,6 +1,18 @@
 Scene: Untitled
 Entities:
-  - Entity: 75834759345
+  - Entity: 938578240
+    TagComponent:
+      Tag: Square
+    TransformComponent:
+      Active: true
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Active: true
+      Color: [0.876447856, 0.0744473264, 0.0744473264, 1]
+      TexturePath: C:\dev\Frostic-dev\Frosted\assets\textures\Checkerboard.png
+  - Entity: 1
     TagComponent:
       Tag: Camera
     TransformComponent:
@@ -20,18 +32,6 @@ Entities:
       Active: true
       Primary: true
       FixedAspectRatio: false
-  - Entity: 75834759345
-    TagComponent:
-      Tag: Square
-    TransformComponent:
-      Active: true
-      Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Active: true
-      Color: [0.876447856, 0.0744473264, 0.0744473264, 1]
-      TexturePath: C:\dev\Frostic-dev\Frosted\assets\textures\Checkerboard.png
 EditorCamera:
   ProjectionType: 1
   Translation: [0, 0, 0]

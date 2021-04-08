@@ -23,6 +23,10 @@
 
 #include "Frostic/Renderer/EditorCamera.h"
 
+#include "Frostic/Core/FEArray.h"
+#include "Frostic/Core/FEVector.h"
+#include "Frostic/Core/FEString.h"
+
 // ---Renderer--------------------
 #include "Frostic/Renderer/Renderer.h"
 #include "Frostic/Renderer/Renderer2D.h"

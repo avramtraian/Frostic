@@ -18,7 +18,7 @@ namespace Frostic {
 			if (T::GetStaticType() == AssetType::Texture)
 				return LoadTexture(filepath);
 			else
-				FR_CORE_ASSERT(false, "Unknown asset template type!");
+				FE_CORE_ASSERT(false, "Unknown asset template type!");
 			return nullptr;
 		}
 
@@ -28,7 +28,7 @@ namespace Frostic {
 			if (T::GetStaticType() == AssetType::Texture)
 				return GetTexture(filepath);
 			else
-				FR_CORE_ASSERT(false, "Unknown asset template type!");
+				FE_CORE_ASSERT(false, "Unknown asset template type!");
 			return nullptr;
 		}
 
@@ -44,7 +44,7 @@ namespace Frostic {
 			}
 			else
 			{
-				FR_CORE_ASSERT(false, "Unknown asset template type!");
+				FE_CORE_ASSERT(false, "Unknown asset template type!");
 				return nullptr;
 			}
 		}
@@ -55,7 +55,7 @@ namespace Frostic {
 			if (T::GetStaticType() == AssetType::Texture)
 				return RemoveTexture(filepath);
 			else
-				FR_CORE_ASSERT(false, "Unknown asset template type!");
+				FE_CORE_ASSERT(false, "Unknown asset template type!");
 			return false;
 		}
 
@@ -65,7 +65,7 @@ namespace Frostic {
 			if (T::GetStaticType() == AssetType::Texture)
 				return RemoveTextureIfInvalid(filepath);
 			else
-				FR_CORE_ASSERT(false, "Unknown asset template type!");
+				FE_CORE_ASSERT(false, "Unknown asset template type!");
 			return false;
 		}
 
@@ -75,7 +75,7 @@ namespace Frostic {
 			if (T::GetStaticType() == AssetType::Texture)
 				return ExistsTexture(filepath);
 			else
-				FR_CORE_ASSERT(false, "Unknown asset template type!");
+				FE_CORE_ASSERT(false, "Unknown asset template type!");
 			return false;
 		}
 
@@ -89,7 +89,7 @@ namespace Frostic {
 			}
 			else
 			{
-				FR_CORE_ASSERT(false, "Unknown asset template type!");
+				FE_CORE_ASSERT(false, "Unknown asset template type!");
 			}
 		}
 	private:

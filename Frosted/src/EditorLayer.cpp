@@ -14,12 +14,12 @@ namespace Frostic {
 	EditorLayer::EditorLayer()
 		: Layer("Sandbox2D"), m_CameraController(1600.0f / 900.0f)
 	{
-		SceneManagerEditor::Initialize(FR_BIND_EVENT_FN(EditorLayer::OnRuntimeStart), FR_BIND_EVENT_FN(EditorLayer::OnRuntimeStop));
+		SceneManagerEditor::Initialize(FE_BIND_EVENT_FN(EditorLayer::OnRuntimeStart), FE_BIND_EVENT_FN(EditorLayer::OnRuntimeStop));
 	}
 
 	void EditorLayer::OnAttach()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		FramebufferSpecification fbSpec;
 		fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
@@ -38,13 +38,13 @@ namespace Frostic {
 
 	void EditorLayer::OnDetach()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 	}
 
 	void EditorLayer::OnUpdate(Timestep ts)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 		FramebufferSpecification spec = m_Framebuffer->GetSpecification();
 		if (m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && (spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
 		{
@@ -80,7 +80,7 @@ namespace Frostic {
 
 	void EditorLayer::OnImGuiRender()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		static bool dockspaceOpen = true;
 		static bool opt_fullscreen = true;
@@ -274,8 +274,8 @@ namespace Frostic {
 	void EditorLayer::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<KeyPressedEvent>(FR_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
-		dispatcher.Dispatch<MouseButtonPressedEvent>(FR_BIND_EVENT_FN(EditorLayer::OnMousePressed));
+		dispatcher.Dispatch<KeyPressedEvent>(FE_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(FE_BIND_EVENT_FN(EditorLayer::OnMousePressed));
 
 		m_CameraController.OnEvent(e);
 		m_EditorCamera.OnEvent(e);

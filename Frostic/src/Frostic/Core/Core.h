@@ -2,9 +2,9 @@
 
 #include <memory>
 
-#ifdef FR_PLATFORM_WINDOWS
-	#ifdef FR_DYNAMIC_LINK
-		#ifdef FR_BUILD_DLL
+#ifdef FE_PLATFORM_WINDOWS
+	#ifdef FE_DYNAMIC_LINK
+		#ifdef FE_BUILD_DLL
 			#define FROSTIC_API  __declspec(dllexport)
 		#else
 			#define FROSTIC_API  __declspec(dllimport)
@@ -16,17 +16,17 @@
 	#error Frostic only supports Windows!
 #endif
 
-#ifdef FR_ENABLE_ASSERTS
-	#define FR_CORE_ASSERT(x, ...) { if(!(x)) { FR_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-	#define FR_ASSERT(x, ...) { if(!(x)) { FR_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+#ifdef FE_ENABLE_ASSERTS
+	#define FE_CORE_ASSERT(x, ...) { if(!(x)) { FE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+	#define FE_ASSERT(x, ...) { if(!(x)) { FE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #else 
-	#define FR_CORE_ASSERT(x, ...)
-	#define FR_ASSERT(x, ...)
+	#define FE_CORE_ASSERT(x, ...)
+	#define FE_ASSERT(x, ...)
 #endif
 
 #define BIT(x) (1 << x)
 
-#define FR_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+#define FE_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
 #define FILEPATH(fp) std::string("C:/dev/Frostic-dev/Frosted/").append(fp)
 

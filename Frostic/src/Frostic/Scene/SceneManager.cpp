@@ -33,6 +33,7 @@ namespace Frostic {
 
 	void SceneManagerEditor::StopRuntimeScene()
 	{
+		m_RuntimeScene->DestroyScripts();
 		m_RuntimeScene = nullptr;
 		m_Runtime = false;
 		m_StopRuntimeCallback(m_BaseScene);

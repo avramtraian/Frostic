@@ -15118,6 +15118,10 @@ public:
         return available == null ? generate_identifier() : recycle_identifier();
     }
 
+    entity_type create_safe() {
+        return generate_identifier();
+    }
+
     /**
      * @brief Creates a new entity and returns it.
      *
@@ -15663,7 +15667,7 @@ public:
     }
 
 	template<typename Func>
-	void eachreverse(Func func) const {
+	void each_reverse(Func func) const {
 		if (available == null) {
 			for (auto pos = 1; pos <= entities.size(); ++pos) {
 				func(entities[pos - 1]);

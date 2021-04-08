@@ -11,11 +11,11 @@ namespace Frostic {
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None:     FR_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::None:     FE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
 		case RendererAPI::API::OpenGL:   return std::make_shared<OpenGLShader>(filepath);
 		}
 
-		FR_CORE_ASSERT(false, "Unknown RendererAPI!");
+		FE_CORE_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
 	}
 
@@ -23,17 +23,17 @@ namespace Frostic {
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::API::None:     FR_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+			case RendererAPI::API::None:     FE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
 			case RendererAPI::API::OpenGL:   return std::make_shared<OpenGLShader>(name, vertexSrc, fragmentSrc);
 		}
 
-		FR_CORE_ASSERT(false, "Unknown RendererAPI!");
+		FE_CORE_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
 	}
 
 	void ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
 	{
-		FR_CORE_ASSERT(!Exists(name), "Shader already exists!");
+		FE_CORE_ASSERT(!Exists(name), "Shader already exists!");
 		m_Shaders[name] = shader;
 	}
 
@@ -59,7 +59,7 @@ namespace Frostic {
 
 	Ref<Shader> ShaderLibrary::Get(const std::string& name)
 	{
-		FR_CORE_ASSERT(Exists(name), "Shader not found!");
+		FE_CORE_ASSERT(Exists(name), "Shader not found!");
 		return m_Shaders[name];
 	}
 

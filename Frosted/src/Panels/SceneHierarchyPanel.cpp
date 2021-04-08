@@ -9,6 +9,8 @@
 
 #include "Frostic/Utils/PlatformUtils.h"
 
+#include "../Testing/ScriptedEntity.h"
+
 namespace Frostic {
 	
 	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& context)
@@ -188,6 +190,190 @@ namespace Frostic {
 		return used;
 	}
 
+	static bool DrawUInt8_tControl(const std::string& label, uint8_t* value, float columnWidth = 100.0f)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+
+		bool used = ImGui::DragInt("##Value", (int*)value);
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+
+		return used;
+	}
+
+	static bool DrawUInt16_tControl(const std::string& label, uint16_t* value, float columnWidth = 100.0f)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+
+		bool used = ImGui::DragInt("##Value", (int*)value);
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+
+		return used;
+	}
+
+	static bool DrawUInt32_tControl(const std::string& label, uint32_t* value, float columnWidth = 100.0f)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+
+		bool used = ImGui::DragInt("##Value", (int*)value);
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+
+		return used;
+	}
+
+	static bool DrawUInt64_tControl(const std::string& label, uint64_t* value, float columnWidth = 100.0f)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+
+		bool used = ImGui::DragInt("##Value", (int*)value);
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+
+		return used;
+	}
+
+	static bool DrawIntControl(const std::string& label, int* value, float columnWidth = 100.0f)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+
+		bool used = ImGui::DragInt("##Value", value);
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+
+		return used;
+	}
+
+	template<typename T>
+	static T* DrawComponentPointerField(const std::string& label, T* comPtr, Ref<Scene>& context, float columnWidth = 100.0f)
+	{
+		ImGui::PushID(label.c_str());
+		std::string name = "None";
+		if (comPtr != nullptr)
+		{
+			Entity entity{ (entt::entity)comPtr->EnttOwnerID, context.get() };
+			if (entity.IsValid())
+				name = entity.GetComponent<TagComponent>().Tag;
+		}
+
+		ImGui::Columns(2);
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::SameLine();
+		ImGui::Text("%d", comPtr == nullptr ? -1 : comPtr->UUID);
+		ImGui::NextColumn();
+
+		if (ImGui::Button(name.c_str()))
+			ImGui::OpenPopup("Pointer");
+
+		if (ImGui::BeginPopup("Pointer"))
+		{
+			SceneHierarchyPanel::ForEachWhoHas<T>(context, [&](auto ent)
+				{
+					Entity entity{ ent, context.get() };
+					if (ImGui::MenuItem(entity.GetComponent<TagComponent>().Tag.c_str()))
+					{
+						comPtr = entity.GetComponentP<T>();
+						ImGui::CloseCurrentPopup();
+					}
+				});
+
+			if (ImGui::MenuItem("NONE: nullptr"))
+			{
+				comPtr = nullptr;
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::EndPopup();
+		}
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+		return comPtr;
+	}
+
+	static void DrawEntityReferenceField(const std::string& label, Entity& entRef, const Ref<Scene>& context, float columnWidth = 100.0f)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+		ImGui::SetColumnWidth(0, columnWidth);
+
+		ImGui::Text(label.c_str());
+
+		ImGui::NextColumn();
+
+		if (ImGui::Button(entRef.Exists() == false ? "None" : entRef.GetComponent<TagComponent>().Tag.c_str()))
+			ImGui::OpenPopup("Pointer");
+
+		if (ImGui::BeginPopup("Pointer"))
+		{
+			SceneHierarchyPanel::ForEachWhoHas<TagComponent>(context, [&](auto ent)
+				{
+					Entity entity{ ent, context.get() };
+					if (ImGui::MenuItem(entity.GetComponent<TagComponent>().Tag.c_str()))
+					{
+						entRef = entity;
+						ImGui::CloseCurrentPopup();
+					}
+				});
+
+			if (ImGui::MenuItem("NONE: nullptr"))
+			{
+				entRef.Invalidate();
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::EndPopup();
+		}
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+	}
+
 	static bool DrawCheckbox(const std::string& label, bool* value, float columnWidth = 100.0f)
 	{
 		ImGui::PushID(label.c_str());
@@ -214,7 +400,7 @@ namespace Frostic {
 
 		if (entity.HasComponent<T>())
 		{
-			auto& component = entity.GetComponent<T>();
+			T& component = entity.GetComponent<T>();
 			ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
 
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
@@ -291,8 +477,25 @@ namespace Frostic {
 				ImGui::CloseCurrentPopup();
 			}
 
+			if (ImGui::MenuItem("Native Script Component"))
+			{
+				auto& nsc = m_SelectionContext.AddComponent<NativeScriptComponent>();
+				nsc.Bind<ScriptedEntity>();
+				nsc.Instance = nsc.InstantiateScript();
+				nsc.Instance->m_Entity.m_Scene = m_Context.get();
+				nsc.Instance->m_Entity.m_EntityHandle = (entt::entity)(uint32_t)entity;
+				nsc.Instance->m_EntityUUID = entity.GetComponent<TagComponent>().UUID;
+				ImGui::CloseCurrentPopup();
+			}
+
 			ImGui::EndPopup();
 		}
+
+		// ImGui::SameLine();
+		// {
+		// 	uint64_t uuid = entity.GetComponent<TagComponent>().UUID;
+		// 	ImGui::Text("ID: %d", uuid);
+		// }
 
 		ImGui::PopItemWidth();
 
@@ -422,6 +625,38 @@ namespace Frostic {
 			ImGui::PopItemWidth();
 			ImGui::Columns(1);
 		});
+
+		DrawComponent<NativeScriptComponent>("Native Component", entity, [&](NativeScriptComponent& nsc)
+			{
+				for (ScriptableEntity::PropertyData& data : nsc.Instance->m_DataReferences)
+				{
+					switch (data.m_DataType)
+					{
+					case DataType::UINT8_T:
+						DrawUInt8_tControl(data.m_Label, (uint8_t*)data.m_Data);
+						break;
+					case DataType::UINT16_T:
+						DrawUInt16_tControl(data.m_Label, (uint16_t*)data.m_Data);
+						break;
+					case DataType::UINT32_T:
+						DrawUInt32_tControl(data.m_Label, (uint32_t*)data.m_Data);
+						break;
+					case DataType::UINT64_T:
+						DrawUInt64_tControl(data.m_Label, (uint64_t*)data.m_Data);
+						break;
+					case DataType::INT:
+						DrawIntControl(data.m_Label, (int*)data.m_Data);
+						break;
+					case DataType::FLOAT:
+						DrawFloatControl(data.m_Label, (float*)data.m_Data);
+						break;
+					default:
+						break;
+					}
+				}
+				for (ScriptableEntity::PropertyEntity& data : nsc.Instance->m_EntityReferences)
+					DrawEntityReferenceField(data.m_Label, *data.m_Data, m_Context);
+			});
 
 	}
 

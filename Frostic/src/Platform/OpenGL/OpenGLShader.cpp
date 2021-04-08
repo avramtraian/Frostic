@@ -15,13 +15,13 @@ namespace Frostic {
 		if (type == "fragment" || type == "pixel") 
 			return GL_FRAGMENT_SHADER;
 
-		FR_CORE_ASSERT(false, "Unknown shader type!");
+		FE_CORE_ASSERT(false, "Unknown shader type!");
 		return 0;
 	}
 
 	OpenGLShader::OpenGLShader(const std::string& filepath)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		std::string shaderSource = ReadFile(filepath);
 		auto shaderSources = PreProcess(shaderSource);
@@ -37,7 +37,7 @@ namespace Frostic {
 	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
 		: m_Name(name)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 		
 		std::unordered_map<GLenum, std::string> sources;
 		sources[GL_VERTEX_SHADER] = vertexSrc;
@@ -47,14 +47,14 @@ namespace Frostic {
 
 	OpenGLShader::~OpenGLShader()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 		
 		glDeleteProgram(m_RendererID);
 	}
 
 	std::string OpenGLShader::ReadFile(const std::string& filepath)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		std::string result;
 		std::ifstream in(filepath, std::ios::in | std::ios::binary);
@@ -68,7 +68,7 @@ namespace Frostic {
 		}
 		else
 		{
-			FR_CORE_ERROR("Could not open file '{0}'", filepath);
+			FE_CORE_ERROR("Could not open file '{0}'", filepath);
 		}
 
 		return result;
@@ -76,7 +76,7 @@ namespace Frostic {
 
 	std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		std::unordered_map<GLenum, std::string> shaderSources;
 
@@ -86,10 +86,10 @@ namespace Frostic {
 		while (pos != std::string::npos)
 		{
 			size_t eol = source.find_first_of("\r\n", pos);
-			FR_CORE_ASSERT(eol != std::string::npos, "Synatax error");
+			FE_CORE_ASSERT(eol != std::string::npos, "Synatax error");
 			size_t begin = pos + typeTokenLenght + 1;
 			std::string type = source.substr(begin, eol - begin);
-			FR_CORE_ASSERT(type == "vertex" || type == "fragment" || type == "pixel", "Invalid shader type specification!");
+			FE_CORE_ASSERT(type == "vertex" || type == "fragment" || type == "pixel", "Invalid shader type specification!");
 
 			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
 			pos = source.find(typeToken, nextLinePos);
@@ -101,10 +101,10 @@ namespace Frostic {
 
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		GLuint program = glCreateProgram();
-		FR_CORE_ASSERT(shaderSources.size() <= 2, "To many shaders!");
+		FE_CORE_ASSERT(shaderSources.size() <= 2, "To many shaders!");
 		std::array<GLenum, 2> glShadersIDs;
 		int glShaderIDIndex = 0;
 
@@ -132,8 +132,8 @@ namespace Frostic {
 
 				glDeleteShader(shader);
 
-				FR_CORE_ERROR("{0}", infoLog.data());
-				FR_CORE_ASSERT(false, "Shader compilation failure!");
+				FE_CORE_ERROR("{0}", infoLog.data());
+				FE_CORE_ASSERT(false, "Shader compilation failure!");
 				return;
 			}
 
@@ -163,8 +163,8 @@ namespace Frostic {
 			for(auto id : glShadersIDs)
 				glDeleteShader(id);
 
-			FR_CORE_ERROR("{0}", infoLog.data());
-			FR_CORE_ASSERT(false, "Shader link failure!");
+			FE_CORE_ERROR("{0}", infoLog.data());
+			FE_CORE_ASSERT(false, "Shader link failure!");
 			return;
 		}
 
@@ -177,21 +177,21 @@ namespace Frostic {
 
 	void OpenGLShader::Bind() const
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		glUseProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Unbind() const
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		glUseProgram(0);
 	}
 
 	void OpenGLShader::SetInt(const std::string& name, const int value)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		UploadUniformInt(name, value);
 	}
@@ -203,35 +203,35 @@ namespace Frostic {
 
 	void OpenGLShader::SetFloat(const std::string& name, const float value)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		UploadUniformFloat(name, value);
 	}
 
 	void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& value)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		UploadUniformFloat2(name, value);
 	}
 
 	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		UploadUniformFloat3(name, value);
 	}
 
 	void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		UploadUniformFloat4(name, value);
 	}
 
 	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		UploadUniformMat4(name, value);
 	}

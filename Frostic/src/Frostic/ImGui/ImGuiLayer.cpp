@@ -24,7 +24,7 @@ namespace Frostic {
 
 	void ImGuiLayer::OnAttach()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -56,7 +56,7 @@ namespace Frostic {
 
 	void ImGuiLayer::OnDetach()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
@@ -75,7 +75,7 @@ namespace Frostic {
 
 	void ImGuiLayer::Begin()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -86,7 +86,7 @@ namespace Frostic {
 
 	void ImGuiLayer::End()
 	{
-		FR_PROFILE_FUNCTION();
+		FE_PROFILE_FUNCTION();
 
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();

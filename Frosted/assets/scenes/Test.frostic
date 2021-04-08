@@ -1,0 +1,25 @@
+Scene: Untitled
+Entities:
+  - Entity: 26426042
+    TagComponent:
+      Tag: 2
+    TransformComponent:
+      Active: true
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 1377042432
+    TagComponent:
+      Tag: 1
+    TransformComponent:
+      Active: true
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+EditorCamera:
+  ProjectionType: 1
+  Translation: [0, 0, 0]
+  Rotation: [0, 0, 0]
+  PerspectiveFOV: 30
+  PerspectiveNearClip: 0.100000001
+  PerspectiveFarClip: 1000

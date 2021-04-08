@@ -10,14 +10,28 @@
 #include "Frostic/Renderer/Texture.h"
 #include "Frostic/Core/Timestep.h"
 
+#include <vector>
+#include "Frostic/Core/FEArray.h"
+#include "Frostic/Core/FEVector.h"
+#include "Frostic/Core/FEString.h"
+
+#define NULL_COMPONENT false
+
+#define FECOMPONENT \
+	bool Active = true; \
+	uint32_t EnttOwnerID = 0; \
+	Scene* Context = nullptr
+
 namespace Frostic {
 	
 	struct TagComponent
 	{
-		bool Active = true;
+		FECOMPONENT;
+
+		uint64_t UUID = 0;
 		std::string Tag;
 
-		TagComponent() = default;
+		TagComponent() {}
 		TagComponent(const TagComponent& other) = default;
 		TagComponent(const std::string& tag)
 			: Tag(tag) {}
@@ -25,7 +39,8 @@ namespace Frostic {
 
 	struct TransformComponent
 	{
-		bool Active = true;
+		FECOMPONENT;
+
 		glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
@@ -45,7 +60,8 @@ namespace Frostic {
 
 	struct SpriteRendererComponent
 	{
-		bool Active = true;
+		FECOMPONENT;
+
 		glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
 		std::string TexturePath;
 		Ref<Texture2D> Texture;
@@ -58,19 +74,22 @@ namespace Frostic {
 
 	struct CameraComponent
 	{
-		bool Active = true;
+		FECOMPONENT;
+
 		Frostic::SceneCamera Camera;
 		bool Primary = true; // TODO: Move to Scene
 		bool FixedAspectRatio = false;
-
+		
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent& other) = default;
 	};
 
 	struct NativeScriptComponent
 	{
-		bool Active = true;
+		FECOMPONENT;
+
 		ScriptableEntity* Instance = nullptr;
+		bool Initialized = false;
 
 		ScriptableEntity*(*InstantiateScript)();
 		void (*DestroyScript)(NativeScriptComponent*);

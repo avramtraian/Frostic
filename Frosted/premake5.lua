@@ -34,20 +34,20 @@ project "Frosted"
 
 		defines
 		{
-			"FR_PLATFORM_WINDOWS"
+			"FE_PLATFORM_WINDOWS"
 		}
 
 	filter "configurations:Debug"
-		defines "FR_DEBUG"
+		defines "FE_DEBUG"
 		runtime "Debug"
 		symbols "on"
 	
 	filter "configurations:Release"
-		defines "FR_RELEASE"
+		defines "FE_RELEASE"
 		runtime "Release"
 		optimize "on"
 	
 	filter "configurations:Dist"
-		defines "FR_DIST"
+		defines "FE_DIST"
 		runtime "Release"
 		optimize "on"
