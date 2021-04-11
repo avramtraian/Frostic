@@ -14,6 +14,7 @@
       <Filter>Panels</Filter>
     </ClInclude>
     <ClInclude Include="src\Testing\ScriptedEntity.h" />
+    <ClInclude Include="src\Testing\MovementScript.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
@@ -25,5 +26,6 @@
       <Filter>Panels</Filter>
     </ClCompile>
     <ClCompile Include="src\Testing\ScriptedEntity.cpp" />
+    <ClCompile Include="src\Testing\MovementScript.cpp" />
   </ItemGroup>
 </Project>

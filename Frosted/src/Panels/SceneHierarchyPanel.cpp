@@ -10,6 +10,7 @@
 #include "Frostic/Utils/PlatformUtils.h"
 
 #include "../Testing/ScriptedEntity.h"
+#include "../Testing/MovementScript.h"
 
 namespace Frostic {
 	
@@ -22,6 +23,11 @@ namespace Frostic {
 	{
 		m_Context = context;
 		m_SelectionContext = {};
+	}
+
+	void SceneHierarchyPanel::SetSelectionContext(Entity selectionContext)
+	{
+		m_SelectionContext = selectionContext;
 	}
 
 	void SceneHierarchyPanel::SetSelectionContextFromID(int id)
@@ -374,6 +380,55 @@ namespace Frostic {
 		ImGui::PopID();
 	}
 
+	static ScriptableEntity* DrawScriptPointerField(const std::string& label, ScriptableEntity* se, uint64_t scriptID, const Ref<Scene>& context, float columnWidth = 100.0f)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+		ImGui::SetColumnWidth(0, columnWidth);
+
+		ImGui::Text(label.c_str());
+
+		ImGui::NextColumn();
+
+		if(ImGui::Button(se == nullptr ? "None" : se->GetEntity().GetComponent<TagComponent>().Tag.c_str()))
+			ImGui::OpenPopup("ScriptPointer");
+
+		if (ImGui::BeginPopup("ScriptPointer"))
+		{
+			SceneHierarchyPanel::ForEachWhoHas<NativeScriptComponent>(context, [&](auto ent) 
+				{
+					Entity entity{ ent, context.get() };
+					NativeScriptComponent& entityNSC = entity.GetComponent<NativeScriptComponent>();
+					if (entityNSC.Instance != nullptr)
+					{
+						if (scriptID != 0 && entityNSC.Instance->GetScriptID() == scriptID)
+						{
+							if (ImGui::MenuItem(entity.GetComponent<TagComponent>().Tag.c_str()))
+							{
+								se = entityNSC.Instance;
+								ImGui::CloseCurrentPopup();
+								return;
+							}
+						}
+					}
+				});
+
+			if (ImGui::MenuItem("NONE: nullptr"))
+			{
+				se = nullptr;
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::EndPopup();
+		}
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+		return se;
+	}
+
 	static bool DrawCheckbox(const std::string& label, bool* value, float columnWidth = 100.0f)
 	{
 		ImGui::PushID(label.c_str());
@@ -628,36 +683,92 @@ namespace Frostic {
 
 		DrawComponent<NativeScriptComponent>("Native Component", entity, [&](NativeScriptComponent& nsc)
 			{
-				for (ScriptableEntity::PropertyData& data : nsc.Instance->m_DataReferences)
+				if (ImGui::Button("Select Script"))
+					ImGui::OpenPopup("SelectScript");
+
+				if (ImGui::BeginPopup("SelectScript"))
 				{
-					switch (data.m_DataType)
+					if (ImGui::MenuItem("ScriptedEntity"))
 					{
-					case DataType::UINT8_T:
-						DrawUInt8_tControl(data.m_Label, (uint8_t*)data.m_Data);
-						break;
-					case DataType::UINT16_T:
-						DrawUInt16_tControl(data.m_Label, (uint16_t*)data.m_Data);
-						break;
-					case DataType::UINT32_T:
-						DrawUInt32_tControl(data.m_Label, (uint32_t*)data.m_Data);
-						break;
-					case DataType::UINT64_T:
-						DrawUInt64_tControl(data.m_Label, (uint64_t*)data.m_Data);
-						break;
-					case DataType::INT:
-						DrawIntControl(data.m_Label, (int*)data.m_Data);
-						break;
-					case DataType::FLOAT:
-						DrawFloatControl(data.m_Label, (float*)data.m_Data);
-						break;
-					default:
-						break;
+						if (nsc.Instance != nullptr)
+							nsc.DestroyScript(&nsc);
+
+						nsc.Bind<ScriptedEntity>();
+						nsc.Instance = nsc.InstantiateScript();
+						nsc.Instance->m_Entity.m_Scene = m_Context.get();
+						nsc.Instance->m_Entity.m_EntityHandle = (entt::entity)(uint32_t)entity;
+						nsc.Instance->m_EntityUUID = entity.GetComponent<TagComponent>().UUID;
+
+						ImGui::CloseCurrentPopup();
+					}
+
+					if (ImGui::MenuItem("MovementScript"))
+					{
+						if (nsc.Instance != nullptr)
+							nsc.DestroyScript(&nsc);
+
+						nsc.Bind<MovementScript>();
+						nsc.Instance = nsc.InstantiateScript();
+						nsc.Instance->m_Entity.m_Scene = m_Context.get();
+						nsc.Instance->m_Entity.m_EntityHandle = (entt::entity)(uint32_t)entity;
+						nsc.Instance->m_EntityUUID = entity.GetComponent<TagComponent>().UUID;
+
+						ImGui::CloseCurrentPopup();
+					}
+
+					if (ImGui::MenuItem("None"))
+					{
+						if (nsc.Instance != nullptr)
+							nsc.DestroyScript(&nsc);
+						ImGui::CloseCurrentPopup();
+					}
+
+					ImGui::EndPopup();
+				}
+
+				if (nsc.Instance != nullptr)
+				{
+					for (ScriptableEntity::_PropertyData& data : nsc.Instance->_m_Properties)
+					{
+						switch (data.m_PropertyType)
+						{
+						case PropertyType::Data:
+							switch (data.m_DataType)
+							{
+								case DataType::UINT8_T:
+									DrawUInt8_tControl(data.m_Label, static_cast<uint8_t*>(data.m_Data));
+									break;
+								case DataType::UINT16_T:
+									DrawUInt16_tControl(data.m_Label, static_cast<uint16_t*>(data.m_Data));
+									break;
+								case DataType::UINT32_T:
+									DrawUInt32_tControl(data.m_Label, static_cast<uint32_t*>(data.m_Data));
+									break;
+								case DataType::UINT64_T:
+									DrawUInt64_tControl(data.m_Label, static_cast<uint64_t*>(data.m_Data));
+									break;
+								case DataType::INT:
+									DrawIntControl(data.m_Label, static_cast<int*>(data.m_Data));
+									break;
+								case DataType::FLOAT:
+									DrawFloatControl(data.m_Label, static_cast<float*>(data.m_Data));
+									break;
+								default:
+									break;
+							}
+							break;
+						case PropertyType::EntityReference:
+							DrawEntityReferenceField(data.m_Label, *static_cast<Entity*>(data.m_Data), m_Context);
+							break;
+						case PropertyType::Script:
+							*static_cast<ScriptableEntity**>(data.m_Data) = DrawScriptPointerField(data.m_Label, *static_cast<ScriptableEntity**>(data.m_Data), data.m_ScriptID, m_Context);
+							break;
+						default:
+							break;
+						}
 					}
 				}
-				for (ScriptableEntity::PropertyEntity& data : nsc.Instance->m_EntityReferences)
-					DrawEntityReferenceField(data.m_Label, *data.m_Data, m_Context);
 			});
-
 	}
 
 }

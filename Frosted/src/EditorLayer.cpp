@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
 namespace Frostic {
 
 	EditorLayer::EditorLayer()
@@ -357,15 +358,38 @@ namespace Frostic {
 
 	void EditorLayer::OnRuntimeStart(Ref<Scene>& scene)
 	{
+		uint64_t selectionContextUUID = 0;
+		if (m_HierarchyPanel.GetSelectedEntity() != NULL_ENTITY)
+		{
+			Entity e = m_HierarchyPanel.GetSelectedEntity();
+			selectionContextUUID = e.GetComponent<TagComponent>().UUID;
+		}
+
 		m_ActiveScene = scene;
 		m_HierarchyPanel.SetContext(m_ActiveScene);
+
+		if (selectionContextUUID != 0)
+		{
+			Entity selectionContext = m_ActiveScene->GetEntityByUUID(selectionContextUUID);
+			m_HierarchyPanel.SetSelectionContext(selectionContext);
+		}
 	}
 
 	void EditorLayer::OnRuntimeStop(Ref<Scene>& scene)
 	{
+		uint64_t selectionContextUUID = 0;
+		if(m_HierarchyPanel.GetSelectedEntity() != NULL_ENTITY)
+			selectionContextUUID = m_HierarchyPanel.GetSelectedEntity().GetComponent<TagComponent>().UUID;
+
 		m_ActiveScene = scene;
 		m_HierarchyPanel.SetContext(m_ActiveScene);
 		m_ToolsPanel.SetContext(m_ActiveScene);
+
+		if (selectionContextUUID != 0)
+		{
+			Entity selectionContext = m_ActiveScene->GetEntityByUUID(selectionContextUUID);
+			m_HierarchyPanel.SetSelectionContext(selectionContext);
+		}
 	}
 
 	void EditorLayer::NewScene()

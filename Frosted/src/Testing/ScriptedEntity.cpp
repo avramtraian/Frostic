@@ -1,16 +1,19 @@
 #include "ScriptedEntity.h"
 
+#include "MovementScript.h"
+
 namespace Frostic {
 
 	ScriptedEntity::ScriptedEntity()
 	{
+		FE_SCRIPT_CLASS(759834);
 		PushProperties();
 	}
 
 	void ScriptedEntity::PushProperties()
 	{
-		FE_DATA_PROPERTY(m_XVelocity, "X Velocity", DataType::FLOAT);
-		FE_DATA_PROPERTY(m_YVelocity, "Y Velocity", DataType::FLOAT);
+		FE_DATA_PROPERTY(ValueToPrint, "Value To Print", DataType::INT);
+		FE_ENTITY_REFERENCE_PROPERTY(entity, "Entity To Print");
 	}
 
 	void ScriptedEntity::Begin()
@@ -20,20 +23,18 @@ namespace Frostic {
 
 	void ScriptedEntity::Tick(Timestep ts)
 	{
-		Move(ts);
+		
 	}
 
-	void ScriptedEntity::Move(Timestep ts)
+	void ScriptedEntity::Print()
 	{
-		TransformComponent& tc = GetComponent<TransformComponent>();
-		if (Input::IsKeyPressed(Key::A))
-			tc.Translation.x -= m_XVelocity * ts;
-		else if (Input::IsKeyPressed(Key::D))
-			tc.Translation.x += m_XVelocity * ts;
-		if (Input::IsKeyPressed(Key::S))
-			tc.Translation.y -= m_YVelocity * ts;
-		else if (Input::IsKeyPressed(Key::W))
-			tc.Translation.y += m_YVelocity * ts;
+		if (entity != NULL_ENTITY)
+		{
+			MovementScript* ms = entity.GetNativeComponent<MovementScript>();
+			if (ms != nullptr)
+				FE_WARN("Velocity is x: {0}, y: {1}", ms->m_XVelocity, ms->m_YVelocity);
+		}
+		FE_WARN("Ce fac cu viata mea?");
 	}
 
 }

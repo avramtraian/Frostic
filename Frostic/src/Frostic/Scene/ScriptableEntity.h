@@ -3,19 +3,39 @@
 #include "Entity.h"
 #include <vector>
 
+#define NULL_NATIVE_SCRIPT 0
+
+#define FE_SCRIPT_CLASS(scriptID) { SetScriptID(scriptID); }
+
 #define FE_DATA_PROPERTY(data, label, type) { \
-	m_DataReferences.emplace_back((void*)&data, label, type); \
+	_m_Properties.emplace_back((void*)&data, label, PropertyType::Data, type); \
 }
 
 #define FE_DATA_STRUCTURE_PROPERTY(data, label, type, rawType) { \
-	m_DataStructureReferences.emplace_back((void*)&data, label, type, rawType); \
+	_m_Properties.emplace_back((void*)&data, label, PropertyType::DataStructure, rawType, type); \
+}
+
+#define FE_SCRIPT_PROPERTY(data, label, type) { \
+	_PropertyData& property = _m_Properties.emplace_back((void*)&data, label, PropertyType::Script); \
+	{ \
+		type script = type(); \
+		property.m_ScriptID = script.GetScriptID(); \
+	} \
 }
 
 #define FE_ENTITY_REFERENCE_PROPERTY(data, label) { \
-	m_EntityReferences.emplace_back(&data, label); \
+	_m_Properties.emplace_back((void*)&data, label, PropertyType::EntityReference); \
 }
 
 namespace Frostic {
+
+	enum class PropertyType
+	{
+		Data,
+		DataStructure,
+		Script,
+		EntityReference
+	};
 
 	enum class DataType
 	{
@@ -39,6 +59,7 @@ namespace Frostic {
 	class ScriptableEntity
 	{
 	public:
+		ScriptableEntity() = default;
 		virtual ~ScriptableEntity() = default;
 
 		template<typename T>
@@ -47,37 +68,26 @@ namespace Frostic {
 			return m_Entity.GetComponent<T>();
 		}
 
-		struct PropertyEntity 
-		{ 
-			PropertyEntity() = default; 
-			PropertyEntity(Entity* data, const std::string& label)
-				: m_Data(data), m_Label(label) {}
-			Entity* m_Data = nullptr; 
-			uint64_t UUID = 0;
-			std::string m_Label = std::string(); 
-		}; 
-		struct PropertyData 
-		{ 
-			PropertyData() = default; 
-			PropertyData(void* data, const std::string& label, DataType dataType) 
-			: m_Data(data), m_Label(label), m_DataType(dataType) {} 
-			void* m_Data = nullptr; 
-			DataType m_DataType; 
-			std::string m_Label = std::string(); 
-		}; 
-		struct PropertyDataStructure 
-		{ 
-			PropertyDataStructure() = default; 
-			PropertyDataStructure(void* data, const std::string& label, DataStructureType dataStructureType, DataType dataType) 
-			: m_Data(data), m_Label(label), m_DataStructureType(dataStructureType), m_DataType(dataType) {} 
-			void* m_Data = nullptr; 
-			std::string m_Label = std::string(); 
-			DataStructureType m_DataStructureType; 
-			DataType m_DataType; 
-		}; 
-		std::vector<PropertyEntity> m_EntityReferences; 
-		std::vector<PropertyData> m_DataReferences; 
-		std::vector<PropertyDataStructure> m_DataStructureReferences;
+		struct _PropertyData
+		{
+		public:
+			_PropertyData() = default;
+			_PropertyData(void* data, const std::string& label, PropertyType propertyType, DataType dataType = DataType::None, DataStructureType dataStructureType = DataStructureType::None)
+				: m_Data(data), m_Label(label), m_PropertyType(propertyType), m_DataType(dataType), m_DataStructureType(dataStructureType) {}
+		public:
+			void* m_Data = nullptr;
+			std::string m_Label = std::string();
+			PropertyType m_PropertyType;
+			DataType m_DataType = DataType::None;
+			DataStructureType m_DataStructureType = DataStructureType::None;
+			uint64_t m_EntityUUID = 0;
+			uint64_t m_ScriptID = 0;
+		};
+		std::vector<_PropertyData> _m_Properties;
+
+		const uint64_t GetScriptID() const { return m_ScriptID; }
+		Entity GetEntity() const { return m_Entity; }
+		const uint64_t GetEntityUUID() const { return m_EntityUUID; }
 
 	protected:
 		virtual void Begin() {}
@@ -85,10 +95,14 @@ namespace Frostic {
 		virtual void Tick(Timestep ts) {}
 
 		virtual void PushProperties() {}
+
+		void SetScriptID(uint64_t newScriptID) { m_ScriptID = newScriptID; }
 	private:
 		Entity m_Entity;
 		uint64_t m_EntityUUID = 0;
+		uint64_t m_ScriptID = 0;
 		friend class Scene;
+		friend class SceneSerializer;
 		friend class SceneHierarchyPanel;
 	 };
 

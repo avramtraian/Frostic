@@ -134,6 +134,7 @@
     <ClInclude Include="src\EditorLayer.h" />
     <ClInclude Include="src\Panels\SceneHierarchyPanel.h" />
     <ClInclude Include="src\Panels\ToolsPanel.h" />
+    <ClInclude Include="src\Testing\MovementScript.h" />
     <ClInclude Include="src\Testing\ScriptedEntity.h" />
   </ItemGroup>
   <ItemGroup>
@@ -141,6 +142,7 @@
     <ClCompile Include="src\FrostedApp.cpp" />
     <ClCompile Include="src\Panels\SceneHierarchyPanel.cpp" />
     <ClCompile Include="src\Panels\ToolsPanel.cpp" />
+    <ClCompile Include="src\Testing\MovementScript.cpp" />
     <ClCompile Include="src\Testing\ScriptedEntity.cpp" />
   </ItemGroup>
   <ItemGroup>

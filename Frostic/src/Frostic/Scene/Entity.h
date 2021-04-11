@@ -56,6 +56,14 @@ namespace Frostic {
 				return AddComponent<T>();
 		}
 
+		template<typename T>
+		T* GetNativeComponent()
+		{
+			if (!HasComponent<NativeScriptComponent>()) return nullptr;
+			T* instance = dynamic_cast<T*>(GetComponent<NativeScriptComponent>().Instance);
+			return instance;
+		}
+
 		template<typename T> 
 		bool HasComponent()
 		{

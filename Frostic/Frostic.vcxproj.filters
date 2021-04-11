@@ -1513,6 +1513,7 @@
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Core\FEString.h" />
+    <ClInclude Include="src\Frostic\Script\ScriptManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Frostic\Assets\AssetLibrary.cpp">
@@ -1644,5 +1645,6 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
+    <ClCompile Include="src\Frostic\Script\ScriptManager.cpp" />
   </ItemGroup>
 </Project>

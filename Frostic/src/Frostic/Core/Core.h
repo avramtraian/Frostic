@@ -48,4 +48,10 @@ namespace Frostic {
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 
+	template<typename T, typename ... Args>
+	constexpr T* Cast(Args&& ... args)
+	{
+		return dynamic_cast<T*>(std::forward<Args>(args)...);
+	}
+	
 }

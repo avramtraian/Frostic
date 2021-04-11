@@ -27,13 +27,18 @@ namespace Frostic {
 		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		Math::Random::Init();
-		tag.UUID = uuid == 0 ? Math::Random::Range<uint64_t>(0, 10000000000) : uuid;
+		tag.UUID = uuid == 0 ? Math::Random::Range<uint64_t>(1, 10000000000) : uuid;
 		tag.Tag = name.empty() ? "Entity" : name;
 		return entity;
 	}
 
 	void Scene::DestroyEntity(Entity entity)
 	{
+		if (entity.HasComponent<NativeScriptComponent>())
+		{
+			if (entity.GetComponent<NativeScriptComponent>().Instance != nullptr)
+				entity.GetComponent<NativeScriptComponent>().DestroyScript(&entity.GetComponent<NativeScriptComponent>());
+		}
 		m_Registry.destroy(entity);
 	}
 
@@ -44,9 +49,8 @@ namespace Frostic {
 		m_Registry.each_reverse([&](auto ent) {
 			Entity entity { ent, this };
 
-			Entity createdEntity = scene->CreateEntity(entity.GetComponent<TagComponent>().Tag);
+			Entity createdEntity = scene->CreateEntity(entity.GetComponent<TagComponent>().Tag, entity.GetComponent<TagComponent>().UUID);
 			createdEntity.GetComponent<TagComponent>().Active = entity.GetComponent<TagComponent>().Active;
-			createdEntity.GetComponent<TagComponent>().UUID = entity.GetComponent<TagComponent>().UUID;
 
 			if (entity.HasComponent<TransformComponent>())
 			{
@@ -77,50 +81,61 @@ namespace Frostic {
 			{
 				auto& nsc = createdEntity.AddOrGetComponent<NativeScriptComponent>();
 				nsc.Active = entity.GetComponent<NativeScriptComponent>().Active;
-				nsc.InstantiateScript = entity.GetComponent<NativeScriptComponent>().InstantiateScript;
-				nsc.DestroyScript = entity.GetComponent<NativeScriptComponent>().DestroyScript;
+				nsc.InstantiateScript = *entity.GetComponent<NativeScriptComponent>().InstantiateScript;
+				nsc.DestroyScript = *entity.GetComponent<NativeScriptComponent>().DestroyScript;
 				if (entity.GetComponent<NativeScriptComponent>().Instance == nullptr)
 					nsc.Instance = nullptr;
 				else
 				{
 					nsc.Instance = nsc.InstantiateScript();
+					FE_CORE_ASSERT(nsc.Instance != nullptr, "Instance is nullptr!");
 					nsc.Instance->m_EntityUUID = entity.GetComponent<NativeScriptComponent>().Instance->m_EntityUUID;
 
-					for (size_t i = 0; i < nsc.Instance->m_DataReferences.size(); i++)
+					for (size_t i = 0; i < nsc.Instance->_m_Properties.size(); i++)
 					{
-						ScriptableEntity::PropertyData& data = nsc.Instance->m_DataReferences[i];
-						ScriptableEntity::PropertyData& dataToCopy = entity.GetComponent<NativeScriptComponent>().Instance->m_DataReferences[i];
-						switch (data.m_DataType)
+						ScriptableEntity::_PropertyData& data = nsc.Instance->_m_Properties[i];
+						ScriptableEntity::_PropertyData& dataToCopy = entity.GetComponent<NativeScriptComponent>().Instance->_m_Properties[i];
+						switch (data.m_PropertyType)
 						{
-							case DataType::UINT8_T:
-								memcpy(data.m_Data, dataToCopy.m_Data, sizeof(uint8_t));
-								break;
-							case DataType::UINT16_T:
-								memcpy(data.m_Data, dataToCopy.m_Data, sizeof(uint16_t));
-								break;
-							case DataType::UINT32_T:
-								memcpy(data.m_Data, dataToCopy.m_Data, sizeof(uint32_t));
-								break;
-							case DataType::UINT64_T:
-								memcpy(data.m_Data, dataToCopy.m_Data, sizeof(uint64_t));
-								break;
-							case DataType::INT:
-								memcpy(data.m_Data, dataToCopy.m_Data, sizeof(int));
-								break;
-							case DataType::FLOAT:
-								memcpy(data.m_Data, dataToCopy.m_Data, sizeof(float));
-								break;
-							default:
-								break;
+						case PropertyType::Data:
+							switch (data.m_DataType)
+							{
+								case DataType::UINT8_T:
+									memcpy(data.m_Data, dataToCopy.m_Data, sizeof(uint8_t));
+									break;
+								case DataType::UINT16_T:
+									memcpy(data.m_Data, dataToCopy.m_Data, sizeof(uint16_t));
+									break;
+								case DataType::UINT32_T:
+									memcpy(data.m_Data, dataToCopy.m_Data, sizeof(uint32_t));
+									break;
+								case DataType::UINT64_T:
+									memcpy(data.m_Data, dataToCopy.m_Data, sizeof(uint64_t));
+									break;
+								case DataType::INT:
+									memcpy(data.m_Data, dataToCopy.m_Data, sizeof(int));
+									break;
+								case DataType::FLOAT:
+									memcpy(data.m_Data, dataToCopy.m_Data, sizeof(float));
+									break;
+								default:
+									break;
+							}
+							break;
+						case PropertyType::EntityReference:
+							if (dataToCopy.m_Data != nullptr && static_cast<Entity*>(dataToCopy.m_Data)->Exists())
+								data.m_EntityUUID = static_cast<Entity*>(dataToCopy.m_Data)->GetComponent<TagComponent>().UUID;
+							break;
+						case PropertyType::Script:
+							if (*static_cast<ScriptableEntity**>(dataToCopy.m_Data) != nullptr)
+							{
+								ScriptableEntity* se = *static_cast<ScriptableEntity**>(dataToCopy.m_Data);
+								data.m_EntityUUID = se->m_Entity.GetComponent<TagComponent>().UUID;
+							}
+							break;
+						default:
+							break;
 						}
-					}
-					for (size_t i = 0; i < nsc.Instance->m_EntityReferences.size(); i++)
-					{
-						ScriptableEntity::PropertyEntity& data = nsc.Instance->m_EntityReferences[i];
-						ScriptableEntity::PropertyEntity& dataToCopy = entity.GetComponent<NativeScriptComponent>().Instance->m_EntityReferences[i];
-
-						if (dataToCopy.m_Data != nullptr && dataToCopy.m_Data->Exists())
-							data.UUID = dataToCopy.m_Data->GetComponent<TagComponent>().UUID;
 					}
 				}
 			}
@@ -129,14 +144,30 @@ namespace Frostic {
 		scene->m_Registry.view<NativeScriptComponent>().each([&](entt::entity entity, NativeScriptComponent& nsc)
 			{
 				if (nsc.Instance != nullptr)
-				{
 					nsc.Instance->m_Entity = scene->GetEntityByUUID(nsc.Instance->m_EntityUUID);
-					for (size_t i = 0; i < nsc.Instance->m_EntityReferences.size(); i++)
-					{
-						ScriptableEntity::PropertyEntity& data = nsc.Instance->m_EntityReferences[i];
+			});
 
-						if (data.UUID != 0)
-							*data.m_Data = scene->GetEntityByUUID(data.UUID);
+		scene->m_Registry.view<NativeScriptComponent>().each([&](entt::entity entity, NativeScriptComponent& nsc) 
+			{
+				if (nsc.Instance != nullptr)
+				{
+					for (size_t i = 0; i < nsc.Instance->_m_Properties.size(); i++)
+					{
+						ScriptableEntity::_PropertyData& data = nsc.Instance->_m_Properties[i];
+
+						switch (data.m_PropertyType)
+						{
+							case PropertyType::EntityReference:
+								if (data.m_EntityUUID != 0)
+									*static_cast<Entity*>(data.m_Data) = scene->GetEntityByUUID(data.m_EntityUUID);
+								break;
+							case PropertyType::Script:
+								if (data.m_EntityUUID != 0)
+									*static_cast<ScriptableEntity**>(data.m_Data) = scene->GetEntityByUUID(data.m_EntityUUID).GetComponent<NativeScriptComponent>().Instance;
+								break;
+						default:
+							break;
+						}
 					}
 				}
 			});

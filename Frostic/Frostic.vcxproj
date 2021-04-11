@@ -191,6 +191,7 @@
     <ClInclude Include="src\Frostic\Scene\SceneManager.h" />
     <ClInclude Include="src\Frostic\Scene\SceneSerializer.h" />
     <ClInclude Include="src\Frostic\Scene\ScriptableEntity.h" />
+    <ClInclude Include="src\Frostic\Script\ScriptManager.h" />
     <ClInclude Include="src\Frostic\Utils\PlatformUtils.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
@@ -649,6 +650,7 @@
     <ClCompile Include="src\Frostic\Scene\SceneCamera.cpp" />
     <ClCompile Include="src\Frostic\Scene\SceneManager.cpp" />
     <ClCompile Include="src\Frostic\Scene\SceneSerializer.cpp" />
+    <ClCompile Include="src\Frostic\Script\ScriptManager.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />

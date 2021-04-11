@@ -12,7 +12,7 @@ Entities:
       Active: true
       Color: [0.876447856, 0.0744473264, 0.0744473264, 1]
       TexturePath: C:\dev\Frostic-dev\Frosted\assets\textures\Checkerboard.png
-  - Entity: 1
+  - Entity: 479283472
     TagComponent:
       Tag: Camera
     TransformComponent:

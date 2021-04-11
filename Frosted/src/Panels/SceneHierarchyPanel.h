@@ -16,6 +16,7 @@ namespace Frostic {
 		SceneHierarchyPanel(const Ref<Scene>& context);
 
 		void SetContext(const Ref<Scene>& context);
+		void SetSelectionContext(Entity selectionContext);
 		void SetSelectionContextFromID(int id);
 
 		void OnImGuiRender();
