@@ -27,7 +27,7 @@ namespace Frostic {
 		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		Math::Random::Init();
-		tag.UUID = uuid == 0 ? Math::Random::Range<uint64_t>(1, 10000000000) : uuid;
+		tag.UUID = uuid == 0 ? Math::Random::Range<uint64_t>(1, 100000000000000) : uuid;
 		tag.Tag = name.empty() ? "Entity" : name;
 		return entity;
 	}
@@ -212,8 +212,8 @@ namespace Frostic {
 						nsc.Initialized = true;
 						nsc.Instance->Begin();
 					}
-
-					nsc.Instance->Tick(ts);
+					else
+						nsc.Instance->Tick(ts);
 				});
 		}
 

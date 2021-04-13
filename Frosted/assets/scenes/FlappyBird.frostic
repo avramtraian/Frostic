@@ -1,0 +1,52 @@
+Scene: Untitled
+Entities:
+  - Entity: 938578240
+    TagComponent:
+      Tag: Square
+    TransformComponent:
+      Active: true
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Active: true
+      Color: [0.876447856, 0.0744473264, 0.0744473264, 1]
+      TexturePath: C:\dev\Frostic-dev\Frosted\assets\textures\Checkerboard.png
+    NativeScriptComponent:
+      Active: true
+      ScriptID: 9252044
+      Instance:
+        EntityUUID: 938578240
+        PropertyData[0]:
+          Data: 0
+        PropertyData[1]:
+          Data: 0
+        PropertyData[2]:
+          Data: 10
+  - Entity: 479283472
+    TagComponent:
+      Tag: Camera
+    TransformComponent:
+      Active: true
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -60
+        OrthographicFar: 60
+      Active: true
+      Primary: true
+      FixedAspectRatio: false
+EditorCamera:
+  ProjectionType: 1
+  Translation: [0, 0, 0]
+  Rotation: [0, 0, 0]
+  PerspectiveFOV: 30
+  PerspectiveNearClip: 0.100000001
+  PerspectiveFarClip: 1000

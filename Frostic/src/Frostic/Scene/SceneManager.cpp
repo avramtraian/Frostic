@@ -61,7 +61,7 @@ namespace Frostic {
 		Ref<Scene> scene = CreateRef<Scene>();
 
 		SceneSerializer serializer(scene);
-		serializer.DeserializeRuntime(FILEPATH("assets/scenes/2DTest.frostic"));
+		serializer.DeserializeRuntime(FILEPATH("Frosted/assets/scenes/FlappyBird.frostic"));
 
 		m_BuildIndex = buildIndex;
 

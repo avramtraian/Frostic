@@ -131,6 +131,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\AddScriptTest\EnemyScript.h" />
+    <ClInclude Include="src\AddScriptTest\PlayerScript.h" />
+    <ClInclude Include="src\AddScriptTest\asdsada.h" />
     <ClInclude Include="src\EditorLayer.h" />
     <ClInclude Include="src\Panels\SceneHierarchyPanel.h" />
     <ClInclude Include="src\Panels\ToolsPanel.h" />
@@ -138,6 +141,9 @@
     <ClInclude Include="src\Testing\ScriptedEntity.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AddScriptTest\EnemyScript.cpp" />
+    <ClCompile Include="src\AddScriptTest\PlayerScript.cpp" />
+    <ClCompile Include="src\AddScriptTest\asdsada.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\FrostedApp.cpp" />
     <ClCompile Include="src\Panels\SceneHierarchyPanel.cpp" />

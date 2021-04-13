@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="AddScriptTest">
+      <UniqueIdentifier>{432C89FC-AFEC-0433-7827-4EB0E4A6490F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Panels">
       <UniqueIdentifier>{A80D95C9-94AF-BF9F-7D6A-D3F369AB46F0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Testing">
+      <UniqueIdentifier>{63FFD639-CFDE-55D5-D8F6-E0AB4455BC36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AddScriptTest\EnemyScript.h">
+      <Filter>AddScriptTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AddScriptTest\PlayerScript.h">
+      <Filter>AddScriptTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AddScriptTest\asdsada.h">
+      <Filter>AddScriptTest</Filter>
+    </ClInclude>
     <ClInclude Include="src\EditorLayer.h" />
     <ClInclude Include="src\Panels\SceneHierarchyPanel.h">
       <Filter>Panels</Filter>
@@ -13,10 +28,23 @@
     <ClInclude Include="src\Panels\ToolsPanel.h">
       <Filter>Panels</Filter>
     </ClInclude>
-    <ClInclude Include="src\Testing\ScriptedEntity.h" />
-    <ClInclude Include="src\Testing\MovementScript.h" />
+    <ClInclude Include="src\Testing\MovementScript.h">
+      <Filter>Testing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Testing\ScriptedEntity.h">
+      <Filter>Testing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AddScriptTest\EnemyScript.cpp">
+      <Filter>AddScriptTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AddScriptTest\PlayerScript.cpp">
+      <Filter>AddScriptTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AddScriptTest\asdsada.cpp">
+      <Filter>AddScriptTest</Filter>
+    </ClCompile>
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\FrostedApp.cpp" />
     <ClCompile Include="src\Panels\SceneHierarchyPanel.cpp">
@@ -25,7 +53,11 @@
     <ClCompile Include="src\Panels\ToolsPanel.cpp">
       <Filter>Panels</Filter>
     </ClCompile>
-    <ClCompile Include="src\Testing\ScriptedEntity.cpp" />
-    <ClCompile Include="src\Testing\MovementScript.cpp" />
+    <ClCompile Include="src\Testing\MovementScript.cpp">
+      <Filter>Testing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Testing\ScriptedEntity.cpp">
+      <Filter>Testing</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

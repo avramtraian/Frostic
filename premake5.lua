@@ -33,7 +33,7 @@ project "Frostic"
 	location "Frostic"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++19"
+	cppdialect "C++17"
 	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -117,7 +117,7 @@ project "Frosted"
 	location "Frosted"
 	kind "ConsoleApp"
 	language "C++"
-	cppdialect "C++19"
+	cppdialect "C++17"
 	staticruntime "on"
 	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -171,7 +171,7 @@ project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
-	cppdialect "C++19"
+	cppdialect "C++17"
 	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")

@@ -9,8 +9,7 @@
 
 #include "Frostic/Utils/PlatformUtils.h"
 
-#include "../Testing/ScriptedEntity.h"
-#include "../Testing/MovementScript.h"
+#include "Frostic/Script/ScriptManager.h"
 
 namespace Frostic {
 	
@@ -534,12 +533,7 @@ namespace Frostic {
 
 			if (ImGui::MenuItem("Native Script Component"))
 			{
-				auto& nsc = m_SelectionContext.AddComponent<NativeScriptComponent>();
-				nsc.Bind<ScriptedEntity>();
-				nsc.Instance = nsc.InstantiateScript();
-				nsc.Instance->m_Entity.m_Scene = m_Context.get();
-				nsc.Instance->m_Entity.m_EntityHandle = (entt::entity)(uint32_t)entity;
-				nsc.Instance->m_EntityUUID = entity.GetComponent<TagComponent>().UUID;
+				m_SelectionContext.AddComponent<NativeScriptComponent>();
 				ImGui::CloseCurrentPopup();
 			}
 
@@ -683,38 +677,28 @@ namespace Frostic {
 
 		DrawComponent<NativeScriptComponent>("Native Component", entity, [&](NativeScriptComponent& nsc)
 			{
-				if (ImGui::Button("Select Script"))
+				if (ImGui::Button(nsc.Instance != nullptr ? ScriptManager::GetNameFromID(nsc.Instance->GetScriptID()).c_str() : "Select Script"))
 					ImGui::OpenPopup("SelectScript");
 
 				if (ImGui::BeginPopup("SelectScript"))
 				{
-					if (ImGui::MenuItem("ScriptedEntity"))
-					{
-						if (nsc.Instance != nullptr)
-							nsc.DestroyScript(&nsc);
+					ScriptManager::Each([&](uint64_t id, const std::string& name) 
+						{
+							if (ImGui::MenuItem(name.c_str()))
+							{
+								if (nsc.Instance != nullptr)
+									nsc.DestroyScript(&nsc);
 
-						nsc.Bind<ScriptedEntity>();
-						nsc.Instance = nsc.InstantiateScript();
-						nsc.Instance->m_Entity.m_Scene = m_Context.get();
-						nsc.Instance->m_Entity.m_EntityHandle = (entt::entity)(uint32_t)entity;
-						nsc.Instance->m_EntityUUID = entity.GetComponent<TagComponent>().UUID;
+								nsc.InstantiateScript = ScriptManager::CreateInstantiateScriptByID(id);
+								nsc.DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
+								nsc.Instance = nsc.InstantiateScript();
+								nsc.Instance->m_Entity.m_Scene = m_Context.get();
+								nsc.Instance->m_Entity.m_EntityHandle = (entt::entity)(uint32_t)entity;
+								nsc.Instance->m_EntityUUID = entity.GetComponent<TagComponent>().UUID;
 
-						ImGui::CloseCurrentPopup();
-					}
-
-					if (ImGui::MenuItem("MovementScript"))
-					{
-						if (nsc.Instance != nullptr)
-							nsc.DestroyScript(&nsc);
-
-						nsc.Bind<MovementScript>();
-						nsc.Instance = nsc.InstantiateScript();
-						nsc.Instance->m_Entity.m_Scene = m_Context.get();
-						nsc.Instance->m_Entity.m_EntityHandle = (entt::entity)(uint32_t)entity;
-						nsc.Instance->m_EntityUUID = entity.GetComponent<TagComponent>().UUID;
-
-						ImGui::CloseCurrentPopup();
-					}
+								ImGui::CloseCurrentPopup();
+							}
+						});
 
 					if (ImGui::MenuItem("None"))
 					{

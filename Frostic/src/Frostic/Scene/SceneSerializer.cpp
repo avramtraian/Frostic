@@ -85,7 +85,7 @@ namespace Frostic {
 
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
-		out << YAML::BeginMap; // Entities
+		out << YAML::BeginMap; // Entity
 		out << YAML::Key << "Entity" << YAML::Value << entity.GetComponent<TagComponent>().UUID; // The operator overload takes care
 
 		if (entity.HasComponent<TagComponent>())
@@ -158,6 +158,7 @@ namespace Frostic {
 
 			auto& nsc = entity.GetComponent<NativeScriptComponent>();
 			out << YAML::Key << "Active" << YAML::Value << nsc.Active;
+			out << YAML::Key << "ScriptID" << YAML::Value << (nsc.Instance != nullptr ? nsc.Instance->GetScriptID() : 0);
 			out << YAML::Key << "Instance";
 			out << YAML::BeginMap; // Instance;
 			if (nsc.Instance != nullptr)
@@ -221,7 +222,7 @@ namespace Frostic {
 			out << YAML::EndMap; // NativeScriptComponent
 		}
 
-		out << YAML::EndMap; // Entities
+		out << YAML::EndMap; // Entity
 	}
 
 	static void SerializeEditorCamera(YAML::Emitter& out, const EditorCamera& camera)
@@ -349,12 +350,18 @@ namespace Frostic {
 				{
 					auto& nsc = deserializedEntity.AddComponent<NativeScriptComponent>();
 					nsc.Active = nsComponent["Active"].as<bool>();
+					if (nsComponent["ScriptID"].as<uint64_t>() != 0)
+					{
+						nsc.InstantiateScript = ScriptManager::CreateInstantiateScriptByID(nsComponent["ScriptID"].as<uint64_t>());
+						nsc.DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
+						nsc.Instance = nsc.InstantiateScript();
+					}
 					if (nsc.Instance != nullptr)
 					{
 						nsc.Instance->m_EntityUUID = nsComponent["Instance"]["EntityUUID"].as<uint64_t>();
 						for (size_t i = 0; i < nsc.Instance->_m_Properties.size(); i++)
 						{
-							auto property = nsComponent["Instance"]["Property[" + std::to_string(i) + "]"];
+							auto property = nsComponent["Instance"]["PropertyData[" + std::to_string(i) + "]"];
 							ScriptableEntity::_PropertyData& data = nsc.Instance->_m_Properties[i];
 							switch (data.m_PropertyType)
 							{
@@ -542,8 +549,115 @@ namespace Frostic {
 					if (AssetLibrary::RemoveIfInvalid<TextureAsset>(src.TexturePath))
 						src.Texture = nullptr;
 				}
+
+				auto nsComponent = entity["NativeScriptComponent"];
+				if (nsComponent)
+				{
+					auto& nsc = deserializedEntity.AddComponent<NativeScriptComponent>();
+					nsc.Active = nsComponent["Active"].as<bool>();
+					if (nsComponent["ScriptID"].as<uint64_t>() != 0)
+					{
+						nsc.InstantiateScript = ScriptManager::CreateInstantiateScriptByID(nsComponent["ScriptID"].as<uint64_t>());
+						nsc.DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
+						nsc.Instance = nsc.InstantiateScript();
+					}
+					if (nsc.Instance != nullptr)
+					{
+						nsc.Instance->m_EntityUUID = nsComponent["Instance"]["EntityUUID"].as<uint64_t>();
+						for (size_t i = 0; i < nsc.Instance->_m_Properties.size(); i++)
+						{
+							auto property = nsComponent["Instance"]["PropertyData[" + std::to_string(i) + "]"];
+							ScriptableEntity::_PropertyData& data = nsc.Instance->_m_Properties[i];
+							switch (data.m_PropertyType)
+							{
+							case PropertyType::Data:
+								switch (data.m_DataType)
+								{
+								case DataType::UINT8_T:
+								{
+									uint8_t dataToCopy = property["Data"].as<uint8_t>();
+									memcpy(data.m_Data, &dataToCopy, sizeof(uint8_t));
+									break;
+								}
+								case DataType::UINT16_T:
+								{
+									uint16_t dataToCopy = property["Data"].as<uint16_t>();
+									memcpy(data.m_Data, &dataToCopy, sizeof(uint16_t));
+									break;
+								}
+								case DataType::UINT32_T:
+								{
+									uint32_t dataToCopy = property["Data"].as<uint32_t>();
+									memcpy(data.m_Data, &dataToCopy, sizeof(uint32_t));
+									break;
+								}
+								case DataType::UINT64_T:
+								{
+									uint64_t dataToCopy = property["Data"].as<uint64_t>();
+									memcpy(data.m_Data, &dataToCopy, sizeof(uint64_t));
+									break;
+								}
+								case DataType::INT:
+								{
+									int dataToCopy = property["Data"].as<int>();
+									memcpy(data.m_Data, &dataToCopy, sizeof(int));
+									break;
+								}
+								case DataType::FLOAT:
+								{
+									float dataToCopy = property["Data"].as<float>();
+									memcpy(data.m_Data, &dataToCopy, sizeof(float));
+									break;
+								}
+								default:
+									break;
+								}
+								break;
+							case PropertyType::EntityReference:
+								data.m_EntityUUID = property["EntityUUID"].as<uint64_t>();
+								break;
+							case PropertyType::Script:
+								data.m_EntityUUID = property["EntityUUID"].as<uint64_t>();
+								break;
+							default:
+								break;
+							}
+						}
+					}
+				}
 			}
 		}
+
+		m_Scene->m_Registry.view<NativeScriptComponent>().each([&](entt::entity ent, NativeScriptComponent& nsc)
+			{
+				if (nsc.Instance != nullptr)
+					nsc.Instance->m_Entity = m_Scene->GetEntityByUUID(nsc.Instance->m_EntityUUID);
+			});
+
+		m_Scene->m_Registry.view<NativeScriptComponent>().each([&](entt::entity ent, NativeScriptComponent& nsc)
+			{
+				if (nsc.Instance != nullptr)
+				{
+					for (size_t i = 0; i < nsc.Instance->_m_Properties.size(); i++)
+					{
+						ScriptableEntity::_PropertyData& data = nsc.Instance->_m_Properties[i];
+
+						switch (data.m_PropertyType)
+						{
+						case PropertyType::EntityReference:
+							if (data.m_EntityUUID != 0)
+								*static_cast<Entity*>(data.m_Data) = m_Scene->GetEntityByUUID(data.m_EntityUUID);
+							break;
+						case PropertyType::Script:
+							if (data.m_EntityUUID != 0)
+								*static_cast<ScriptableEntity**>(data.m_Data) = m_Scene->GetEntityByUUID(data.m_EntityUUID).GetComponent<NativeScriptComponent>().Instance;
+							break;
+						default:
+							break;
+						}
+					}
+				}
+			});
 
 		FE_CORE_TRACE("Deserializing complete!");
 		return true;

@@ -1,43 +1,36 @@
 #pragma once
 
 #include "Frostic/Scene/ScriptableEntity.h"
-#include "Frostic/Scene/Components.h"
 
 namespace Frostic {
 
 	class ScriptManager
 	{
 	public:
-		struct ScriptData
+		static void AddScript(uint64_t id, const std::string& name)
 		{
-		public:
-			ScriptData() = default;
-
-			template<typename T>
-			void Create()
-			{
-				InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
-				DestroyScript[](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
-			}
-
-			ScriptableEntity* (InstantiateScript)() { return nullptr; }
-			void (DestroyScript)(NativeScriptComponent*) {}
-		};
-	public:
-		template<typename T>
-		static void AddScript()
-		{
-			T script = T();
-			m_Scripts[script.GetScriptID()] = ScriptData();
-			m_Scripts[script.GetScriptID()].Create<T>();
+			m_Scripts[id] = name;
 		}
-		static ScriptData GetScriptData(uint64_t id)
+		static void RemoveScript(uint64_t id)
 		{
-			FE_CORE_ASSERT(m_Scripts.find(id) != m_Scripts.end(), "Invalid Script ID!");
-			return m_Scripts[id];
+			m_Scripts.erase(id);
 		}
+		static std::string& GetNameFromID(uint64_t id)
+		{
+			return m_Scripts.at(id);
+		}
+
+		// The lambda takes 2 parameters : the id(uint64_t) & the name(std::string)
+		template<typename F>
+		static void Each(F function)
+		{
+			for (auto& script : m_Scripts)
+				function(script.first, script.second);
+		}
+
+		static auto CreateInstantiateScriptByID(uint64_t id) -> ScriptableEntity*(*)();
 	private:
-		static std::unordered_map<uint64_t, ScriptData> m_Scripts;
+		static std::unordered_map<uint64_t, std::string> m_Scripts;
 	};
 
 }

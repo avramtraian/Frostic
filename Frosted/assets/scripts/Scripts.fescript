@@ -1,0 +1,7 @@
+Scripts:
+  - ID: 758943
+    Name: MovementScript
+  - ID: 759834
+    Name: ScriptedEntity
+  - ID: 9252044
+    Name: PlayerScript

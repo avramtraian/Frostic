@@ -37,6 +37,9 @@
     <Filter Include="src\Frostic\Scene\Primitives">
       <UniqueIdentifier>{6E6295C3-5A1D-856F-03D5-FDB9EF6ECFFF}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Frostic\Script">
+      <UniqueIdentifier>{5A8E6DFC-4672-2E52-AFD2-28A59BD518D4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Frostic\Utils">
       <UniqueIdentifier>{B6C68DF0-22DD-8B86-6B54-17A8D7A95C0E}</UniqueIdentifier>
     </Filter>
@@ -106,6 +109,9 @@
       <Filter>src\Frostic\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Core\FEArray.h">
+      <Filter>src\Frostic\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Core\FEString.h">
       <Filter>src\Frostic\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Core\FEVector.h">
@@ -233,6 +239,15 @@
     </ClInclude>
     <ClInclude Include="src\Frostic\Scene\ScriptableEntity.h">
       <Filter>src\Frostic\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Script\ScriptManager.h">
+      <Filter>src\Frostic\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Script\ScriptSerializer.h">
+      <Filter>src\Frostic\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frostic\Script\ScriptsHeaders.h">
+      <Filter>src\Frostic\Script</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Utils\PlatformUtils.h">
       <Filter>src\Frostic\Utils</Filter>
@@ -1512,8 +1527,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Frostic\Core\FEString.h" />
-    <ClInclude Include="src\Frostic\Script\ScriptManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Frostic\Assets\AssetLibrary.cpp">
@@ -1606,6 +1619,12 @@
     <ClCompile Include="src\Frostic\Scene\SceneSerializer.cpp">
       <Filter>src\Frostic\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Frostic\Script\ScriptManager.cpp">
+      <Filter>src\Frostic\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frostic\Script\ScriptSerializer.cpp">
+      <Filter>src\Frostic\Script</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
@@ -1645,6 +1664,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Frostic\Script\ScriptManager.cpp" />
   </ItemGroup>
 </Project>

@@ -95,7 +95,7 @@ namespace Frostic {
 		for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
 			samplers[i] = i;
 
-		s_Data.TextureShader = Shader::Create("C:/dev/Frostic-dev/Frosted/assets/shaders/Texture.glsl");
+		s_Data.TextureShader = Shader::Create(FILEPATH("Frosted/assets/shaders/Texture.glsl"));
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetIntArray("u_Texture", samplers, s_Data.MaxTextureSlots);
 

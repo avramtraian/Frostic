@@ -6,6 +6,8 @@
 #include "Frostic/Scene/SceneManager.h"
 #include "Frostic/Utils/PlatformUtils.h"
 
+#include "Frostic/Script/ScriptSerializer.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -16,6 +18,8 @@ namespace Frostic {
 		: Layer("Sandbox2D"), m_CameraController(1600.0f / 900.0f)
 	{
 		SceneManagerEditor::Initialize(FE_BIND_EVENT_FN(EditorLayer::OnRuntimeStart), FE_BIND_EVENT_FN(EditorLayer::OnRuntimeStop));
+		ScriptSerializer serializer;
+		serializer.Deserialize(FILEPATH("Frosted/assets/scripts/Scripts.fescript"));
 	}
 
 	void EditorLayer::OnAttach()
@@ -34,13 +38,18 @@ namespace Frostic {
 		m_EditorCamera = EditorCamera{ 30.0f, 1.778f, 0.1f, 1000.0f };
 
 		SceneSerializer serializer(m_ActiveScene);
-		serializer.Deserialize("assets/scenes/2DTest.frostic", m_EditorCamera);
+		saveFilepath = "assets/scenes/FlappyBird.frostic";
+		serializer.Deserialize(saveFilepath, m_EditorCamera);
 	}
 
 	void EditorLayer::OnDetach()
 	{
 		FE_PROFILE_FUNCTION();
 
+		// This code may not be hit, so we serialize right after we added a new script
+		// This is just a backup
+		ScriptSerializer serializer;
+		serializer.Serialize(FILEPATH("Frosted/assets/scripts/Scripts.fescript"));
 	}
 
 	void EditorLayer::OnUpdate(Timestep ts)
