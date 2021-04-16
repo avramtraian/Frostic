@@ -1,4 +1,4 @@
-#include "frpch.h"
+#include "fepch.h"
 #include "Scene.h"
 
 #include "Frostic/Math/Random.h"
@@ -27,7 +27,7 @@ namespace Frostic {
 		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		Math::Random::Init();
-		tag.UUID = uuid == 0 ? Math::Random::Range<uint64_t>(1, 10000000000) : uuid;
+		tag.UUID = uuid == 0 ? Math::Random::Range<uint64_t>(1, 100000000000000) : uuid;
 		tag.Tag = name.empty() ? "Entity" : name;
 		return entity;
 	}
@@ -76,6 +76,18 @@ namespace Frostic {
 				cc.Camera = entity.GetComponent<CameraComponent>().Camera;
 				cc.FixedAspectRatio = entity.GetComponent<CameraComponent>().FixedAspectRatio;
 				cc.Primary = entity.GetComponent<CameraComponent>().Primary;
+			}
+			if (entity.HasComponent<PhysicsComponent2D>())
+			{
+				auto& physics = createdEntity.AddOrGetComponent<PhysicsComponent2D>();
+				physics.Active = entity.GetComponent<PhysicsComponent2D>().Active;
+				physics.Force = entity.GetComponent<PhysicsComponent2D>().Force;
+				physics.Acceleration = entity.GetComponent<PhysicsComponent2D>().Acceleration;
+				physics.Velocity = entity.GetComponent<PhysicsComponent2D>().Velocity;
+				physics.AirResistanceCoefficient = entity.GetComponent<PhysicsComponent2D>().AirResistanceCoefficient;
+				physics.Mass = entity.GetComponent<PhysicsComponent2D>().Mass;
+				physics.Gravity = entity.GetComponent<PhysicsComponent2D>().Gravity;
+				physics.GravityAcceleration = entity.GetComponent<PhysicsComponent2D>().GravityAcceleration;
 			}
 			if (entity.HasComponent<NativeScriptComponent>())
 			{
@@ -197,7 +209,8 @@ namespace Frostic {
 	{
 		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
 			{
-				nsc.DestroyScript(&nsc);
+				if (nsc.Instance != nullptr)
+					nsc.DestroyScript(&nsc);
 			});
 	}
 
@@ -207,13 +220,25 @@ namespace Frostic {
 		{
 			m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) 
 				{
-					if (!nsc.Initialized)
+					if (nsc.Instance != nullptr)
 					{
-						nsc.Initialized = true;
-						nsc.Instance->Begin();
+						if (nsc.Initialized)
+							nsc.Instance->Tick(ts);
+						else
+						{
+							nsc.Initialized = true;
+							nsc.Instance->Begin();
+						}
 					}
+				});
+		}
 
-					nsc.Instance->Tick(ts);
+		// Update Physics
+		{
+			m_Registry.view<PhysicsComponent2D>().each([&ts](auto entity, auto& physics)
+				{
+					physics.Update(ts);
+					physics.UpdatePosition(ts);
 				});
 		}
 
@@ -279,22 +304,40 @@ namespace Frostic {
 			}
 		}
 
+		m_Registry.view<CameraComponent>().each([&](auto ent, CameraComponent& cc)
+			{
+				Entity entity{ ent, cc.Context };
+				if (entity.HasComponent<TransformComponent>())
+				{
+					TransformComponent tc;
+					tc.Translation = entity.GetComponent<TransformComponent>().Translation;
+					tc.Rotation = entity.GetComponent<TransformComponent>().Rotation;
+					tc.Scale = { cc.Camera.GetOrthographicSize() * cc.Camera.GetOrthographicAspectRatio(), cc.Camera.GetOrthographicSize(), 1.0f };
+					Specs.Transform = tc.GetTransform();
+					Specs.Texture = nullptr;
+					Specs.Color = { 0.0f, 0.5f, 0.0f, 0.1f };
+
+					Renderer2D::DrawSprite(Specs);
+					return;
+				}
+			});
+
 		Renderer2D::EndScene();
 	}
 
 	void Scene::OnViewportResize(uint32_t width, uint32_t height)
 	{
-		m_ViewportWidth = width;
-		m_ViewportHeight = height;
-
-		// Resize the non-FixedAspectRatio cameras
-		auto view = m_Registry.view<CameraComponent>();
-		for (auto entity : view)
-		{
-			auto& cameraComponent = view.get<CameraComponent>(entity);
-			if (!cameraComponent.FixedAspectRatio)
-				cameraComponent.Camera.SetViewportSize(width, height);
-		}
+		m_Registry.view<CameraComponent>().each([&](auto ent, CameraComponent& cc) 
+			{
+				if (cc.Primary)
+				{
+					m_ViewportWidth = width;
+					m_ViewportHeight = m_ViewportWidth / cc.Camera.GetOrthographicAspectRatio();
+					DEBUG_ONLY(glm::clamp(m_ViewportWidth, (uint32_t)0, width));
+					DEBUG_ONLY(glm::clamp(m_ViewportHeight, (uint32_t)0, height));
+					return;
+				}
+			});
 	}
 
 	template<typename T>
@@ -324,11 +367,17 @@ namespace Frostic {
 	template<>
 	void Scene::OnComponentAdded(Entity entity, CameraComponent& component)
 	{
-		component.Camera.SetViewportSize(m_ViewportWidth, m_ViewportHeight);
+
 	}
 
 	template<>
 	void Scene::OnComponentAdded(Entity entity, NativeScriptComponent& component)
+	{
+
+	}
+
+	template<>
+	void Scene::OnComponentAdded(Entity entity, PhysicsComponent2D& component)
 	{
 
 	}

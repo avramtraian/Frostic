@@ -25,6 +25,8 @@ namespace Frostic {
 
 		float GetOrthographicSize() const { return m_OrthographicSize; }
 		void SetOrthographicSize(float size) { m_OrthographicSize = size; RecalculateProjection(); }
+		float GetOrthographicAspectRatio() const { return m_AspectRatio; }
+		void SetOrthographicAspectRatio(float aspectRatio) { m_AspectRatio = aspectRatio; RecalculateProjection(); }
 		float GetOrthographicNearClip() const { return m_OrthographicNear; }
 		void SetOrthographicNearClip(float nearClip) { m_OrthographicNear = nearClip; RecalculateProjection(); }
 		float GetOrthographicFarClip() const { return m_OrthographicFar; }
@@ -43,7 +45,7 @@ namespace Frostic {
 		float m_OrthographicSize = 10.0f;
 		float m_OrthographicNear = -1.0f, m_OrthographicFar = 1.0f;
 
-		float m_AspectRatio = 0.0f;
+		float m_AspectRatio = 1.778f;
 	};
 
 }

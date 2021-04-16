@@ -1,23 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="AddScriptTest">
+      <UniqueIdentifier>{432C89FC-AFEC-0433-7827-4EB0E4A6490F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frosted">
+      <UniqueIdentifier>{3CFC3122-A8DB-B0BD-B1F3-3B941D52171F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frosted\Tools">
+      <UniqueIdentifier>{BC7D3615-283E-B24B-F178-FBC85DF8F627}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Panels">
       <UniqueIdentifier>{A80D95C9-94AF-BF9F-7D6A-D3F369AB46F0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AddScriptTest\PlayerScript.h">
+      <Filter>AddScriptTest</Filter>
+    </ClInclude>
     <ClInclude Include="src\EditorLayer.h" />
+    <ClInclude Include="src\Frosted\Tools\ScriptFiles.h">
+      <Filter>Frosted\Tools</Filter>
+    </ClInclude>
     <ClInclude Include="src\Panels\SceneHierarchyPanel.h">
       <Filter>Panels</Filter>
     </ClInclude>
     <ClInclude Include="src\Panels\ToolsPanel.h">
       <Filter>Panels</Filter>
     </ClInclude>
-    <ClInclude Include="src\Testing\ScriptedEntity.h" />
-    <ClInclude Include="src\Testing\MovementScript.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AddScriptTest\PlayerScript.cpp">
+      <Filter>AddScriptTest</Filter>
+    </ClCompile>
     <ClCompile Include="src\EditorLayer.cpp" />
+    <ClCompile Include="src\Frosted\Tools\ScriptFiles.cpp">
+      <Filter>Frosted\Tools</Filter>
+    </ClCompile>
     <ClCompile Include="src\FrostedApp.cpp" />
     <ClCompile Include="src\Panels\SceneHierarchyPanel.cpp">
       <Filter>Panels</Filter>
@@ -25,7 +44,5 @@
     <ClCompile Include="src\Panels\ToolsPanel.cpp">
       <Filter>Panels</Filter>
     </ClCompile>
-    <ClCompile Include="src\Testing\ScriptedEntity.cpp" />
-    <ClCompile Include="src\Testing\MovementScript.cpp" />
   </ItemGroup>
 </Project>

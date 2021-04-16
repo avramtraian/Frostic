@@ -74,7 +74,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>frpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>fepch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;FE_PLATFORM_WINDOWS;FE_BUILD_DLL;GLFW_INCLUDE_NONE;FE_DEBUG;FE_ENABLE_ASSERTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\Imgui;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\ImGuizmo;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -94,7 +94,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>frpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>fepch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;FE_PLATFORM_WINDOWS;FE_BUILD_DLL;GLFW_INCLUDE_NONE;FE_RELEASE;FE_ENABLE_ASSERTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\Imgui;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\ImGuizmo;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -118,7 +118,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>frpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>fepch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;FE_PLATFORM_WINDOWS;FE_BUILD_DLL;GLFW_INCLUDE_NONE;FE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\Imgui;vendor\glm;vendor\stb_image;vendor\entt\include;vendor\ImGuizmo;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -192,6 +192,8 @@
     <ClInclude Include="src\Frostic\Scene\SceneSerializer.h" />
     <ClInclude Include="src\Frostic\Scene\ScriptableEntity.h" />
     <ClInclude Include="src\Frostic\Script\ScriptManager.h" />
+    <ClInclude Include="src\Frostic\Script\ScriptSerializer.h" />
+    <ClInclude Include="src\Frostic\Script\ScriptsHeaders.h" />
     <ClInclude Include="src\Frostic\Utils\PlatformUtils.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
@@ -201,7 +203,7 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
-    <ClInclude Include="src\frpch.h" />
+    <ClInclude Include="src\fepch.h" />
     <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="vendor\entt\include\entt.hpp" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
@@ -651,6 +653,7 @@
     <ClCompile Include="src\Frostic\Scene\SceneManager.cpp" />
     <ClCompile Include="src\Frostic\Scene\SceneSerializer.cpp" />
     <ClCompile Include="src\Frostic\Script\ScriptManager.cpp" />
+    <ClCompile Include="src\Frostic\Script\ScriptSerializer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />
@@ -661,7 +664,7 @@
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsPlatformUtils.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
-    <ClCompile Include="src\frpch.cpp">
+    <ClCompile Include="src\fepch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">

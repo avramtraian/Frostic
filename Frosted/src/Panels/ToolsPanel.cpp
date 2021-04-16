@@ -8,8 +8,8 @@ namespace Frostic {
 
 	ToolsPanel::ToolsPanel()
 	{
-		m_Icons[0] = Texture2D::Create(FILEPATH("internal/toolsIcons/Start.png"));
-		m_Icons[1] = Texture2D::Create(FILEPATH("internal/toolsIcons/Stop.png"));
+		m_Icons[0] = Texture2D::Create(FILEPATH("Frosted/internal/toolsIcons/Start.png"));
+		m_Icons[1] = Texture2D::Create(FILEPATH("Frosted/internal/toolsIcons/Stop.png"));
 	}
 
 	void ToolsPanel::SetContext(const Ref<Scene>& context)
@@ -42,7 +42,45 @@ namespace Frostic {
 
 		}
 
+		ImGui::SameLine();
+		if (ImGui::Button("Add NativeScript", ImVec2{ 50, 50 }))
+		{
+			if (m_ScriptFiles.IsDeleting())
+			{
+				m_ScriptFiles.End();
+				m_ScriptFiles.BeginGenerate();
+			}
+			else if (m_ScriptFiles.IsGenerating())
+			{
+				m_ScriptFiles.End();
+			}
+			else
+			{
+				m_ScriptFiles.BeginGenerate();
+			}
+		}
+
+		ImGui::SameLine();
+		if (ImGui::Button("Delete NativeScript", ImVec2{ 50, 50 }))
+		{
+			if (m_ScriptFiles.IsGenerating())
+			{
+				m_ScriptFiles.End();
+				m_ScriptFiles.BeginDelete();
+			}
+			else if (m_ScriptFiles.IsDeleting())
+			{
+				m_ScriptFiles.End();
+			}
+			else
+			{
+				m_ScriptFiles.BeginDelete();
+			}
+		}
+
 		ImGui::End();
+
+		m_ScriptFiles.OnImGuiRender();
 	}
 
 }

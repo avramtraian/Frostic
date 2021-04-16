@@ -1,4 +1,4 @@
-#include "frpch.h"
+#include "fepch.h"
 #include "ImGuiLayer.h"
 
 #include <imgui.h>
@@ -33,8 +33,8 @@ namespace Frostic {
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-		io.Fonts->AddFontFromFileTTF("C:/dev/Frostic-dev/Frosted/assets/fonts/opensans/OpenSans-Bold.ttf", 18.0f);
-		io.FontDefault = io.Fonts->AddFontFromFileTTF("C:/dev/Frostic-dev/Frosted/assets/fonts/opensans/OpenSans-Regular.ttf", 18.0f);
+		io.Fonts->AddFontFromFileTTF(FILEPATH("Frosted/assets/fonts/opensans/OpenSans-Bold.ttf").c_str(), 18.0f);
+		io.FontDefault = io.Fonts->AddFontFromFileTTF(FILEPATH("Frosted/assets/fonts/opensans/OpenSans-Regular.ttf").c_str(), 18.0f);
 
 		ImGui::StyleColorsDark();
 

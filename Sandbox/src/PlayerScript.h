@@ -4,19 +4,19 @@
 
 namespace Frostic {
 
-	class ScriptedEntity : public ScriptableEntity
+	class PlayerScript : public ScriptableEntity
 	{
 	public:
-		ScriptedEntity();
+		PlayerScript();
+
+		void Jump();
+	private:
 		virtual void PushProperties() override;
 
 		virtual void Begin() override;
 		virtual void Tick(Timestep ts) override;
-	public:
-		void Print();
-	public:
-		int ValueToPrint = 0;
-		Entity entity;
+	private:
+		float m_JumpForce = 0.5f;
 	};
 
 }

@@ -131,9 +131,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\AddScriptTest\PlayerScript.h" />
+    <ClInclude Include="src\PlayerScript.h" />
     <ClInclude Include="src\Sandbox2D.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AddScriptTest\PlayerScript.cpp" />
+    <ClCompile Include="src\PlayerScript.cpp">
+      <ObjectFileName>$(IntDir)\PlayerScript1.obj</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="src\Sandbox2D.cpp" />
     <ClCompile Include="src\SandboxApp.cpp" />
   </ItemGroup>

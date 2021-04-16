@@ -33,14 +33,14 @@ project "Frostic"
 	location "Frostic"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++19"
+	cppdialect "C++17"
 	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "frpch.h"
-	pchsource "Frostic/src/frpch.cpp"
+	pchheader "fepch.h"
+	pchsource "Frostic/src/fepch.cpp"
 
 	files
 	{
@@ -117,7 +117,7 @@ project "Frosted"
 	location "Frosted"
 	kind "ConsoleApp"
 	language "C++"
-	cppdialect "C++19"
+	cppdialect "C++17"
 	staticruntime "on"
 	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -154,11 +154,13 @@ project "Frosted"
 
 	filter "configurations:Debug"
 		defines "FE_DEBUG"
+		defines "FE_ENABLE_ASSERTS"
 		runtime "Debug"
 		symbols "on"
 	
 	filter "configurations:Release"
 		defines "FE_RELEASE"
+		defines "FE_ENABLE_ASSERTS"
 		runtime "Release"
 		optimize "on"
 	
@@ -171,7 +173,7 @@ project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
-	cppdialect "C++19"
+	cppdialect "C++17"
 	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")

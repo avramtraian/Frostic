@@ -1,4 +1,4 @@
-#include "frpch.h"
+#include "fepch.h"
 #include "SceneSerializer.h"
 
 #include "Entity.h"
@@ -11,6 +11,28 @@
 #include <yaml-cpp/yaml.h>
 
 namespace YAML {
+
+	template<>
+	struct convert<glm::vec2>
+	{
+		static Node encode(const glm::vec2 rhs)
+		{
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			return node;
+		}
+
+		static bool decode(const Node& node, glm::vec2& rhs)
+		{
+			if (!node.IsSequence() || node.size() != 2)
+				return false;
+
+			rhs.x = node[0].as<float>();
+			rhs.y = node[1].as<float>();
+			return true;
+		}
+	};
 
 	template<>
 	struct convert<glm::vec3>
@@ -66,6 +88,13 @@ namespace YAML {
 
 namespace Frostic {
 
+	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& values)
+	{
+		out << YAML::Flow;
+		out << YAML::BeginSeq << values.x << values.y << YAML::EndSeq;
+		return out;
+	}
+
 	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& values)
 	{
 		out << YAML::Flow;
@@ -85,7 +114,7 @@ namespace Frostic {
 
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
-		out << YAML::BeginMap; // Entities
+		out << YAML::BeginMap; // Entity
 		out << YAML::Key << "Entity" << YAML::Value << entity.GetComponent<TagComponent>().UUID; // The operator overload takes care
 
 		if (entity.HasComponent<TagComponent>())
@@ -129,6 +158,7 @@ namespace Frostic {
 			out << YAML::Key << "OrthographicSize" << YAML::Value << camera.GetOrthographicSize();
 			out << YAML::Key << "OrthographicNear" << YAML::Value << camera.GetOrthographicNearClip();
 			out << YAML::Key << "OrthographicFar" << YAML::Value << camera.GetOrthographicFarClip();
+			out << YAML::Key << "AspectRatio" << YAML::Value << camera.GetOrthographicAspectRatio();
 			out << YAML::EndMap; // Camera
 
 			out << YAML::Key << "Active" << YAML::Value << cc.Active;
@@ -151,6 +181,24 @@ namespace Frostic {
 			out << YAML::EndMap; // SpriteRendererComponent
 		}
 
+		if (entity.HasComponent<PhysicsComponent2D>())
+		{
+			out << YAML::Key << "PhysicsComponent2D";
+			out << YAML::BeginMap; // PhysicsComponent2D
+
+			auto& physics = entity.GetComponent<PhysicsComponent2D>();
+			out << YAML::Key << "Active" << YAML::Value << physics.Active;
+			out << YAML::Key << "Force" << YAML::Value << physics.Force;
+			out << YAML::Key << "Acceleration" << YAML::Value << physics.Acceleration;
+			out << YAML::Key << "Velocity" << YAML::Value << physics.Velocity;
+			out << YAML::Key << "AirResistanceCoefficient" << YAML::Value << physics.AirResistanceCoefficient;
+			out << YAML::Key << "Mass" << YAML::Value << physics.Mass;
+			out << YAML::Key << "Gravity" << YAML::Value << physics.Gravity;
+			out << YAML::Key << "GravityAcceleration" << YAML::Value << physics.GravityAcceleration;
+
+			out << YAML::EndMap; // PhysicsComponent2D
+		}
+
 		if (entity.HasComponent<NativeScriptComponent>())
 		{
 			out << YAML::Key << "NativeScriptComponent";
@@ -158,8 +206,10 @@ namespace Frostic {
 
 			auto& nsc = entity.GetComponent<NativeScriptComponent>();
 			out << YAML::Key << "Active" << YAML::Value << nsc.Active;
+			out << YAML::Key << "ScriptID" << YAML::Value << (nsc.Instance != nullptr ? nsc.Instance->GetScriptID() : 0);
 			out << YAML::Key << "Instance";
 			out << YAML::BeginMap; // Instance;
+			out << YAML::Key << "PropertiesSize" << YAML::Value << (nsc.Instance != nullptr ? nsc.Instance->_m_Properties.size() : 0);
 			if (nsc.Instance != nullptr)
 			{
 				out << YAML::Key << "EntityUUID" << YAML::Value << nsc.Instance->GetEntityUUID();
@@ -221,7 +271,7 @@ namespace Frostic {
 			out << YAML::EndMap; // NativeScriptComponent
 		}
 
-		out << YAML::EndMap; // Entities
+		out << YAML::EndMap; // Entity
 	}
 
 	static void SerializeEditorCamera(YAML::Emitter& out, const EditorCamera& camera)
@@ -327,6 +377,8 @@ namespace Frostic {
 					cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
 					cc.Camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
 
+					cc.Camera.SetOrthographicAspectRatio(cameraProps["AspectRatio"].as<float>());
+
 					cc.Active = cameraComponent["Active"].as<bool>();
 					cc.Primary = cameraComponent["Primary"].as<bool>();
 					cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
@@ -344,17 +396,38 @@ namespace Frostic {
 						src.Texture = nullptr;
 				}
 
+				auto physicsComponent = entity["PhysicsComponent2D"];
+				if (physicsComponent)
+				{
+					auto& physics = deserializedEntity.AddComponent<PhysicsComponent2D>();
+					physics.Active = physicsComponent["Active"].as<bool>();
+					physics.Force = physicsComponent["Force"].as<glm::vec2>();
+					physics.Acceleration = physicsComponent["Acceleration"].as<glm::vec2>();
+					physics.Velocity = physicsComponent["Velocity"].as<glm::vec2>();
+					physics.AirResistanceCoefficient = physicsComponent["AirResistanceCoefficient"].as<float>();
+					physics.Mass = physicsComponent["Mass"].as<float>();
+					physics.Gravity = physicsComponent["Gravity"].as<bool>();
+					physics.GravityAcceleration = physicsComponent["GravityAcceleration"].as<float>();
+				}
+
 				auto nsComponent = entity["NativeScriptComponent"];
 				if (nsComponent)
 				{
 					auto& nsc = deserializedEntity.AddComponent<NativeScriptComponent>();
 					nsc.Active = nsComponent["Active"].as<bool>();
+					if (nsComponent["ScriptID"].as<uint64_t>() != 0)
+					{
+						nsc.InstantiateScript = ScriptManager::CreateInstantiateScriptByID(nsComponent["ScriptID"].as<uint64_t>());
+						nsc.DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
+						nsc.Instance = nsc.InstantiateScript();
+					}
 					if (nsc.Instance != nullptr)
 					{
 						nsc.Instance->m_EntityUUID = nsComponent["Instance"]["EntityUUID"].as<uint64_t>();
-						for (size_t i = 0; i < nsc.Instance->_m_Properties.size(); i++)
+						size_t size = glm::min(nsComponent["Instance"]["PropertiesSize"].as<size_t>(), nsc.Instance->_m_Properties.size());
+						for (size_t i = 0; i < size; i++)
 						{
-							auto property = nsComponent["Instance"]["Property[" + std::to_string(i) + "]"];
+							auto property = nsComponent["Instance"]["PropertyData[" + std::to_string(i) + "]"];
 							ScriptableEntity::_PropertyData& data = nsc.Instance->_m_Properties[i];
 							switch (data.m_PropertyType)
 							{
@@ -526,6 +599,8 @@ namespace Frostic {
 					cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
 					cc.Camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
 
+					cc.Camera.SetOrthographicAspectRatio(cameraProps["AspectRatio"].as<float>());
+
 					cc.Active = cameraComponent["Active"].as<bool>();
 					cc.Primary = cameraComponent["Primary"].as<bool>();
 					cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
@@ -542,8 +617,129 @@ namespace Frostic {
 					if (AssetLibrary::RemoveIfInvalid<TextureAsset>(src.TexturePath))
 						src.Texture = nullptr;
 				}
+
+				auto physicsComponent = entity["PhysicsComponent2D"];
+				if (physicsComponent)
+				{
+					auto& physics = deserializedEntity.AddComponent<PhysicsComponent2D>();
+					physics.Active = physicsComponent["Active"].as<bool>();
+					physics.Force = physicsComponent["Force"].as<glm::vec2>();
+					physics.Acceleration = physicsComponent["Acceleration"].as<glm::vec2>();
+					physics.Velocity = physicsComponent["Velocity"].as<glm::vec2>();
+					physics.AirResistanceCoefficient = physicsComponent["AirResistanceCoefficient"].as<float>();
+					physics.Mass = physicsComponent["Mass"].as<float>();
+					physics.Gravity = physicsComponent["Gravity"].as<bool>();
+					physics.GravityAcceleration = physicsComponent["GravityAcceleration"].as<float>();
+				}
+
+				auto nsComponent = entity["NativeScriptComponent"];
+				if (nsComponent)
+				{
+					auto& nsc = deserializedEntity.AddComponent<NativeScriptComponent>();
+					nsc.Active = nsComponent["Active"].as<bool>();
+					if (nsComponent["ScriptID"].as<uint64_t>() != 0)
+					{
+						nsc.InstantiateScript = ScriptManager::CreateInstantiateScriptByID(nsComponent["ScriptID"].as<uint64_t>());
+						nsc.DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
+						nsc.Instance = nsc.InstantiateScript();
+					}
+					if (nsc.Instance != nullptr)
+					{
+						nsc.Instance->m_EntityUUID = nsComponent["Instance"]["EntityUUID"].as<uint64_t>();
+						for (size_t i = 0; i < nsc.Instance->_m_Properties.size(); i++)
+						{
+							auto property = nsComponent["Instance"]["PropertyData[" + std::to_string(i) + "]"];
+							ScriptableEntity::_PropertyData& data = nsc.Instance->_m_Properties[i];
+							switch (data.m_PropertyType)
+							{
+							case PropertyType::Data:
+								switch (data.m_DataType)
+								{
+								case DataType::UINT8_T:
+								{
+									uint8_t dataToCopy = property["Data"].as<uint8_t>();
+									memcpy(data.m_Data, &dataToCopy, sizeof(uint8_t));
+									break;
+								}
+								case DataType::UINT16_T:
+								{
+									uint16_t dataToCopy = property["Data"].as<uint16_t>();
+									memcpy(data.m_Data, &dataToCopy, sizeof(uint16_t));
+									break;
+								}
+								case DataType::UINT32_T:
+								{
+									uint32_t dataToCopy = property["Data"].as<uint32_t>();
+									memcpy(data.m_Data, &dataToCopy, sizeof(uint32_t));
+									break;
+								}
+								case DataType::UINT64_T:
+								{
+									uint64_t dataToCopy = property["Data"].as<uint64_t>();
+									memcpy(data.m_Data, &dataToCopy, sizeof(uint64_t));
+									break;
+								}
+								case DataType::INT:
+								{
+									int dataToCopy = property["Data"].as<int>();
+									memcpy(data.m_Data, &dataToCopy, sizeof(int));
+									break;
+								}
+								case DataType::FLOAT:
+								{
+									float dataToCopy = property["Data"].as<float>();
+									memcpy(data.m_Data, &dataToCopy, sizeof(float));
+									break;
+								}
+								default:
+									break;
+								}
+								break;
+							case PropertyType::EntityReference:
+								data.m_EntityUUID = property["EntityUUID"].as<uint64_t>();
+								break;
+							case PropertyType::Script:
+								data.m_EntityUUID = property["EntityUUID"].as<uint64_t>();
+								break;
+							default:
+								break;
+							}
+						}
+					}
+				}
 			}
 		}
+
+		m_Scene->m_Registry.view<NativeScriptComponent>().each([&](entt::entity ent, NativeScriptComponent& nsc)
+			{
+				if (nsc.Instance != nullptr)
+					nsc.Instance->m_Entity = m_Scene->GetEntityByUUID(nsc.Instance->m_EntityUUID);
+			});
+
+		m_Scene->m_Registry.view<NativeScriptComponent>().each([&](entt::entity ent, NativeScriptComponent& nsc)
+			{
+				if (nsc.Instance != nullptr)
+				{
+					for (size_t i = 0; i < nsc.Instance->_m_Properties.size(); i++)
+					{
+						ScriptableEntity::_PropertyData& data = nsc.Instance->_m_Properties[i];
+
+						switch (data.m_PropertyType)
+						{
+						case PropertyType::EntityReference:
+							if (data.m_EntityUUID != 0)
+								*static_cast<Entity*>(data.m_Data) = m_Scene->GetEntityByUUID(data.m_EntityUUID);
+							break;
+						case PropertyType::Script:
+							if (data.m_EntityUUID != 0)
+								*static_cast<ScriptableEntity**>(data.m_Data) = m_Scene->GetEntityByUUID(data.m_EntityUUID).GetComponent<NativeScriptComponent>().Instance;
+							break;
+						default:
+							break;
+						}
+					}
+				}
+			});
 
 		FE_CORE_TRACE("Deserializing complete!");
 		return true;
