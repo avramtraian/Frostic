@@ -236,7 +236,7 @@ namespace Frostic {
 			serializer.Serialize(FILEPATH("Frosted/assets/scripts/Scripts.fescript"));
 
 #ifdef FE_PLATFORM_WINDOWS
-			std::system("C:/dev/Frostic-dev/scripts/Win-GenProjects.bat");
+			std::system("C:/dev/Frostic-dev/scripts/Win-ReloadProjectFiles.bat");
 #endif
 
 			FE_CORE_INFO("Script '{0}'(ID: {1}) created succesfully!", m_ScriptName, m_ScriptID);
@@ -298,7 +298,7 @@ namespace Frostic {
 		DeleteSciptManagerFile(m_ScriptID);
 
 #ifdef FE_PLATFORM_WINDOWS
-		std::system("C:/dev/Frostic-dev/scripts/Win-GenProjects.bat");
+		std::system("C:/dev/Frostic-dev/scripts/Win-ReloadProjectFiles.bat");
 #endif
 
 		FE_CORE_INFO("Script '{0}'(ID: {1}) was deleted succesfully!", m_ScriptName, m_ScriptID);
