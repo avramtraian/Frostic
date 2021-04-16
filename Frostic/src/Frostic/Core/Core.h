@@ -19,9 +19,19 @@
 #ifdef FE_ENABLE_ASSERTS
 	#define FE_CORE_ASSERT(x, ...) { if(!(x)) { FE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 	#define FE_ASSERT(x, ...) { if(!(x)) { FE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+	#define FE_CORE_ASSERT_AND_RETURN(x, ...) { if(!(x)) { FE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } } return;
+	#define FE_CORE_ASSERT_AND_BREAK(x, ...) { if(!(x)) { FE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } } break;
 #else 
 	#define FE_CORE_ASSERT(x, ...)
 	#define FE_ASSERT(x, ...)
+	#define FE_CORE_ASSERT_AND_RETURN(x, ...)  
+	#define FE_CORE_ASSERT_AND_BREAK(x, ...)  
+#endif
+
+#ifdef FE_DEBUG
+	#define DEBUG_ONLY(x) x
+#else
+	#define DEBUG_ONLY(x)  
 #endif
 
 #define BIT(x) (1 << x)

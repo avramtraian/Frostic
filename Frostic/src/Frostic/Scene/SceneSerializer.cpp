@@ -1,4 +1,4 @@
-#include "frpch.h"
+#include "fepch.h"
 #include "SceneSerializer.h"
 
 #include "Entity.h"
@@ -11,6 +11,28 @@
 #include <yaml-cpp/yaml.h>
 
 namespace YAML {
+
+	template<>
+	struct convert<glm::vec2>
+	{
+		static Node encode(const glm::vec2 rhs)
+		{
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			return node;
+		}
+
+		static bool decode(const Node& node, glm::vec2& rhs)
+		{
+			if (!node.IsSequence() || node.size() != 2)
+				return false;
+
+			rhs.x = node[0].as<float>();
+			rhs.y = node[1].as<float>();
+			return true;
+		}
+	};
 
 	template<>
 	struct convert<glm::vec3>
@@ -65,6 +87,13 @@ namespace YAML {
 }
 
 namespace Frostic {
+
+	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& values)
+	{
+		out << YAML::Flow;
+		out << YAML::BeginSeq << values.x << values.y << YAML::EndSeq;
+		return out;
+	}
 
 	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& values)
 	{
@@ -129,6 +158,7 @@ namespace Frostic {
 			out << YAML::Key << "OrthographicSize" << YAML::Value << camera.GetOrthographicSize();
 			out << YAML::Key << "OrthographicNear" << YAML::Value << camera.GetOrthographicNearClip();
 			out << YAML::Key << "OrthographicFar" << YAML::Value << camera.GetOrthographicFarClip();
+			out << YAML::Key << "AspectRatio" << YAML::Value << camera.GetOrthographicAspectRatio();
 			out << YAML::EndMap; // Camera
 
 			out << YAML::Key << "Active" << YAML::Value << cc.Active;
@@ -151,6 +181,24 @@ namespace Frostic {
 			out << YAML::EndMap; // SpriteRendererComponent
 		}
 
+		if (entity.HasComponent<PhysicsComponent2D>())
+		{
+			out << YAML::Key << "PhysicsComponent2D";
+			out << YAML::BeginMap; // PhysicsComponent2D
+
+			auto& physics = entity.GetComponent<PhysicsComponent2D>();
+			out << YAML::Key << "Active" << YAML::Value << physics.Active;
+			out << YAML::Key << "Force" << YAML::Value << physics.Force;
+			out << YAML::Key << "Acceleration" << YAML::Value << physics.Acceleration;
+			out << YAML::Key << "Velocity" << YAML::Value << physics.Velocity;
+			out << YAML::Key << "AirResistanceCoefficient" << YAML::Value << physics.AirResistanceCoefficient;
+			out << YAML::Key << "Mass" << YAML::Value << physics.Mass;
+			out << YAML::Key << "Gravity" << YAML::Value << physics.Gravity;
+			out << YAML::Key << "GravityAcceleration" << YAML::Value << physics.GravityAcceleration;
+
+			out << YAML::EndMap; // PhysicsComponent2D
+		}
+
 		if (entity.HasComponent<NativeScriptComponent>())
 		{
 			out << YAML::Key << "NativeScriptComponent";
@@ -161,6 +209,7 @@ namespace Frostic {
 			out << YAML::Key << "ScriptID" << YAML::Value << (nsc.Instance != nullptr ? nsc.Instance->GetScriptID() : 0);
 			out << YAML::Key << "Instance";
 			out << YAML::BeginMap; // Instance;
+			out << YAML::Key << "PropertiesSize" << YAML::Value << (nsc.Instance != nullptr ? nsc.Instance->_m_Properties.size() : 0);
 			if (nsc.Instance != nullptr)
 			{
 				out << YAML::Key << "EntityUUID" << YAML::Value << nsc.Instance->GetEntityUUID();
@@ -328,6 +377,8 @@ namespace Frostic {
 					cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
 					cc.Camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
 
+					cc.Camera.SetOrthographicAspectRatio(cameraProps["AspectRatio"].as<float>());
+
 					cc.Active = cameraComponent["Active"].as<bool>();
 					cc.Primary = cameraComponent["Primary"].as<bool>();
 					cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
@@ -345,6 +396,20 @@ namespace Frostic {
 						src.Texture = nullptr;
 				}
 
+				auto physicsComponent = entity["PhysicsComponent2D"];
+				if (physicsComponent)
+				{
+					auto& physics = deserializedEntity.AddComponent<PhysicsComponent2D>();
+					physics.Active = physicsComponent["Active"].as<bool>();
+					physics.Force = physicsComponent["Force"].as<glm::vec2>();
+					physics.Acceleration = physicsComponent["Acceleration"].as<glm::vec2>();
+					physics.Velocity = physicsComponent["Velocity"].as<glm::vec2>();
+					physics.AirResistanceCoefficient = physicsComponent["AirResistanceCoefficient"].as<float>();
+					physics.Mass = physicsComponent["Mass"].as<float>();
+					physics.Gravity = physicsComponent["Gravity"].as<bool>();
+					physics.GravityAcceleration = physicsComponent["GravityAcceleration"].as<float>();
+				}
+
 				auto nsComponent = entity["NativeScriptComponent"];
 				if (nsComponent)
 				{
@@ -359,7 +424,8 @@ namespace Frostic {
 					if (nsc.Instance != nullptr)
 					{
 						nsc.Instance->m_EntityUUID = nsComponent["Instance"]["EntityUUID"].as<uint64_t>();
-						for (size_t i = 0; i < nsc.Instance->_m_Properties.size(); i++)
+						size_t size = glm::min(nsComponent["Instance"]["PropertiesSize"].as<size_t>(), nsc.Instance->_m_Properties.size());
+						for (size_t i = 0; i < size; i++)
 						{
 							auto property = nsComponent["Instance"]["PropertyData[" + std::to_string(i) + "]"];
 							ScriptableEntity::_PropertyData& data = nsc.Instance->_m_Properties[i];
@@ -533,6 +599,8 @@ namespace Frostic {
 					cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
 					cc.Camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
 
+					cc.Camera.SetOrthographicAspectRatio(cameraProps["AspectRatio"].as<float>());
+
 					cc.Active = cameraComponent["Active"].as<bool>();
 					cc.Primary = cameraComponent["Primary"].as<bool>();
 					cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
@@ -548,6 +616,20 @@ namespace Frostic {
 					src.Texture = AssetLibrary::GetOrLoad<TextureAsset>(src.TexturePath)->GetTexture();
 					if (AssetLibrary::RemoveIfInvalid<TextureAsset>(src.TexturePath))
 						src.Texture = nullptr;
+				}
+
+				auto physicsComponent = entity["PhysicsComponent2D"];
+				if (physicsComponent)
+				{
+					auto& physics = deserializedEntity.AddComponent<PhysicsComponent2D>();
+					physics.Active = physicsComponent["Active"].as<bool>();
+					physics.Force = physicsComponent["Force"].as<glm::vec2>();
+					physics.Acceleration = physicsComponent["Acceleration"].as<glm::vec2>();
+					physics.Velocity = physicsComponent["Velocity"].as<glm::vec2>();
+					physics.AirResistanceCoefficient = physicsComponent["AirResistanceCoefficient"].as<float>();
+					physics.Mass = physicsComponent["Mass"].as<float>();
+					physics.Gravity = physicsComponent["Gravity"].as<bool>();
+					physics.GravityAcceleration = physicsComponent["GravityAcceleration"].as<float>();
 				}
 
 				auto nsComponent = entity["NativeScriptComponent"];

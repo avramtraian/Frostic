@@ -8,7 +8,7 @@ project "Frostic"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "frpch.h"
+	pchheader "fepch.h"
 	pchsource "src/frpch.cpp"
 
 	files

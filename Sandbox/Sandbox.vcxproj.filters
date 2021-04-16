@@ -4,14 +4,19 @@
     <Filter Include="AddScriptTest">
       <UniqueIdentifier>{432C89FC-AFEC-0433-7827-4EB0E4A6490F}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Testing">
-      <UniqueIdentifier>{63FFD639-CFDE-55D5-D8F6-E0AB4455BC36}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AddScriptTest\PlayerScript.h">
+      <Filter>AddScriptTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PlayerScript.h" />
     <ClInclude Include="src\Sandbox2D.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AddScriptTest\PlayerScript.cpp">
+      <Filter>AddScriptTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PlayerScript.cpp" />
     <ClCompile Include="src\Sandbox2D.cpp" />
     <ClCompile Include="src\SandboxApp.cpp" />
   </ItemGroup>

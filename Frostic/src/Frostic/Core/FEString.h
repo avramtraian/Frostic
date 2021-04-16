@@ -19,38 +19,55 @@ namespace Frostic {
 		{
 			size_t newSize = strlen(charArray) + 1;
 			ReAllocate(newSize);
-			for (size_t i = 0; i < m_Size; i++)
-				m_Data[i] = charArray[i];
+			memcpy(m_Data, charArray, m_Size);
+			m_Data[m_Size - 1] = 0;
 		}
 
 		FEString(const FEString& other)
 		{
 			ReAllocate(other.Size());
-			for (size_t i = 0; i < m_Size; i++)
-				m_Data[i] = other.m_Data[i];
+			memcpy(m_Data, other.Data(), m_Size);
+			m_Data[m_Size - 1] = 0;
 		}
 
+		// DEPRECATED
 		FEString operator+(const char other[])
 		{
 			size_t otherSize = strlen(other);
 			FEString newString;
 			newString.ReAllocate(m_Size + otherSize);
-			for (size_t i = 0; i < m_Size - 1; i++)
-				newString.m_Data[i] = m_Data[i];
-			for (size_t i = m_Size - 1; i < newString.Size(); i++)
-				newString.m_Data[i] = other[i - m_Size + 1];
+			memcpy(newString.Data(), m_Data, m_Size - 1);
+			memcpy(newString.Data() + m_Size - 1, other, otherSize);
+			newString.Data()[newString.Size() - 1] = 0;
 			return newString;
 		}
 
+		// DEPRECATED
 		FEString operator+(const FEString& other)
 		{
 			FEString newString;
 			newString.ReAllocate(m_Size + other.Size() - 1);
-			for (size_t i = 0; i < m_Size - 1; i++)
-				newString.m_Data[i] = m_Data[i];
-			for (size_t i = m_Size - 1; i < newString.Size(); i++)
-				newString.m_Data[i] = other.m_Data[i - m_Size + 1];
+			memcpy(newString.Data(), m_Data, m_Size - 1);
+			memcpy(newString.Data() + m_Size - 1, other.Data(), other.Size());
+			newString.Data()[newString.Size() - 1] = 0;
 			return newString;
+		}
+
+		FEString& Append(const char other[])
+		{
+			size_t otherSize = strlen(other);
+			ReAllocate(m_Size + otherSize);
+			memcpy(m_Data + m_Size - otherSize - 1, other, otherSize);
+			m_Data[m_Size - 1] = 0;
+			return *this;
+		}
+
+		FEString& Append(const FEString& other)
+		{
+			ReAllocate(m_Size + other.Size() - 1);
+			memcpy(m_Data + m_Size - other.Size(), other.Data(), other.Size());
+			m_Data[m_Size - 1] = 0;
+			return *this;
 		}
 
 		bool Contains(const FEString& toFind)
@@ -109,8 +126,9 @@ namespace Frostic {
 			if (m_Size > newSize)
 				m_Size = newSize;
 
-			for (size_t i = 0; i < m_Size; i++)
-				newBlock[i] = m_Data[i];
+			// for (size_t i = 0; i < m_Size; i++)
+			// 	newBlock[i] = m_Data[i];
+			memcpy(newBlock, m_Data, m_Size);
 
 			// newBlock[m_Size - 1] = 0;
 

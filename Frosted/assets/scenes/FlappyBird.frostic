@@ -5,24 +5,30 @@ Entities:
       Tag: Square
     TransformComponent:
       Active: true
-      Translation: [0, 0, 0]
+      Translation: [-8.36692238, 4.43353558, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Active: true
-      Color: [0.876447856, 0.0744473264, 0.0744473264, 1]
+      Color: [0.540667593, 0.221642509, 0.972972989, 1]
       TexturePath: C:\dev\Frostic-dev\Frosted\assets\textures\Checkerboard.png
+    PhysicsComponent2D:
+      Active: true
+      Force: [0, 0]
+      Acceleration: [0, 0]
+      Velocity: [0, 0]
+      AirResistanceCoefficient: 1.20000005
+      Mass: 1
+      Gravity: true
+      GravityAcceleration: -0.150000006
     NativeScriptComponent:
       Active: true
       ScriptID: 9252044
       Instance:
+        PropertiesSize: 1
         EntityUUID: 938578240
         PropertyData[0]:
-          Data: 0
-        PropertyData[1]:
-          Data: 0
-        PropertyData[2]:
-          Data: 10
+          Data: 0.5
   - Entity: 479283472
     TagComponent:
       Tag: Camera
@@ -40,12 +46,13 @@ Entities:
         OrthographicSize: 10
         OrthographicNear: -60
         OrthographicFar: 60
+        AspectRatio: 1.78600001
       Active: true
       Primary: true
       FixedAspectRatio: false
 EditorCamera:
   ProjectionType: 1
-  Translation: [0, 0, 0]
+  Translation: [-2.1719079, 1.22778845, 0]
   Rotation: [0, 0, 0]
   PerspectiveFOV: 30
   PerspectiveNearClip: 0.100000001

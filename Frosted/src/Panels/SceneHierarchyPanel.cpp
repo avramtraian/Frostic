@@ -4,6 +4,8 @@
 #include <imgui/imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Frostic/Core/Core.h"
+
 #include "Frostic/Scene/Components.h"
 #include "Frostic/Assets/AssetLibrary.h"
 
@@ -187,6 +189,25 @@ namespace Frostic {
 		ImGui::NextColumn();
 
 		bool used = ImGui::DragFloat("##Value", value);
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+
+		return used;
+	}
+
+	static bool DrawFloatControl(const std::string& label, float* value, float min, float max, float columnWidth = 100.0f)
+	{
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+
+		bool used = ImGui::SliderFloat("##Value", value, min, max);
 
 		ImGui::Columns(1);
 
@@ -531,6 +552,12 @@ namespace Frostic {
 				ImGui::CloseCurrentPopup();
 			}
 
+			if (ImGui::MenuItem("Physics Component"))
+			{
+				m_SelectionContext.AddComponent<PhysicsComponent2D>();
+				ImGui::CloseCurrentPopup();
+			}
+
 			if (ImGui::MenuItem("Native Script Component"))
 			{
 				m_SelectionContext.AddComponent<NativeScriptComponent>();
@@ -539,12 +566,6 @@ namespace Frostic {
 
 			ImGui::EndPopup();
 		}
-
-		// ImGui::SameLine();
-		// {
-		// 	uint64_t uuid = entity.GetComponent<TagComponent>().UUID;
-		// 	ImGui::Text("ID: %d", uuid);
-		// }
 
 		ImGui::PopItemWidth();
 
@@ -612,6 +633,10 @@ namespace Frostic {
 				float orthoSize = camera.GetOrthographicSize();
 				if (DrawFloatControl("Size", &orthoSize))
 					camera.SetOrthographicSize(orthoSize);
+
+				float aspectRatio = camera.GetOrthographicAspectRatio();
+				if (DrawFloatControl("Aspect Ratio", &aspectRatio, 0.0f, 3.0f))
+					camera.SetOrthographicAspectRatio(aspectRatio);
 
 				float orthoNear = camera.GetOrthographicNearClip();
 				if (DrawFloatControl("Near Clip", &orthoNear))
@@ -682,9 +707,9 @@ namespace Frostic {
 
 				if (ImGui::BeginPopup("SelectScript"))
 				{
-					ScriptManager::Each([&](uint64_t id, const std::string& name) 
+					ScriptManager::Each([&](uint64_t id,ScriptManager::Data& data) 
 						{
-							if (ImGui::MenuItem(name.c_str()))
+							if (ImGui::MenuItem(data.Name.c_str()))
 							{
 								if (nsc.Instance != nullptr)
 									nsc.DestroyScript(&nsc);
@@ -692,6 +717,7 @@ namespace Frostic {
 								nsc.InstantiateScript = ScriptManager::CreateInstantiateScriptByID(id);
 								nsc.DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
 								nsc.Instance = nsc.InstantiateScript();
+								FE_CORE_ASSERT_AND_RETURN(nsc.Instance != nullptr, "Instance was null!");
 								nsc.Instance->m_Entity.m_Scene = m_Context.get();
 								nsc.Instance->m_Entity.m_EntityHandle = (entt::entity)(uint32_t)entity;
 								nsc.Instance->m_EntityUUID = entity.GetComponent<TagComponent>().UUID;
@@ -752,6 +778,15 @@ namespace Frostic {
 						}
 					}
 				}
+			});
+
+		DrawComponent<PhysicsComponent2D>("Physics Component", entity, [](PhysicsComponent2D& physics) 
+			{
+				DrawFloatControl("Mass", &physics.Mass, 175.0f);
+				DrawFloatControl("Air Resistance Coefficient", &physics.AirResistanceCoefficient, 175.0f);
+				DrawCheckbox("Use Gravity", &physics.Gravity, 175.0f);
+				if (physics.Gravity)
+					DrawFloatControl("Gravity Acceleration", &physics.GravityAcceleration, 175.0f);
 			});
 	}
 

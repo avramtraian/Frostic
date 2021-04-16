@@ -1,4 +1,4 @@
-#include "frpch.h"
+#include "fepch.h"
 #include "ScriptSerializer.h"
 
 #include "ScriptManager.h"
@@ -12,11 +12,13 @@ namespace Frostic {
 		YAML::Emitter out;
 		out << YAML::BeginMap; // Scripts
 		out << YAML::Key << "Scripts" << YAML::Value << YAML::BeginSeq;
-		ScriptManager::Each([&](uint64_t id, const std::string& name) 
+		ScriptManager::Each([&](uint64_t id, const ScriptManager::Data& data) 
 			{
 				out << YAML::BeginMap; // Script
 				out << YAML::Key << "ID" << YAML::Value << id;
-				out << YAML::Key << "Name" << YAML::Value << name;
+				out << YAML::Key << "Name" << YAML::Value << data.Name;
+				out << YAML::Key << "HFilepath" << YAML::Value << data.HFilepath;
+				out << YAML::Key << "CPPFilepath" << YAML::Value << data.CPPFilepath;
 				out << YAML::EndMap; // Script
 			});
 		out << YAML::EndMap; // Scripts
@@ -40,7 +42,7 @@ namespace Frostic {
 
 		auto scripts = data["Scripts"];
 		for (auto script : scripts)
-			ScriptManager::AddScript(script["ID"].as<uint64_t>(), script["Name"].as<std::string>());
+			ScriptManager::AddScript(script["ID"].as<uint64_t>(), script["Name"].as<std::string>(), script["HFilepath"].as<std::string>(), script["CPPFilepath"].as<std::string>());
 		return true;
 	}
 

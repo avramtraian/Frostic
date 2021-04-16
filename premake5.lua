@@ -39,8 +39,8 @@ project "Frostic"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "frpch.h"
-	pchsource "Frostic/src/frpch.cpp"
+	pchheader "fepch.h"
+	pchsource "Frostic/src/fepch.cpp"
 
 	files
 	{
@@ -154,11 +154,13 @@ project "Frosted"
 
 	filter "configurations:Debug"
 		defines "FE_DEBUG"
+		defines "FE_ENABLE_ASSERTS"
 		runtime "Debug"
 		symbols "on"
 	
 	filter "configurations:Release"
 		defines "FE_RELEASE"
+		defines "FE_ENABLE_ASSERTS"
 		runtime "Release"
 		optimize "on"
 	

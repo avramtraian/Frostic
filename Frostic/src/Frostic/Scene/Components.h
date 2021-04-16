@@ -11,9 +11,6 @@
 #include "Frostic/Core/Timestep.h"
 
 #include <vector>
-#include "Frostic/Core/FEArray.h"
-#include "Frostic/Core/FEVector.h"
-#include "Frostic/Core/FEString.h"
 
 #define NULL_COMPONENT false
 
@@ -100,6 +97,102 @@ namespace Frostic {
 			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
 			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
 		}
+	};
+
+	struct PhysicsComponent2D
+	{
+		FECOMPONENT;
+
+		glm::vec2 Force = glm::vec2(0.0f);
+		glm::vec2 Acceleration = glm::vec2(0.0f);
+		glm::vec2 Velocity = glm::vec2(0.0f);
+		float AirResistanceCoefficient = 0.0f;
+		float Mass = 1.0f;
+		bool Gravity = false;
+		float GravityAcceleration = -10.0f;
+
+		void AddForce(float amount, const glm::vec2& direction)
+		{
+			Force.x += amount * direction.x;
+			Force.y += amount * direction.y;
+		}
+		void SetForce(const glm::vec2& newForce)
+		{
+			Force.x = newForce.x;
+			Force.y = newForce.y;
+		}
+		void AddAcceleration(float amount, const glm::vec2& direction)
+		{
+			Acceleration.x += amount * direction.x;
+			Acceleration.y += amount * direction.y;
+		}
+		void SetAcceleration(const glm::vec2& newAcceleration)
+		{
+			Acceleration.x = newAcceleration.x;
+			Acceleration.y = newAcceleration.y;
+		}
+		void AddVelocity(float amount, const glm::vec2& direction)
+		{
+			Velocity.x += amount * direction.x;
+			Velocity.y += amount * direction.y;
+		}
+		void SetVelocity(const glm::vec2& newVelocity)
+		{
+			Velocity.x = newVelocity.x;
+			Velocity.y = newVelocity.y;
+		}
+
+		void Update(Timestep ts)
+		{
+			if (Gravity)
+				AddForce(GravityAcceleration * Mass, { 0.0f, 1.0f });
+
+			if (AirResistanceCoefficient != 0.0f)
+			{
+				glm::vec2 airForce;
+				airForce.x = glm::abs(1.225f * AirResistanceCoefficient * Velocity.x * Velocity.x / 2.0f);
+				airForce.y = glm::abs(1.225f * AirResistanceCoefficient * Velocity.y * Velocity.y / 2.0f);
+				glm::clamp(airForce.x, 0.0f, Force.x);
+				glm::clamp(airForce.y, 0.0f, Force.y);
+
+				if (Velocity.x > 0.0f)
+					AddForce(-airForce.x, { 1.0f, 0.0f });
+				else
+					AddForce(airForce.x, { 1.0f, 0.0f });
+				if (Velocity.y > 0.0f)
+					AddForce(-airForce.y, { 0.0f, 1.0f });
+				else
+					AddForce(airForce.y, { 0.0f, 1.0f });
+			}
+
+			Acceleration.x = Force.x / Mass;
+			Acceleration.y = Force.y / Mass;
+
+			Force.x = 0.0f;
+			Force.y = 0.0f;
+
+			Velocity.x += Acceleration.x * ts;
+			Velocity.y += Acceleration.y * ts;
+		}
+
+		void UpdatePosition(Timestep ts)
+		{
+			Entity entity{ (entt::entity)EnttOwnerID, Context };
+			if (entity.HasComponent<TransformComponent>())
+			{
+				TransformComponent& tc = entity.GetComponent<TransformComponent>();
+				tc.Translation.x += Velocity.x;
+				tc.Translation.y += Velocity.y;
+			}
+		}
+
+		PhysicsComponent2D() = default;
+		PhysicsComponent2D(const PhysicsComponent2D& other) = default;
+	};
+
+	struct BoxCollider2D
+	{
+		FECOMPONENT;
 	};
 
 }

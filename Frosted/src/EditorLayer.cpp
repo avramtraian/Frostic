@@ -58,10 +58,17 @@ namespace Frostic {
 		FramebufferSpecification spec = m_Framebuffer->GetSpecification();
 		if (m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && (spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
 		{
-			m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-			m_CameraController.OnResize(m_ViewportSize.x / m_ViewportSize.y);
-			m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
-			m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			if (!SceneManagerEditor::IsRuntime())
+			{
+				m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+				m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
+			}
+			else
+			{
+				m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+				m_Framebuffer->Resize(m_ActiveScene->GetViewportWidth(), m_ActiveScene->GetViewportHeight());
+				m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
+			}
 		}
 
 		m_FPS = (uint32_t)(1.0f / ts);
@@ -225,7 +232,16 @@ namespace Frostic {
 		m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-		ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		if (!SceneManagerEditor::IsRuntime())
+		{
+			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		}
+		else
+		{
+			ImGui::Image((void*)0, ImVec2{ m_ViewportSize.x, (m_ViewportSize.y - m_ActiveScene->GetViewportHeight()) / 2 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+			ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, (float)m_ActiveScene->GetViewportHeight() }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+			ImGui::Image((void*)0, ImVec2{ m_ViewportSize.x, (m_ViewportSize.y - m_ActiveScene->GetViewportHeight()) / 2 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		}
 
 		auto windowSize = ImGui::GetWindowSize();
 		ImVec2 minBound = ImGui::GetWindowPos();
@@ -351,15 +367,32 @@ namespace Frostic {
 			my -= m_ViewportBounds[0].y;
 			glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
 			my = m_ViewportSize.y - my;
-			int mouseX = (int)mx;
-			int mouseY = (int)my;
-
-			if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)m_ViewportSize.x && mouseY < (int)m_ViewportSize.y)
+			if (!SceneManagerEditor::IsRuntime())
 			{
-				m_Framebuffer->Bind();
-				int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-				m_HierarchyPanel.SetSelectionContextFromID(pixelData);
-				m_Framebuffer->Unbind();
+				int mouseX = (int)mx;
+				int mouseY = (int)my;
+
+				if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)m_ViewportSize.x && mouseY < (int)m_ViewportSize.y)
+				{
+					m_Framebuffer->Bind();
+					int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+					m_HierarchyPanel.SetSelectionContextFromID(pixelData);
+					m_Framebuffer->Unbind();
+				}
+			}
+			else
+			{
+				my -= (m_ViewportSize.y - m_ActiveScene->GetViewportHeight()) / 2;
+				int mouseX = (int)mx;
+				int mouseY = (int)my;
+
+				if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)m_ActiveScene->GetViewportWidth() && mouseY < (int)m_ActiveScene->GetViewportHeight())
+				{
+					m_Framebuffer->Bind();
+					int pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+					m_HierarchyPanel.SetSelectionContextFromID(pixelData);
+					m_Framebuffer->Unbind();
+				}
 			}
 		}
 		return false;
@@ -382,6 +415,8 @@ namespace Frostic {
 			Entity selectionContext = m_ActiveScene->GetEntityByUUID(selectionContextUUID);
 			m_HierarchyPanel.SetSelectionContext(selectionContext);
 		}
+
+		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 	}
 
 	void EditorLayer::OnRuntimeStop(Ref<Scene>& scene)

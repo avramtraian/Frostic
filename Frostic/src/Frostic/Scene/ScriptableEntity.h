@@ -68,6 +68,22 @@ namespace Frostic {
 			return m_Entity.GetComponent<T>();
 		}
 
+		template<typename T>
+		bool HasComponent()
+		{
+			return m_Entity.HasComponent<T>();
+		}
+
+		template<typename T>
+		T* GetComponentPointer()
+		{
+			if (m_Entity.HasComponent<T>())
+				return &m_Entity.GetComponent<T>();
+			return nullptr;
+		}
+
+		Scene* GetScene() const { return m_Entity.GetScene(); }
+
 		struct _PropertyData
 		{
 		public:

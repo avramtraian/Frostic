@@ -1,7 +1,5 @@
 Scripts:
-  - ID: 758943
-    Name: MovementScript
-  - ID: 759834
-    Name: ScriptedEntity
   - ID: 9252044
     Name: PlayerScript
+    HFilepath: C:/dev/Frostic-dev/Frosted/src/AddScriptTest/PlayerScript.h
+    CPPFilepath: C:/dev/Frostic-dev/Frosted/src/AddScriptTest/PlayerScript.cpp

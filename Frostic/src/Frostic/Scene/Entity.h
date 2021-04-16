@@ -78,6 +78,8 @@ namespace Frostic {
 
 		void Invalidate() { m_Scene = nullptr; m_EntityHandle = entt::null; }
 
+		Scene* GetScene() const { return m_Scene; }
+
 		operator bool() const { return (m_EntityHandle != entt::null); }
 		operator uint32_t() const { return (uint32_t)m_EntityHandle; }
 		operator entt::entity() const { return m_EntityHandle; }
