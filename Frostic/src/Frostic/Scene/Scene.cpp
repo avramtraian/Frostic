@@ -190,7 +190,7 @@ namespace Frostic {
 		return scene;
 	}
 
-	Entity Scene::GetEntityByUUID(uint64_t uuid)
+	Entity Scene::GetEntityByUUID(uint64_t uuid, bool mightFail)
 	{
 		Entity entityToReturn;
 		m_Registry.view<TagComponent>().each([&](entt::entity entity, TagComponent& tc)
@@ -201,7 +201,7 @@ namespace Frostic {
 					return;
 				}
 			});
-		FE_CORE_ASSERT(entityToReturn != NULL_ENTITY, "Invalid UUID search!");
+		FE_CORE_ASSERT(entityToReturn != NULL_ENTITY || mightFail, "Invalid UUID search!");
 		return entityToReturn;
 	}
 
@@ -237,8 +237,8 @@ namespace Frostic {
 		{
 			m_Registry.view<PhysicsComponent2D>().each([&ts](auto entity, auto& physics)
 				{
-					physics.Update(ts);
-					physics.UpdatePosition(ts);
+					physics.OnUpdate(ts);
+					physics.OnUpdatePosition(ts);
 				});
 		}
 
@@ -314,6 +314,7 @@ namespace Frostic {
 					tc.Rotation = entity.GetComponent<TransformComponent>().Rotation;
 					tc.Scale = { cc.Camera.GetOrthographicSize() * cc.Camera.GetOrthographicAspectRatio(), cc.Camera.GetOrthographicSize(), 1.0f };
 					Specs.Transform = tc.GetTransform();
+					Specs.EntityID = (uint32_t)entt::null;
 					Specs.Texture = nullptr;
 					Specs.Color = { 0.0f, 0.5f, 0.0f, 0.1f };
 

@@ -5,7 +5,7 @@ Entities:
       Tag: Square
     TransformComponent:
       Active: true
-      Translation: [-8.36692238, 4.43353558, 0]
+      Translation: [-0.0715376139, 0.324773908, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
@@ -17,7 +17,7 @@ Entities:
       Force: [0, 0]
       Acceleration: [0, 0]
       Velocity: [0, 0]
-      AirResistanceCoefficient: 1.20000005
+      AirResistanceCoefficient: 3
       Mass: 1
       Gravity: true
       GravityAcceleration: -0.150000006
@@ -25,10 +25,13 @@ Entities:
       Active: true
       ScriptID: 9252044
       Instance:
-        PropertiesSize: 1
         EntityUUID: 938578240
-        PropertyData[0]:
+        Jump Force:
           Data: 0.5
+        Sideways Force:
+          Data: 0.200000003
+        Name:
+          Data: ""
   - Entity: 479283472
     TagComponent:
       Tag: Camera
@@ -52,7 +55,7 @@ Entities:
       FixedAspectRatio: false
 EditorCamera:
   ProjectionType: 1
-  Translation: [-2.1719079, 1.22778845, 0]
+  Translation: [-7.20213699, 1.39553058, 0]
   Rotation: [0, 0, 0]
   PerspectiveFOV: 30
   PerspectiveNearClip: 0.100000001

@@ -31,12 +31,6 @@
     <Filter Include="src\Frostic\Scene">
       <UniqueIdentifier>{733260F0-DF48-5E86-28C0-E9A794152F0E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Frostic\Scene\Internal">
-      <UniqueIdentifier>{FFA99628-EBB9-42F9-5473-A71740A23192}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Frostic\Scene\Primitives">
-      <UniqueIdentifier>{6E6295C3-5A1D-856F-03D5-FDB9EF6ECFFF}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Frostic\Script">
       <UniqueIdentifier>{5A8E6DFC-4672-2E52-AFD2-28A59BD518D4}</UniqueIdentifier>
     </Filter>
@@ -215,15 +209,6 @@
     </ClInclude>
     <ClInclude Include="src\Frostic\Scene\Entity.h">
       <Filter>src\Frostic\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Frostic\Scene\Internal\FPointer.h">
-      <Filter>src\Frostic\Scene\Internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Frostic\Scene\Primitives\AActor.h">
-      <Filter>src\Frostic\Scene\Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Frostic\Scene\Primitives\FObject.h">
-      <Filter>src\Frostic\Scene\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="src\Frostic\Scene\Scene.h">
       <Filter>src\Frostic\Scene</Filter>
@@ -1600,12 +1585,6 @@
     </ClCompile>
     <ClCompile Include="src\Frostic\Scene\Entity.cpp">
       <Filter>src\Frostic\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Frostic\Scene\Primitives\AActor.cpp">
-      <Filter>src\Frostic\Scene\Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Frostic\Scene\Primitives\FObject.cpp">
-      <Filter>src\Frostic\Scene\Primitives</Filter>
     </ClCompile>
     <ClCompile Include="src\Frostic\Scene\Scene.cpp">
       <Filter>src\Frostic\Scene</Filter>

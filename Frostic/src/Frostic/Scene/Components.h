@@ -142,7 +142,7 @@ namespace Frostic {
 			Velocity.y = newVelocity.y;
 		}
 
-		void Update(Timestep ts)
+		void OnUpdate(Timestep ts)
 		{
 			if (Gravity)
 				AddForce(GravityAcceleration * Mass, { 0.0f, 1.0f });
@@ -175,7 +175,7 @@ namespace Frostic {
 			Velocity.y += Acceleration.y * ts;
 		}
 
-		void UpdatePosition(Timestep ts)
+		void OnUpdatePosition(Timestep ts)
 		{
 			Entity entity{ (entt::entity)EnttOwnerID, Context };
 			if (entity.HasComponent<TransformComponent>())
@@ -193,6 +193,20 @@ namespace Frostic {
 	struct BoxCollider2D
 	{
 		FECOMPONENT;
+
+		glm::vec2 Size = glm::vec2(1.0f);
+
+		void SetSize(const glm::vec2& size) { Size = size; }
+		glm::vec2 GetSize() const { return Size; }
+
+		void OnUpdate(Timestep ts)
+		{
+			Entity entity{ (entt::entity)EnttOwnerID, Context };
+			if (entity.HasComponent<TransformComponent>() && entity.HasComponent<PhysicsComponent2D>())
+			{
+				// TODO: Implement Box2D library
+			}
+		}
 	};
 
 }

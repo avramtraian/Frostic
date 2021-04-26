@@ -6,17 +6,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\AddScriptTest\PlayerScript.h">
-      <Filter>AddScriptTest</Filter>
-    </ClInclude>
-    <ClInclude Include="src\PlayerScript.h" />
     <ClInclude Include="src\Sandbox2D.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\AddScriptTest\PlayerScript.cpp">
-      <Filter>AddScriptTest</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PlayerScript.cpp" />
     <ClCompile Include="src\Sandbox2D.cpp" />
     <ClCompile Include="src\SandboxApp.cpp" />
   </ItemGroup>

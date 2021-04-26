@@ -7,6 +7,9 @@
     <Filter Include="Frosted">
       <UniqueIdentifier>{3CFC3122-A8DB-B0BD-B1F3-3B941D52171F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Frosted\GUILibrary">
+      <UniqueIdentifier>{0563F647-F146-B79D-5AA7-B1F046AAA11F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Frosted\Tools">
       <UniqueIdentifier>{BC7D3615-283E-B24B-F178-FBC85DF8F627}</UniqueIdentifier>
     </Filter>
@@ -19,6 +22,12 @@
       <Filter>AddScriptTest</Filter>
     </ClInclude>
     <ClInclude Include="src\EditorLayer.h" />
+    <ClInclude Include="src\Frosted\GUILibrary\GUILibrary.h">
+      <Filter>Frosted\GUILibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frosted\Tools\BuildWindows.h">
+      <Filter>Frosted\Tools</Filter>
+    </ClInclude>
     <ClInclude Include="src\Frosted\Tools\ScriptFiles.h">
       <Filter>Frosted\Tools</Filter>
     </ClInclude>
@@ -34,6 +43,12 @@
       <Filter>AddScriptTest</Filter>
     </ClCompile>
     <ClCompile Include="src\EditorLayer.cpp" />
+    <ClCompile Include="src\Frosted\GUILibrary\GUILibrary.cpp">
+      <Filter>Frosted\GUILibrary</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frosted\Tools\BuildWindows.cpp">
+      <Filter>Frosted\Tools</Filter>
+    </ClCompile>
     <ClCompile Include="src\Frosted\Tools\ScriptFiles.cpp">
       <Filter>Frosted\Tools</Filter>
     </ClCompile>

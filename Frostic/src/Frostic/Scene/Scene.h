@@ -21,7 +21,7 @@ namespace Frostic {
 
 		void DestroyScripts();
 		Ref<Scene> CopyScene();
-		Entity GetEntityByUUID(uint64_t uuid);
+		Entity GetEntityByUUID(uint64_t uuid, bool mightFail = false);
 
 		void OnUpdateRuntime(Timestep ts);
 		void OnUpdateEditor(Timestep ts, EditorCamera& camera);

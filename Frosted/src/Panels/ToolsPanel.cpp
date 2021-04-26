@@ -2,6 +2,8 @@
 
 #include "Frostic/Scene/SceneManager.h"
 
+#include "Frosted/Tools/BuildWindows.h"
+
 #include <imgui/imgui.h>
 
 namespace Frostic {
@@ -39,7 +41,7 @@ namespace Frostic {
 		ImGui::SameLine();
 		if (ImGui::Button("Build", ImVec2{ 50, 50 }))
 		{
-
+			BuildWindows::Get().CopyFiles("C:/dev/Frostic-gen");
 		}
 
 		ImGui::SameLine();

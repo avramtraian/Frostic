@@ -1,5 +1,7 @@
 #include "SceneHierarchyPanel.h"
 
+#include "../Frosted/GUILibrary/GUILibrary.h"
+
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -111,362 +113,7 @@ namespace Frostic {
 		}
 	}
 
-	static void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f)
-	{
-		ImGuiIO& io = ImGui::GetIO();
-		auto boldFont = io.Fonts->Fonts[0];
-
-		ImGui::PushID(label.c_str());
-
-		ImGui::Columns(2);
-
-		ImGui::SetColumnWidth(0, columnWidth);
-		ImGui::Text(label.c_str());
-		ImGui::NextColumn();
-
-		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
-
-		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
-		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
-
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
-		ImGui::PushFont(boldFont);
-		if (ImGui::Button("X", buttonSize))
-			values.x = resetValue;
-		ImGui::PopFont();
-		ImGui::PopStyleColor(3);
-
-		ImGui::SameLine();
-		ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
-		ImGui::PopItemWidth();
-		ImGui::SameLine();
-
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
-		ImGui::PushFont(boldFont);
-		if (ImGui::Button("Y", buttonSize))
-			values.y = resetValue;
-		ImGui::PopFont();
-		ImGui::PopStyleColor(3);
-
-		ImGui::SameLine();
-		ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
-		ImGui::PopItemWidth();
-		ImGui::SameLine();
-
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-		ImGui::PushFont(boldFont);
-		if (ImGui::Button("Z", buttonSize))
-			values.z = resetValue;
-		ImGui::PopFont();
-		ImGui::PopStyleColor(3);
-
-		ImGui::SameLine();
-		ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
-		ImGui::PopItemWidth();
-
-		ImGui::PopStyleVar();
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-	}
-
-	static bool DrawFloatControl(const std::string& label, float* value, float columnWidth = 100.0f)
-	{
-		ImGui::PushID(label.c_str());
-
-		ImGui::Columns(2);
-
-		ImGui::SetColumnWidth(0, columnWidth);
-		ImGui::Text(label.c_str());
-		ImGui::NextColumn();
-
-		bool used = ImGui::DragFloat("##Value", value);
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-
-		return used;
-	}
-
-	static bool DrawFloatControl(const std::string& label, float* value, float min, float max, float columnWidth = 100.0f)
-	{
-		ImGui::PushID(label.c_str());
-
-		ImGui::Columns(2);
-
-		ImGui::SetColumnWidth(0, columnWidth);
-		ImGui::Text(label.c_str());
-		ImGui::NextColumn();
-
-		bool used = ImGui::SliderFloat("##Value", value, min, max);
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-
-		return used;
-	}
-
-	static bool DrawUInt8_tControl(const std::string& label, uint8_t* value, float columnWidth = 100.0f)
-	{
-		ImGui::PushID(label.c_str());
-
-		ImGui::Columns(2);
-
-		ImGui::SetColumnWidth(0, columnWidth);
-		ImGui::Text(label.c_str());
-		ImGui::NextColumn();
-
-		bool used = ImGui::DragInt("##Value", (int*)value);
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-
-		return used;
-	}
-
-	static bool DrawUInt16_tControl(const std::string& label, uint16_t* value, float columnWidth = 100.0f)
-	{
-		ImGui::PushID(label.c_str());
-
-		ImGui::Columns(2);
-
-		ImGui::SetColumnWidth(0, columnWidth);
-		ImGui::Text(label.c_str());
-		ImGui::NextColumn();
-
-		bool used = ImGui::DragInt("##Value", (int*)value);
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-
-		return used;
-	}
-
-	static bool DrawUInt32_tControl(const std::string& label, uint32_t* value, float columnWidth = 100.0f)
-	{
-		ImGui::PushID(label.c_str());
-
-		ImGui::Columns(2);
-
-		ImGui::SetColumnWidth(0, columnWidth);
-		ImGui::Text(label.c_str());
-		ImGui::NextColumn();
-
-		bool used = ImGui::DragInt("##Value", (int*)value);
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-
-		return used;
-	}
-
-	static bool DrawUInt64_tControl(const std::string& label, uint64_t* value, float columnWidth = 100.0f)
-	{
-		ImGui::PushID(label.c_str());
-
-		ImGui::Columns(2);
-
-		ImGui::SetColumnWidth(0, columnWidth);
-		ImGui::Text(label.c_str());
-		ImGui::NextColumn();
-
-		bool used = ImGui::DragInt("##Value", (int*)value);
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-
-		return used;
-	}
-
-	static bool DrawIntControl(const std::string& label, int* value, float columnWidth = 100.0f)
-	{
-		ImGui::PushID(label.c_str());
-
-		ImGui::Columns(2);
-
-		ImGui::SetColumnWidth(0, columnWidth);
-		ImGui::Text(label.c_str());
-		ImGui::NextColumn();
-
-		bool used = ImGui::DragInt("##Value", value);
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-
-		return used;
-	}
-
-	template<typename T>
-	static T* DrawComponentPointerField(const std::string& label, T* comPtr, Ref<Scene>& context, float columnWidth = 100.0f)
-	{
-		ImGui::PushID(label.c_str());
-		std::string name = "None";
-		if (comPtr != nullptr)
-		{
-			Entity entity{ (entt::entity)comPtr->EnttOwnerID, context.get() };
-			if (entity.IsValid())
-				name = entity.GetComponent<TagComponent>().Tag;
-		}
-
-		ImGui::Columns(2);
-		ImGui::SetColumnWidth(0, columnWidth);
-		ImGui::Text(label.c_str());
-		ImGui::SameLine();
-		ImGui::Text("%d", comPtr == nullptr ? -1 : comPtr->UUID);
-		ImGui::NextColumn();
-
-		if (ImGui::Button(name.c_str()))
-			ImGui::OpenPopup("Pointer");
-
-		if (ImGui::BeginPopup("Pointer"))
-		{
-			SceneHierarchyPanel::ForEachWhoHas<T>(context, [&](auto ent)
-				{
-					Entity entity{ ent, context.get() };
-					if (ImGui::MenuItem(entity.GetComponent<TagComponent>().Tag.c_str()))
-					{
-						comPtr = entity.GetComponentP<T>();
-						ImGui::CloseCurrentPopup();
-					}
-				});
-
-			if (ImGui::MenuItem("NONE: nullptr"))
-			{
-				comPtr = nullptr;
-				ImGui::CloseCurrentPopup();
-			}
-
-			ImGui::EndPopup();
-		}
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-		return comPtr;
-	}
-
-	static void DrawEntityReferenceField(const std::string& label, Entity& entRef, const Ref<Scene>& context, float columnWidth = 100.0f)
-	{
-		ImGui::PushID(label.c_str());
-
-		ImGui::Columns(2);
-		ImGui::SetColumnWidth(0, columnWidth);
-
-		ImGui::Text(label.c_str());
-
-		ImGui::NextColumn();
-
-		if (ImGui::Button(entRef.Exists() == false ? "None" : entRef.GetComponent<TagComponent>().Tag.c_str()))
-			ImGui::OpenPopup("Pointer");
-
-		if (ImGui::BeginPopup("Pointer"))
-		{
-			SceneHierarchyPanel::ForEachWhoHas<TagComponent>(context, [&](auto ent)
-				{
-					Entity entity{ ent, context.get() };
-					if (ImGui::MenuItem(entity.GetComponent<TagComponent>().Tag.c_str()))
-					{
-						entRef = entity;
-						ImGui::CloseCurrentPopup();
-					}
-				});
-
-			if (ImGui::MenuItem("NONE: nullptr"))
-			{
-				entRef.Invalidate();
-				ImGui::CloseCurrentPopup();
-			}
-
-			ImGui::EndPopup();
-		}
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-	}
-
-	static ScriptableEntity* DrawScriptPointerField(const std::string& label, ScriptableEntity* se, uint64_t scriptID, const Ref<Scene>& context, float columnWidth = 100.0f)
-	{
-		ImGui::PushID(label.c_str());
-
-		ImGui::Columns(2);
-		ImGui::SetColumnWidth(0, columnWidth);
-
-		ImGui::Text(label.c_str());
-
-		ImGui::NextColumn();
-
-		if(ImGui::Button(se == nullptr ? "None" : se->GetEntity().GetComponent<TagComponent>().Tag.c_str()))
-			ImGui::OpenPopup("ScriptPointer");
-
-		if (ImGui::BeginPopup("ScriptPointer"))
-		{
-			SceneHierarchyPanel::ForEachWhoHas<NativeScriptComponent>(context, [&](auto ent) 
-				{
-					Entity entity{ ent, context.get() };
-					NativeScriptComponent& entityNSC = entity.GetComponent<NativeScriptComponent>();
-					if (entityNSC.Instance != nullptr)
-					{
-						if (scriptID != 0 && entityNSC.Instance->GetScriptID() == scriptID)
-						{
-							if (ImGui::MenuItem(entity.GetComponent<TagComponent>().Tag.c_str()))
-							{
-								se = entityNSC.Instance;
-								ImGui::CloseCurrentPopup();
-								return;
-							}
-						}
-					}
-				});
-
-			if (ImGui::MenuItem("NONE: nullptr"))
-			{
-				se = nullptr;
-				ImGui::CloseCurrentPopup();
-			}
-
-			ImGui::EndPopup();
-		}
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-		return se;
-	}
-
-	static bool DrawCheckbox(const std::string& label, bool* value, float columnWidth = 100.0f)
-	{
-		ImGui::PushID(label.c_str());
-
-		ImGui::Columns(2);
-
-		ImGui::SetColumnWidth(0, columnWidth);
-		ImGui::Text(label.c_str());
-		ImGui::NextColumn();
-
-		bool used = ImGui::Checkbox("##Value", value);
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-
-		return used;
-	}
+	
 
 	template<typename T, typename UIFunction>
 	static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction)
@@ -571,18 +218,18 @@ namespace Frostic {
 
 		DrawComponent<TransformComponent>("Transform", entity, [](auto& component)
 		{
-			DrawVec3Control("Translation", component.Translation);
+			GUI::DrawVec3Control("Translation", component.Translation);
 			glm::vec3 rotation = glm::degrees(component.Rotation);
-			DrawVec3Control("Rotation", rotation);
+			GUI::DrawVec3Control("Rotation", rotation);
 			component.Rotation = glm::radians(rotation);
-			DrawVec3Control("Scale", component.Scale, 1.0f);
+			GUI::DrawVec3Control("Scale", component.Scale, 1.0f);
 		});
 
 		DrawComponent<CameraComponent>("Camera", entity, [](auto& component)
 		{
 			auto& camera = component.Camera;
 
-			DrawCheckbox("Primary", &component.Primary);
+			GUI::DrawCheckbox("Primary", &component.Primary);
 
 			const char* projectionTypeString[] = { "Perspective", "Orthographic" };
 			const char* currentProjectionTypeString = projectionTypeString[(int)camera.GetProjectionType()];
@@ -616,37 +263,37 @@ namespace Frostic {
 			if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
 			{
 				float perspectiveVerticalFov = glm::degrees(camera.GetPerspectiveVerticalFOV());
-				if (DrawFloatControl("Vertical FOV", &perspectiveVerticalFov))
+				if (GUI::DrawFloatControl("Vertical FOV", &perspectiveVerticalFov))
 					camera.SetPerspectiveVerticalFOV(glm::radians(perspectiveVerticalFov));
 
 				float perspectiveNear = camera.GetPerspectiveNearClip();
-				if (DrawFloatControl("Near Clip", &perspectiveNear))
+				if (GUI::DrawFloatControl("Near Clip", &perspectiveNear))
 					camera.SetPerspectiveNearClip(perspectiveNear);
 
 				float perspectiveFar = camera.GetPerspectiveFarClip();
-				if (DrawFloatControl("Far Clip", &perspectiveFar))
+				if (GUI::DrawFloatControl("Far Clip", &perspectiveFar))
 					camera.SetPerspectiveFarClip(perspectiveFar);
 			}
 
 			if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
 			{
 				float orthoSize = camera.GetOrthographicSize();
-				if (DrawFloatControl("Size", &orthoSize))
+				if (GUI::DrawFloatControl("Size", &orthoSize))
 					camera.SetOrthographicSize(orthoSize);
 
 				float aspectRatio = camera.GetOrthographicAspectRatio();
-				if (DrawFloatControl("Aspect Ratio", &aspectRatio, 0.0f, 3.0f))
+				if (GUI::DrawFloatRangeControl("Aspect Ratio", &aspectRatio, 0.0f, 3.0f))
 					camera.SetOrthographicAspectRatio(aspectRatio);
 
 				float orthoNear = camera.GetOrthographicNearClip();
-				if (DrawFloatControl("Near Clip", &orthoNear))
+				if (GUI::DrawFloatControl("Near Clip", &orthoNear))
 					camera.SetOrthographicNearClip(orthoNear);
 
 				float orthoFar = camera.GetOrthographicFarClip();
-				if (DrawFloatControl("Far Clip", &orthoFar))
+				if (GUI::DrawFloatControl("Far Clip", &orthoFar))
 					camera.SetOrthographicFarClip(orthoFar);
 
-				DrawCheckbox("Fixed Aspect Ratio", &component.FixedAspectRatio, 150.0f);
+				GUI::DrawCheckbox("Fixed Aspect Ratio", &component.FixedAspectRatio, 150.0f);
 			}
 		});
 
@@ -745,34 +392,87 @@ namespace Frostic {
 						case PropertyType::Data:
 							switch (data.m_DataType)
 							{
-								case DataType::UINT8_T:
-									DrawUInt8_tControl(data.m_Label, static_cast<uint8_t*>(data.m_Data));
+							case DataType::UINT8_T:
+								if (data.m_Acces == AccesModifiers::ReadAndWrite)
+									GUI::DrawUInt8_tControl(data.m_Label, static_cast<uint8_t*>(data.m_Data));
+								break;
+							case DataType::UINT16_T:
+								if (data.m_Acces == AccesModifiers::ReadAndWrite)
+									GUI::DrawUInt16_tControl(data.m_Label, static_cast<uint16_t*>(data.m_Data));
+								break;
+							case DataType::UINT32_T:
+								if (data.m_Acces == AccesModifiers::ReadAndWrite)
+									GUI::DrawUInt32_tControl(data.m_Label, static_cast<uint32_t*>(data.m_Data));
+								break;
+							case DataType::UINT64_T:
+								if (data.m_Acces == AccesModifiers::ReadAndWrite)
+									GUI::DrawUInt64_tControl(data.m_Label, static_cast<uint64_t*>(data.m_Data));
+								break;
+							case DataType::INT8_T:
+								if (data.m_Acces == AccesModifiers::ReadAndWrite)
+									GUI::DrawInt8_tControl(data.m_Label, static_cast<int8_t*>(data.m_Data));
+								break;
+							case DataType::INT16_T:
+								if (data.m_Acces == AccesModifiers::ReadAndWrite)
+									GUI::DrawInt16_tControl(data.m_Label, static_cast<int16_t*>(data.m_Data));
+								break;
+							case DataType::INT32_T:
+								if (data.m_Acces == AccesModifiers::ReadAndWrite)
+									GUI::DrawInt32_tControl(data.m_Label, static_cast<int32_t*>(data.m_Data));
+								break;
+							case DataType::INT64_T:
+								if (data.m_Acces == AccesModifiers::ReadAndWrite)
+									GUI::DrawInt64_tControl(data.m_Label, static_cast<int64_t*>(data.m_Data));
+								break;
+							case DataType::INT:
+								if (data.m_Acces == AccesModifiers::ReadAndWrite)
+									GUI::DrawIntControl(data.m_Label, static_cast<int*>(data.m_Data));
+								break;
+							case DataType::FLOAT:
+								if (data.m_Acces == AccesModifiers::ReadAndWrite)
+									GUI::DrawFloatControl(data.m_Label, static_cast<float*>(data.m_Data));
+								break;
+							default:
+								break;
+							}
+							break;
+						case PropertyType::EntityReference:
+							if (data.m_Acces == AccesModifiers::ReadAndWrite)
+								GUI::DrawEntityReferenceField(data.m_Label, *static_cast<Entity*>(data.m_Data), m_Context);
+							break;
+						case PropertyType::Script:
+							if (data.m_Acces == AccesModifiers::ReadAndWrite)
+								*static_cast<ScriptableEntity**>(data.m_Data) = GUI::DrawScriptPointerField(data.m_Label, *static_cast<ScriptableEntity**>(data.m_Data), data.m_ScriptID, m_Context);
+							break;
+						case PropertyType::DataStructure:
+						{
+							switch (data.m_DataStructureType)
+							{
+								case DataStructureType::FEStringType:
+									if (data.m_Acces == AccesModifiers::ReadAndWrite)
+									{
+										FEString* string = static_cast<FEString*>(data.m_Data);
+										GUI::DrawFEString(data.m_Label, *string);
+									}
+									else
+									{
+										ImGui::Columns(2);
+										ImGui::SetColumnWidth(0, 100.0f);
+										ImGui::Text(data.m_Label.c_str());
+										ImGui::NextColumn();
+										ImGui::Text(static_cast<FEString*>(data.m_Data)->Data());
+										ImGui::Columns(1);
+									}
 									break;
-								case DataType::UINT16_T:
-									DrawUInt16_tControl(data.m_Label, static_cast<uint16_t*>(data.m_Data));
-									break;
-								case DataType::UINT32_T:
-									DrawUInt32_tControl(data.m_Label, static_cast<uint32_t*>(data.m_Data));
-									break;
-								case DataType::UINT64_T:
-									DrawUInt64_tControl(data.m_Label, static_cast<uint64_t*>(data.m_Data));
-									break;
-								case DataType::INT:
-									DrawIntControl(data.m_Label, static_cast<int*>(data.m_Data));
-									break;
-								case DataType::FLOAT:
-									DrawFloatControl(data.m_Label, static_cast<float*>(data.m_Data));
+								case DataStructureType::FEArrayType:
+									if (data.m_Acces == AccesModifiers::ReadAndWrite)
+										GUI::DrawFEArray(data.m_Label, data.m_Data, data.m_DataType);
 									break;
 								default:
 									break;
 							}
 							break;
-						case PropertyType::EntityReference:
-							DrawEntityReferenceField(data.m_Label, *static_cast<Entity*>(data.m_Data), m_Context);
-							break;
-						case PropertyType::Script:
-							*static_cast<ScriptableEntity**>(data.m_Data) = DrawScriptPointerField(data.m_Label, *static_cast<ScriptableEntity**>(data.m_Data), data.m_ScriptID, m_Context);
-							break;
+						}
 						default:
 							break;
 						}
@@ -782,11 +482,11 @@ namespace Frostic {
 
 		DrawComponent<PhysicsComponent2D>("Physics Component", entity, [](PhysicsComponent2D& physics) 
 			{
-				DrawFloatControl("Mass", &physics.Mass, 175.0f);
-				DrawFloatControl("Air Resistance Coefficient", &physics.AirResistanceCoefficient, 175.0f);
-				DrawCheckbox("Use Gravity", &physics.Gravity, 175.0f);
+				GUI::DrawFloatControl("Mass", &physics.Mass, 175.0f);
+				GUI::DrawFloatControl("Air Resistance Coefficient", &physics.AirResistanceCoefficient, 175.0f);
+				GUI::DrawCheckbox("Use Gravity", &physics.Gravity, 175.0f);
 				if (physics.Gravity)
-					DrawFloatControl("Gravity Acceleration", &physics.GravityAcceleration, 175.0f);
+					GUI::DrawFloatControl("Gravity Acceleration", &physics.GravityAcceleration, 175.0f);
 			});
 	}
 

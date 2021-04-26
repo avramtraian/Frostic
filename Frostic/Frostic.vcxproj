@@ -183,9 +183,6 @@
     <ClInclude Include="src\Frostic\Renderer\VertexArray.h" />
     <ClInclude Include="src\Frostic\Scene\Components.h" />
     <ClInclude Include="src\Frostic\Scene\Entity.h" />
-    <ClInclude Include="src\Frostic\Scene\Internal\FPointer.h" />
-    <ClInclude Include="src\Frostic\Scene\Primitives\AActor.h" />
-    <ClInclude Include="src\Frostic\Scene\Primitives\FObject.h" />
     <ClInclude Include="src\Frostic\Scene\Scene.h" />
     <ClInclude Include="src\Frostic\Scene\SceneCamera.h" />
     <ClInclude Include="src\Frostic\Scene\SceneManager.h" />
@@ -646,8 +643,6 @@
     <ClCompile Include="src\Frostic\Renderer\Texture.cpp" />
     <ClCompile Include="src\Frostic\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Frostic\Scene\Entity.cpp" />
-    <ClCompile Include="src\Frostic\Scene\Primitives\AActor.cpp" />
-    <ClCompile Include="src\Frostic\Scene\Primitives\FObject.cpp" />
     <ClCompile Include="src\Frostic\Scene\Scene.cpp" />
     <ClCompile Include="src\Frostic\Scene\SceneCamera.cpp" />
     <ClCompile Include="src\Frostic\Scene\SceneManager.cpp" />

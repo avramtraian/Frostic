@@ -61,7 +61,10 @@ namespace Frostic {
 		Ref<Scene> scene = CreateRef<Scene>();
 
 		SceneSerializer serializer(scene);
-		serializer.DeserializeRuntime(FILEPATH("Frosted/assets/scenes/FlappyBird.frostic"));
+		// TODO: REMOVE!
+		EditorCamera camera;
+		// TODO: Change (and implement) to 'DeserializeRuntime'
+		serializer.Deserialize(FILEPATH("Frosted/assets/scenes/FlappyBird.frostic"), camera);
 
 		m_BuildIndex = buildIndex;
 

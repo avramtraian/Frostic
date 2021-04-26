@@ -10,6 +10,7 @@ namespace Frostic {
 		PlayerScript();
 
 		void Jump();
+		void MoveSideways(int8_t direction);
 	private:
 		virtual void PushProperties() override;
 
@@ -17,6 +18,8 @@ namespace Frostic {
 		virtual void Tick(Timestep ts) override;
 	private:
 		float m_JumpForce = 0.5f;
+		float m_SidewaysForce = 0.5f;
+		FEString name = "mmmm yessss";
 	};
 
 }

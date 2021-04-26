@@ -221,7 +221,8 @@ namespace Frostic {
 		ImGui::End();
 		
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
-		ImGui::Begin("Viewport");
+		bool open = true;
+		ImGui::Begin("Viewport", &open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 		auto viewportOffset = ImGui::GetCursorPos();
 
 		m_ViewportFocused = ImGui::IsWindowFocused();
@@ -431,7 +432,7 @@ namespace Frostic {
 
 		if (selectionContextUUID != 0)
 		{
-			Entity selectionContext = m_ActiveScene->GetEntityByUUID(selectionContextUUID);
+			Entity selectionContext = m_ActiveScene->GetEntityByUUID(selectionContextUUID, true);
 			m_HierarchyPanel.SetSelectionContext(selectionContext);
 		}
 	}

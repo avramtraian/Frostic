@@ -131,6 +131,7 @@ project "Frosted"
 	
 	includedirs
 	{
+		"Frosted/src",
 		"Frostic/vendor/spdlog/include",
 		"Frostic/vendor",
 		"%{IncludeDir.glm}",
@@ -187,6 +188,7 @@ project "Sandbox"
 
 	includedirs
 	{
+		"%{prj.name}/src",
 		"Frostic/vendor/spdlog/include",
 		"Frostic/vendor",
 		"%{IncludeDir.glm}",

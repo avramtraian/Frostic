@@ -8,6 +8,10 @@
 #include "Frostic/Assets/AssetLibrary.h"
 #include "Frostic/Script/ScriptManager.h"
 
+#include "Frostic/Core/FEArray.h"
+#include "Frostic/Core/FEVector.h"
+#include "Frostic/Core/FEString.h"
+
 #include <yaml-cpp/yaml.h>
 
 namespace YAML {
@@ -209,14 +213,12 @@ namespace Frostic {
 			out << YAML::Key << "ScriptID" << YAML::Value << (nsc.Instance != nullptr ? nsc.Instance->GetScriptID() : 0);
 			out << YAML::Key << "Instance";
 			out << YAML::BeginMap; // Instance;
-			out << YAML::Key << "PropertiesSize" << YAML::Value << (nsc.Instance != nullptr ? nsc.Instance->_m_Properties.size() : 0);
 			if (nsc.Instance != nullptr)
 			{
 				out << YAML::Key << "EntityUUID" << YAML::Value << nsc.Instance->GetEntityUUID();
-				for (size_t i = 0; i < nsc.Instance->_m_Properties.size(); i++)
+				for (ScriptableEntity::_PropertyData& data : nsc.Instance->_m_Properties)
 				{
-					ScriptableEntity::_PropertyData& data = nsc.Instance->_m_Properties[i];
-					out << YAML::Key << "PropertyData[" + std::to_string(i) + "]";
+					out << YAML::Key << data.m_Label;
 					out << YAML::BeginMap; // PropertyData[i]
 					switch (data.m_PropertyType)
 					{
@@ -234,6 +236,18 @@ namespace Frostic {
 									break;
 								case DataType::UINT64_T:
 									out << YAML::Key << "Data" << YAML::Value << *static_cast<uint64_t*>(data.m_Data);
+									break;
+								case DataType::INT8_T:
+									out << YAML::Key << "Data" << YAML::Value << *static_cast<int8_t*>(data.m_Data);
+									break;
+								case DataType::INT16_T:
+									out << YAML::Key << "Data" << YAML::Value << *static_cast<int16_t*>(data.m_Data);
+									break;
+								case DataType::INT32_T:
+									out << YAML::Key << "Data" << YAML::Value << *static_cast<int32_t*>(data.m_Data);
+									break;
+								case DataType::INT64_T:
+									out << YAML::Key << "Data" << YAML::Value << *static_cast<int64_t*>(data.m_Data);
 									break;
 								case DataType::INT:
 									out << YAML::Key << "Data" << YAML::Value << *static_cast<int*>(data.m_Data);
@@ -260,6 +274,19 @@ namespace Frostic {
 							else
 								out << YAML::Key << "EntityUUID" << YAML::Value << 0;
 							break;
+						case PropertyType::DataStructure:
+							switch (data.m_DataStructureType)
+							{
+								case DataStructureType::FEStringType:
+									out << YAML::Key << "Data" << YAML::Value << static_cast<FEString*>(data.m_Data)->Data();
+									break;
+								case DataStructureType::FEArrayType:
+									break;
+								case DataStructureType::FEVectorType:
+									break;
+								default:
+									break;
+							}
 						default:
 							break;
 					}
@@ -424,64 +451,111 @@ namespace Frostic {
 					if (nsc.Instance != nullptr)
 					{
 						nsc.Instance->m_EntityUUID = nsComponent["Instance"]["EntityUUID"].as<uint64_t>();
-						size_t size = glm::min(nsComponent["Instance"]["PropertiesSize"].as<size_t>(), nsc.Instance->_m_Properties.size());
-						for (size_t i = 0; i < size; i++)
+						for (ScriptableEntity::_PropertyData& data : nsc.Instance->_m_Properties)
 						{
-							auto property = nsComponent["Instance"]["PropertyData[" + std::to_string(i) + "]"];
-							ScriptableEntity::_PropertyData& data = nsc.Instance->_m_Properties[i];
-							switch (data.m_PropertyType)
+							auto property = nsComponent["Instance"][data.m_Label];
+							if (property)
 							{
-							case PropertyType::Data:
-								switch (data.m_DataType)
+								switch (data.m_PropertyType)
 								{
-								case DataType::UINT8_T:
-								{
-									uint8_t dataToCopy = property["Data"].as<uint8_t>();
-									memcpy(data.m_Data, &dataToCopy, sizeof(uint8_t));
+								case PropertyType::Data:
+									switch (data.m_DataType)
+									{
+									case DataType::UINT8_T:
+									{
+										uint8_t dataToCopy = property["Data"].as<uint8_t>();
+										memcpy(data.m_Data, &dataToCopy, sizeof(uint8_t));
+										break;
+									}
+									case DataType::UINT16_T:
+									{
+										uint16_t dataToCopy = property["Data"].as<uint16_t>();
+										memcpy(data.m_Data, &dataToCopy, sizeof(uint16_t));
+										break;
+									}
+									case DataType::UINT32_T:
+									{
+										uint32_t dataToCopy = property["Data"].as<uint32_t>();
+										memcpy(data.m_Data, &dataToCopy, sizeof(uint32_t));
+										break;
+									}
+									case DataType::UINT64_T:
+									{
+										uint64_t dataToCopy = property["Data"].as<uint64_t>();
+										memcpy(data.m_Data, &dataToCopy, sizeof(uint64_t));
+										break;
+									}
+									case DataType::INT8_T:
+									{
+										int8_t dataToCopy = property["Data"].as<int8_t>();
+										memcpy(data.m_Data, &dataToCopy, sizeof(int8_t));
+										break;
+									}
+									case DataType::INT16_T:
+									{
+										int16_t dataToCopy = property["Data"].as<int16_t>();
+										memcpy(data.m_Data, &dataToCopy, sizeof(int16_t));
+										break;
+									}
+									case DataType::INT32_T:
+									{
+										int32_t dataToCopy = property["Data"].as<int32_t>();
+										memcpy(data.m_Data, &dataToCopy, sizeof(int32_t));
+										break;
+									}
+									case DataType::INT64_T:
+									{
+										int64_t dataToCopy = property["Data"].as<int64_t>();
+										memcpy(data.m_Data, &dataToCopy, sizeof(int64_t));
+										break;
+									}
+									case DataType::INT:
+									{
+										int dataToCopy = property["Data"].as<int>();
+										memcpy(data.m_Data, &dataToCopy, sizeof(int));
+										break;
+									}
+									case DataType::FLOAT:
+									{
+										float dataToCopy = property["Data"].as<float>();
+										memcpy(data.m_Data, &dataToCopy, sizeof(float));
+										break;
+									}
+									default:
+										break;
+									}
 									break;
-								}
-								case DataType::UINT16_T:
-								{
-									uint16_t dataToCopy = property["Data"].as<uint16_t>();
-									memcpy(data.m_Data, &dataToCopy, sizeof(uint16_t));
+								case PropertyType::EntityReference:
+									data.m_EntityUUID = property["EntityUUID"].as<uint64_t>();
 									break;
-								}
-								case DataType::UINT32_T:
-								{
-									uint32_t dataToCopy = property["Data"].as<uint32_t>();
-									memcpy(data.m_Data, &dataToCopy, sizeof(uint32_t));
+								case PropertyType::Script:
+									data.m_EntityUUID = property["EntityUUID"].as<uint64_t>();
 									break;
-								}
-								case DataType::UINT64_T:
-								{
-									uint64_t dataToCopy = property["Data"].as<uint64_t>();
-									memcpy(data.m_Data, &dataToCopy, sizeof(uint64_t));
+								case PropertyType::DataStructure:
+									switch (data.m_DataStructureType)
+									{
+										case DataStructureType::FEStringType:
+										{
+											FEString dataToCopy = FEString(property["Data"].as<std::string>().data());
+											static_cast<FEString*>(data.m_Data)->Resize(dataToCopy.Size());
+											memcpy(static_cast<FEString*>(data.m_Data)->Data(), dataToCopy.Data(), dataToCopy.Size());
+											break;
+										}
+										case DataStructureType::FEArrayType:
+										{
+											break;
+										}
+										case DataStructureType::FEVectorType:
+										{
+											break;
+										}
+										default:
+											break;
+									}
 									break;
-								}
-								case DataType::INT:
-								{
-									int dataToCopy = property["Data"].as<int>();
-									memcpy(data.m_Data, &dataToCopy, sizeof(int));
-									break;
-								}
-								case DataType::FLOAT:
-								{
-									float dataToCopy = property["Data"].as<float>();
-									memcpy(data.m_Data, &dataToCopy, sizeof(float));
-									break;
-								}
 								default:
 									break;
 								}
-								break;
-							case PropertyType::EntityReference:
-								data.m_EntityUUID = property["EntityUUID"].as<uint64_t>();
-								break;
-							case PropertyType::Script:
-								data.m_EntityUUID = property["EntityUUID"].as<uint64_t>();
-								break;
-							default:
-								break;
 							}
 						}
 					}
@@ -538,211 +612,9 @@ namespace Frostic {
 
 	bool SceneSerializer::DeserializeRuntime(const std::string& filepath)
 	{
-		/*/ Not implemented
+		// Not implemented
 		FE_CORE_ASSERT(false, "Not implemented!");
-		return false;*/
-
-		std::ifstream stream(filepath);
-		std::stringstream strStream;
-		strStream << stream.rdbuf();
-
-		YAML::Node data = YAML::Load(strStream.str());
-		if (!data["Scene"])
-		{
-			FE_CORE_ERROR("Unable to find keyword 'Scene'");
-			FE_CORE_ERROR("File may be corrupted!");
-			return false;
-		}
-
-		std::string sceneName = data["Scene"].as<std::string>();
-		FE_CORE_TRACE("Deserializing scene '{0}'", sceneName);
-
-		auto entities = data["Entities"];
-		if (entities)
-		{
-			for (auto entity : entities)
-			{
-				uint64_t uuid = entity["Entity"].as<uint64_t>();
-
-				std::string name;
-				auto tagComponent = entity["TagComponent"];
-				if (tagComponent)
-					name = tagComponent["Tag"].as<std::string>();
-
-				FE_CORE_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
-
-				Entity deserializedEntity = m_Scene->CreateEntity(name, uuid);
-
-				auto transformComponent = entity["TransformComponent"];
-				if (transformComponent)
-				{
-					auto& tc = deserializedEntity.GetComponent<TransformComponent>();
-					tc.Active = transformComponent["Active"].as<bool>();
-					tc.Translation = transformComponent["Translation"].as<glm::vec3>();
-					tc.Rotation = transformComponent["Rotation"].as<glm::vec3>();
-					tc.Scale = transformComponent["Scale"].as<glm::vec3>();
-				}
-
-				auto cameraComponent = entity["CameraComponent"];
-				if (cameraComponent)
-				{
-					auto& cc = deserializedEntity.AddComponent<CameraComponent>();
-
-					auto& cameraProps = cameraComponent["Camera"];
-					cc.Camera.SetProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
-
-					cc.Camera.SetPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());
-					cc.Camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
-					cc.Camera.SetPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
-
-					cc.Camera.SetOrthographicSize(cameraProps["OrthographicSize"].as<float>());
-					cc.Camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
-					cc.Camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
-
-					cc.Camera.SetOrthographicAspectRatio(cameraProps["AspectRatio"].as<float>());
-
-					cc.Active = cameraComponent["Active"].as<bool>();
-					cc.Primary = cameraComponent["Primary"].as<bool>();
-					cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
-				}
-
-				auto spriteComponent = entity["SpriteRendererComponent"];
-				if (spriteComponent)
-				{
-					auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
-					src.Active = spriteComponent["Active"].as<bool>();
-					src.Color = spriteComponent["Color"].as<glm::vec4>();
-					src.TexturePath = spriteComponent["TexturePath"].as<std::string>();
-					src.Texture = AssetLibrary::GetOrLoad<TextureAsset>(src.TexturePath)->GetTexture();
-					if (AssetLibrary::RemoveIfInvalid<TextureAsset>(src.TexturePath))
-						src.Texture = nullptr;
-				}
-
-				auto physicsComponent = entity["PhysicsComponent2D"];
-				if (physicsComponent)
-				{
-					auto& physics = deserializedEntity.AddComponent<PhysicsComponent2D>();
-					physics.Active = physicsComponent["Active"].as<bool>();
-					physics.Force = physicsComponent["Force"].as<glm::vec2>();
-					physics.Acceleration = physicsComponent["Acceleration"].as<glm::vec2>();
-					physics.Velocity = physicsComponent["Velocity"].as<glm::vec2>();
-					physics.AirResistanceCoefficient = physicsComponent["AirResistanceCoefficient"].as<float>();
-					physics.Mass = physicsComponent["Mass"].as<float>();
-					physics.Gravity = physicsComponent["Gravity"].as<bool>();
-					physics.GravityAcceleration = physicsComponent["GravityAcceleration"].as<float>();
-				}
-
-				auto nsComponent = entity["NativeScriptComponent"];
-				if (nsComponent)
-				{
-					auto& nsc = deserializedEntity.AddComponent<NativeScriptComponent>();
-					nsc.Active = nsComponent["Active"].as<bool>();
-					if (nsComponent["ScriptID"].as<uint64_t>() != 0)
-					{
-						nsc.InstantiateScript = ScriptManager::CreateInstantiateScriptByID(nsComponent["ScriptID"].as<uint64_t>());
-						nsc.DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
-						nsc.Instance = nsc.InstantiateScript();
-					}
-					if (nsc.Instance != nullptr)
-					{
-						nsc.Instance->m_EntityUUID = nsComponent["Instance"]["EntityUUID"].as<uint64_t>();
-						for (size_t i = 0; i < nsc.Instance->_m_Properties.size(); i++)
-						{
-							auto property = nsComponent["Instance"]["PropertyData[" + std::to_string(i) + "]"];
-							ScriptableEntity::_PropertyData& data = nsc.Instance->_m_Properties[i];
-							switch (data.m_PropertyType)
-							{
-							case PropertyType::Data:
-								switch (data.m_DataType)
-								{
-								case DataType::UINT8_T:
-								{
-									uint8_t dataToCopy = property["Data"].as<uint8_t>();
-									memcpy(data.m_Data, &dataToCopy, sizeof(uint8_t));
-									break;
-								}
-								case DataType::UINT16_T:
-								{
-									uint16_t dataToCopy = property["Data"].as<uint16_t>();
-									memcpy(data.m_Data, &dataToCopy, sizeof(uint16_t));
-									break;
-								}
-								case DataType::UINT32_T:
-								{
-									uint32_t dataToCopy = property["Data"].as<uint32_t>();
-									memcpy(data.m_Data, &dataToCopy, sizeof(uint32_t));
-									break;
-								}
-								case DataType::UINT64_T:
-								{
-									uint64_t dataToCopy = property["Data"].as<uint64_t>();
-									memcpy(data.m_Data, &dataToCopy, sizeof(uint64_t));
-									break;
-								}
-								case DataType::INT:
-								{
-									int dataToCopy = property["Data"].as<int>();
-									memcpy(data.m_Data, &dataToCopy, sizeof(int));
-									break;
-								}
-								case DataType::FLOAT:
-								{
-									float dataToCopy = property["Data"].as<float>();
-									memcpy(data.m_Data, &dataToCopy, sizeof(float));
-									break;
-								}
-								default:
-									break;
-								}
-								break;
-							case PropertyType::EntityReference:
-								data.m_EntityUUID = property["EntityUUID"].as<uint64_t>();
-								break;
-							case PropertyType::Script:
-								data.m_EntityUUID = property["EntityUUID"].as<uint64_t>();
-								break;
-							default:
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		m_Scene->m_Registry.view<NativeScriptComponent>().each([&](entt::entity ent, NativeScriptComponent& nsc)
-			{
-				if (nsc.Instance != nullptr)
-					nsc.Instance->m_Entity = m_Scene->GetEntityByUUID(nsc.Instance->m_EntityUUID);
-			});
-
-		m_Scene->m_Registry.view<NativeScriptComponent>().each([&](entt::entity ent, NativeScriptComponent& nsc)
-			{
-				if (nsc.Instance != nullptr)
-				{
-					for (size_t i = 0; i < nsc.Instance->_m_Properties.size(); i++)
-					{
-						ScriptableEntity::_PropertyData& data = nsc.Instance->_m_Properties[i];
-
-						switch (data.m_PropertyType)
-						{
-						case PropertyType::EntityReference:
-							if (data.m_EntityUUID != 0)
-								*static_cast<Entity*>(data.m_Data) = m_Scene->GetEntityByUUID(data.m_EntityUUID);
-							break;
-						case PropertyType::Script:
-							if (data.m_EntityUUID != 0)
-								*static_cast<ScriptableEntity**>(data.m_Data) = m_Scene->GetEntityByUUID(data.m_EntityUUID).GetComponent<NativeScriptComponent>().Instance;
-							break;
-						default:
-							break;
-						}
-					}
-				}
-			});
-
-		FE_CORE_TRACE("Deserializing complete!");
-		return true;
+		return false;
 	}
 
 }

@@ -111,6 +111,11 @@ namespace Frostic {
 			m_Data[0] = 0;
 		}
 
+		void Resize(size_t newSize)
+		{
+			ReAllocate(newSize);
+		}
+
 		char& operator[](size_t index) { FE_CORE_ASSERT(index < m_Size, ""); return m_Data[index]; }
 		const char& operator[](size_t index) const { FE_CORE_ASSERT(index < m_Size, ""); return m_Data[index]; }
 
